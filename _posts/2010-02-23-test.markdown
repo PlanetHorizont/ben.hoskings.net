@@ -1,0 +1,8 @@
+---
+layout: post
+title: "test"
+---
+
+# {{ page.title }}
+
+test post

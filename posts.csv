@@ -1,0 +1,467 @@
+wildcard-nginx-passenger-virtualhosts	2009-07-03 12:47:00	wildcard nginx / passenger virtualhosts	Hosting passenger apps on nginx is easy. If they don't need any specific webserver config, though, it's even easier.
+
+---
+server {
+  listen 80;
+  server_name *.com *.com.au *.net *.org;
+  root /home/$host/current/public;
+  passenger_enabled on;
+}
+---
+
+This is particularly useful in a development environment - just set `rails_env development` in the `server { }` block, and [ghost](http://github.com/bjeanes/ghost) the domain to localhost.
+
+You should deploy your app to a directory, and as a user, with the same name as the app's root domain. (You should do this anyway, because it's neat and consistent.)
+
+Don't forget to `chown $host /home/$host/current/config/environment.rb`, to run each app as its own user. (You should do this anyway, because it's good security practice.)
+
+You can't use `server_name *` -- you can only wildcard a domain prefix, not the whole thing.
+
+restarting-and-refreshing-local-passenger-apps-with-fish	2009-07-02 20:31:00	restarting and refreshing local passenger apps with fish	Running passenger for development is great, but if you're hacking code within a plugin then it's cumbersome to constantly `touch tmp/restart.txt` and refresh your browser, even if you use `tou[UP]` to pick the command from your history.
+
+Using fish and some applescript, you can do it all from your terminal by hitting ⌥R.
+
+---
+function reload_webkit
+  osascript -e 'tell application "WebKit" to do JavaScript \
+    "window.location.reload()" in front document'
+end
+
+function restart_rails_app
+  touch tmp/restart.txt
+  reload_webkit
+end
+
+bind \er 'restart_rails_app >/dev/null'
+---
+
+a-concise-git-logging-format	2008-12-02 21:06:00	a concise git logging format	A `git merge`, and hence also the merging stage of a `git pull`, sets `ORIG_HEAD` to the commit that `HEAD` pointed to before the merge. So the commits between these two points are the ones the most recent merge introduced.
+
+---
+git log ORIG_HEAD..HEAD \
+  --pretty=format:"%Cblue%h%Creset %Cgreen%an%Creset %s"
+---
+
+pull-inspect-update-and-then-push	2008-12-02 21:20:00	pull, inspect, update -- and then push.	A common thing I do with git is push my changes to a remote repo, after first updating my project locally with all the changes others have pushed. But I always forget to update first, so the process usually goes--
+
+- push
+- rap my fingers on the table for five seconds while my laptop talks to github on the other side of the world
+- "oh crap I should have pulled first"
+- pull
+- update submodules
+- push
+- "hmm, what did I just push"
+- get a coffee (this step should have been first).
+
+So, I made a little alias to handle it all for me, dropping in my [new commits alias][1]:
+
+---
+alias gitp='git pull &&
+  git log ORIG_HEAD..HEAD \
+    --pretty=format:"%Cblue%h%Creset %Cgreen%an%Creset %s" | cat &&
+  echo &&
+  git submodule update &&
+  git log $(git config branch.master.remote)/master..master \
+    --pretty=format:"%Cblue%h%Creset %Cgreen%an%Creset %s" | cat &&
+  echo &&
+  git push'
+---
+
+This alias pulls, lists the new commits, updates submodules, lists the commits that are about to be pushed, and then pushes them.
+
+Since the `log` comes after the `pull`, it shows a list of the commits that were just pulled down along with a snippet of their commit message. I like this because it lets me see what everyone else has done in the last little while every time I hit the shared repo.
+
+[1]: http://ben.hoskings.net/2008/12/02/a-concise-git-logging-format
+meta	2009-07-13 15:54:00	meta	I just deployed a long-overdue update. http://ben.hoskings.net is powered by [Enki](http://www.enkiblog.com/) now, including some cherry-picks from [bjeanes](http://twitter.com/bjeanes)' [fork](http://github.com/bjeanes/website), and I've moved it to EC2.
+
+Try the comment form and let me know what you think of the new design :)
+spork-no-db-prep-four-fold-speedup	2009-07-16 12:39:00	spork + no db prep: four-fold speedup	Here are some numbers for the rails rspeccing changes I [wrote about earlier today](http://ben.hoskings.net/2009/07/16/speedy-rspec-with-rails):
+
+before
+---
+> time rake spec
+13.27 real         9.93 user         2.18 sys
+---
+after
+---
+> time rake spec
+3.35 real         0.88 user         0.25 sys
+---
+
+Nice.
+we-can-do-better-than-meta	2009-07-21 14:57:00	we can do better than meta	I fixed a really tricky bug this afternoon. I took a roundabout path towards the bug's cause, and used a couple of tools from my ruby toolbox.
+
+So ruby is dynamically typed, for better or worse. I used to think that was a great idea - who cares what something *is*, as long as you know what it *does*, right? Ducks and all that?
+
+Not always the case. I'm starting to think ruby is too permissive. Not only can you not be sure what type an object is until runtime, you can't be sure what the types *themselves* consist of - and they can change from moment to moment.
+
+So here's the problem:
+
+---
+Scenario: Uploading after logging in
+  Given I am logged in as "member@test.org"
+    undefined method `context=' for #<Ambition::Adapters::ActiveRecord::Select:0x3523494>
+---
+
+The login step triggers a GET via webrat, and the call to ambition is far below that. About 25 method calls below:
+---
+benhoskings-ambition-0.5.4.3/.../base.rb:122
+---
+
+But the request works fine when hit from the browser---so maybe something's undefining `#context` in the test environment, or similar. In ambition / `base.rb`:
+
+--- ruby
+unless instance.respond_to? :context
+  klass.class_eval do
+    attr_accessor :context, :negated
+    def owner;    @context.owner   end
+    def clauses;  @context.clauses end
+    def stash;    @context.stash   end
+    def negated?; @negated         end
+  end
+end
+
+instance.context = context # line 122
+---
+
+Turns out, it's the reverse. If we already have `#context`, `attr_accessor` (which defines it, along with `#context=`) is never called. But where the hell is `#context` coming from? This test involves rails, hammock, ambition, rspec, cucumber, webrat, machinist, and faker. Oh dear.
+
+So first, OK. Let's just have a look at what that object can do. Just above that `respond_to?` check:
+
+--- ruby
+# What methods does this object have, that aren't common to all objects?
+p instance.methods.sort - Object.methods
+---
+Which gives us
+--- ruby
+["both", "call", "chained_call", "dbadapter_name", "downcase", "either", "not_equal", "not_regexp", "quote", "quote_column_name", "quote_string", "quote_table_name", "quoted_date", "quoted_false", "quoted_string_prefix", "quoted_true", "sanitize", "statement", "upcase"]
+---
+
+Which doesn't include `#context`. But `respond_to? :context` must have returned true, otherwise all those methods would have been `class_eval`ed. We'll need a more subtle trick.
+
+--- ruby
+instance.method(:method_missing).owner #=> Kernel
+---
+
+Damn, they must have known we'd check that first. If it's owned by `Kernel`, then no parent or mixin's `#method_missing` can be responding to the `#context` call. How about..
+
+--- ruby
+instance.method(:context).owner #=> Spec::DSL::Main
+---
+
+Aha! `instance` responds to `Spec::DSL::Main#context`. It must have been mixed in by rspec. Let's have a look in its source:
+
+--- ruby
+def describe(*args, &block)
+  [ ... ]
+end
+alias :context :describe
+---
+
+Yep, every class responds to `#context` (and `#describe`) when rspec is in the mix. But why doesn't it appear in the `instance.methods` list?
+
+I had to think about this for a bit. It's because *every* class responds to `#context` when rspec is in the mix, including `Object` itself. When we subtracted globally shared methods from the list (`- Object.methods`), `#context` was one of them. Sure enough,
+
+--- ruby
+instance.methods.include? 'context' #=> true
+---
+
+[The fix](http://github.com/benhoskings/ambition/commit/22dba94f1b4ed144b57f3d8dc4a15c91a4c6f65e) is easy - the naming collision can be easily avoided in ambition by checking for `#context=` instead:
+
+--- ruby
+unless instance.respond_to? :context=
+  [ ... ]
+end
+---
+
+But there's a good lesson here. Two completely unrelated bits of metaprogramming, each innocuous on their own, colliding and causing mayhem. It might seem like an elegant way to write code, and in some situations it is—but there's got to be a better way. I'm hoping it's [this](http://www.scala-lang.org/).
+
+speedy-rspec-with-rails	2009-07-16 05:26:00	speedy rspec with rails	So rails rspec runs are really slow to start up. There are two reasons why:
+
+- Rails is initialised each time, which takes a few seconds
+- `db:test:prepare` runs before each run, which is another complete rails initialisation in itself
+
+These delays don't have anything to do with rspec. It's just the nature of the Rails framework—there's a lot of ruby to load, to get the framework off the ground. These tweaks don't make that process any faster, they avoid it---firstly by removing a rails initialisation, and then by moving the delay of another away from each rspec run.
+
+To fix the first, install [spork](http://wiki.github.com/dchelimsky/rspec/spork-autospec-pure-bdd-joy) and configure it in `spec/spec_helper.rb`. Spork keeps an instance of your app running, and listens for connections from a spork-aware `rake spec` run. This removes the Rails startup delay more or less completely, since when you run `rake spec`, spork has your app ready and waiting to run specs transparently via DRb.
+
+As for the second, I don't see any need to run `db:test:prepare` before every run when transactional fixtures are being used. It's simple to disable. Change this
+--- ruby
+Spec::Rake::SpecTask.new(:spec => spec_prereq) do |t|
+---
+to this
+--- ruby
+Spec::Rake::SpecTask.new(:spec) do |t|
+---
+in `lib/tasks/rspec.rake`.
+
+With `db:test:prepare` and its subtasks not running, spork there's less than a second of delay before specs start running. In my book, that's close to fast enough to pleasantly run, and get results in realtime. Coupled with autotest, this should mean much snappier pass/fail feedback too.
+
+It seems messy to me to have those tasks defined within the app. In fact, most of the rails testing / speccing setup seems to involve just spraying messy generated code around the place. I think this is an example of something done wrong in spite of the fact that the tests may be passing.
+
+Next, to make ⌘R spec runs in TextMate spork-aware, head to the TextMate preferences and add `--drb` to the `TM_RSPEC_OPTS` variable (creating it if required). I also had to patch the `spec_mate` helper [like so](http://github.com/benhoskings/ruby-rspec.tmbundle/commit/c70b16106cd5ba74e97cc967d0e8f307850cbd28).
+
+Running through spork causes a bit of a performance hit, too---it eliminates the startup delay, but the specs run slower, since there's a DRb back and forth involved for each one. Spork is for running a few tests at a time, or for running through autotest, while you're developing. When you run your full suite, you should stop the spork listener and run them locally at full speed.
+babushka-dmg-and-macports-support	2009-08-09 13:16:53.667218	babushka: dmg and macports support	I just added a few new tricks to Babushka. It knows how to open a DMG now:
+
+--- ruby
+dmg "http://blah.org/appname.dmg" do |path|
+  # Use the contents of the DMG here.
+  # path is the path at which the DMG was mounted.
+  # e.g. /Volumes/appname
+end
+---
+
+The DMG is downloaded and mounted, and the unmount is handled automatically after the block returns.
+
+So now, among other things, it can install MacPorts (which is a dependency of git, wget, etc on OS X).
+
+---
+> ruby bin/babushka.rb macports
+Loaded 0 dependencies from ~/.babushka/deps.
+Loaded 59 dependencies from ./deps.
+macports {
+  build tools {
+    xcode tools {
+    } √ xcode tools
+    build tools / met? not defined.
+  } √ build tools
+  macports not already met.
+  Downloading MacPorts-1.7.1-10.5-Leopard.dmg... done.
+  Installing MacPorts-1.7.1... done.
+  Running port selfupdate... done.
+  macports met.
+} √ macports
+---
+multi-line-prompts-in-fish	2009-11-25 04:46:00	multi-line prompts in fish	One thing I've missed since switching to fish is a multi-line prompt. If your prompt has newlines in it, they're stripped out when the prompt is rendered on-screen.
+
+First things first: [here's the patch](http://github.com/benhoskings/fish/commit/3e589050b1ab69e07982fb48e8a3bc80ccf1b09b).
+
+--- diff
+  for( i=0; i<al_get_count( &prompt_list); i++ )
+  {
+    sb_append( &data->prompt_buff, (wchar_t *)al_get( &prompt_list, i ) );
++     if (i + 1 < al_get_count( &prompt_list))
++     {
++       sb_append( &data->prompt_buff, L"\n" );
++     }
+  }
+
+  al_foreach( &prompt_list, &free );
+---
+
+The reason the newlines are removed arises from the way fish runs subcommands. Rendering the prompt is a call to the `fish_prompt` function, which in turn runs other subcommands like `whoami`, `pwd` and `git ls-files`, depending what you have in your prompt.
+
+When fish receives `fish_prompt`'s output, it splits on `\n` and stores each line in an array, specifically an `array_list_t`. When the output is reassembled by `exec_prompt()` for output to the terminal, however, it joins the lines in the array (that's `prompt_list` in the patch above) back together without any join token, so the line separation is gone.
+
+My patch adds a `\n` after every line but the last, so that the newlines in the original un-split output from `fish_prompt` are re-inserted for rendering.
+command-duration-with-fish	2009-11-26 05:56:35.424034	command duration with fish	It's often useful to see how long a command took to run. I used to have the date and time in my prompt for that reason--I could do some mental arithmetic to find out how long a command took.
+
+But, I've been trying to make my prompt more minimal after being inspired by [@topfunky](http://twitter.com/topfunky)'s zen-like prompt, and the date and time clutter it up.
+
+So, I patched fish to measure how long commands take to run, and write the duration to an environment variable when it's useful (i.e. more than a second).
+
+The patch is in [my fish fork](http://github.com/benhoskings/fish/commit/b7d172719fc0321f384aa1cfb5a68f3295be6a17). Here's the high-level part of it:
+
+--- c
+    term_donate();
+
++   gettimeofday(&time_before, NULL);
++
+    eval( cmd, 0, TOP );
+    job_reap( 1 );
+
++   gettimeofday(&time_after, NULL);
++   set_env_cmd_duration(&time_after, &time_before);
++
+    term_steal();
+---
+
+The call to `eval()` is where the command is run, so that's the call that will block and take time. I'm using `gettimeofday()` to grab a unix timestamp directly before and after the call, and then a new function `set_env_cmd_duration()` to write the `CMD_DURATION` environment variable.
+
+The value in the var is pretty-printed using tiered rounding already, so it's ready to echo as a string in your prompt. For example, for commands that take between 10 seconds and 1 minute:
+
+--- c
+swprintf(buf, 16, L"%lu.%01us", secs, usecs / 100000);
+---
+
+Which produces output like this, running a `rake spec`:
+
+![fish CMD_DURATION example](/images/fish-cmd-duration.png)
+
+minimal-menu-bar	2009-12-04 07:23:00	minimal menu bar	After reading [Ross Hill's post](http://www.rosshill.com.au/article/minimal-mac-menubar/) about his minimal OS X menubar, I decided I'd try it on mine. I'm picky about these things, so I think my menu bar looked pretty good to start with, but it was busy.
+
+![menubar, before](/images/minimal-menubar-before.png)
+
+So I started looking, and thought, well there are a couple of things I can remove, but no, I use almost all of that stuff!
+
+With Ross' help though (i.e. him telling me I was wrong), I pared it down to something that I think is looking pretty good.
+
+![menubar, after](/images/minimal-menubar-after.png)
+
+All the stuff left I actually really do use a lot. In particular, the CPU/memory/network meters are really useful to tell what's going on with the system, when I'm writing code and running specs etc, I use them constantly.
+
+A nice improvement I've noticed already is that now Tweetie is only visible in my Dock (which is hidden), I'm not constantly distracted by new tweets. When that little icon turns blue, I can't help but click it. Marking the hidden dock icon on mentions and DMs, and then checking it periodically, when I think to, is much less disruptive.
+
+Cheers Ross :)
+open-letter-to-senator-the-hon-stephen-conroy	2009-12-16 12:00:00	Open Letter to Senator the Hon Stephen Conroy, Australian Minister for Broadband, Communications and the Digital Economy	Dear Minister,
+
+As an Australian and an internet user, I have grave concerns regarding the [mandatory][ref1] [internet][ref2] [filter][ref3] that is currently being deployed in Australia. My concerns are three-fold.
+
+[ref1]: http://arstechnica.com/news.ars/post/20081016-net-filters-required-for-all-australians-no-opt-out.html
+[ref2]: http://www.infoworld.com/news/feeds/08/10/13/No-opt-out-of-filtered-Internet.html
+[ref3]: http://www.somebodythinkofthechildren.com/no-opt-out-from-isp-filtering-two-black-lists-and-you-can-only-opt-out-from-one/
+
+- The filter will have no effect on the deliberate transfer of illegal content on the Internet.
+- The filter will fail to protect children from illegal and inappropriate content.
+- With the filter in place, Australians can no longer rely on having the uncensored, unmonitored access to legal content that democracy demands.
+
+Considering this, deploying any mandatory, nation-wide content filter is misguided, damaging and foolish in the extreme.
+
+__The filter will have no effect on the deliberate transfer of illegal content on the Internet.__
+
+As a web developer with an intimate understanding of how the Internet works, it is clear to me that the filter will fail to stop the transfer of the content it has been created to fight. Unlawful content&mdash;whether it be child pornography, copyrighted material, or anything else&mdash;can easily be moved around by those who are determined to do so.
+
+Encrypted connections, known as SSL connections, are trivially easy to create between a sender and receiver, so that the content passing between the two nodes is unreadable by a third party. The only way to prevent unfiltered content passing over SSL connections is to block them entirely. Blocking SSL traffic is not an option, because internet banking and all other secure websites rely on SSL and would be rendered non-functional. SSL connections are but one of many tools that criminals can and will employ to circumvent the filter.
+
+Illegal activity on the Internet shares an intrinsic trait with real-world illegal activity&mdash;those wishing to engage in it will find a way to do so, and it is the job of law enforcement to pursue them directly. Applying a blanket nation-wide restriction is an unacceptable solution. Those among us who choose to access or create illegal content will continue to do so, largely with impunity.
+
+__The filter will fail to protect children from illegal and inappropriate content.__
+
+Content filters, broadly, are based either on blacklists or heuristics. A blacklist is by definition reactive and cannot respond to emerging content immediately. Heuristics are by definition imprecise, blocking only the majority of content they are designed to detect.
+
+It is certainly possible that the filter could reduce the amount of illegal content that is readily available on the Internet, but reducing it to acceptably low levels is infeasible, and eliminating it is fundamentally impossible.
+
+
+__With the filter in place, Australians can no longer rely on having the uncensored, unmonitored access to legal content that democracy demands.__
+
+Installing technology that is designed expressly to censor, and then trusting that it will never be used inappropriately, is futile.
+
+Minister, please understand: I am not suggesting you or the Government harbour an ulterior motive, and I am not suggesting that you intend to curtail intellectual freedom in Australia.
+
+What I am saying, though, is that you have built a tool that is designed to perform exactly that task.
+
+What I am saying is that you have brought about a situation where such an eventual curtailment is inevitable. You may intend to block only content that we all agree is defenceless&mdash;child pornography, criminal activity. Who will personally see that the filter is never used politically? Some would say it is reasonable to also block hate speech that incites violence. Radical views that incite fanaticism. Fringe views that incite crackpottery. Controversial views that incite debate?
+
+With this tool in place, Australians can have no confidence that they have open access to information. I find it incredible that we have reached this point in Australia, a country that has fought wars to protect the freedoms of its own and other people.
+
+
+The safety of Australian children is of acute importance. The safety of Australian intellectual freedom, however, is even more important, and censorship of the world's primary communication channels is incomparably more damaging to the latter than it is protective of the former.
+
+A nation-wide internet filter will not stop illegal activity online, will fail to protect children, and will do nothing less than undermine our democracy.
+
+I trust that you will give my argument your careful consideration and re-evaluate the future of this unfortunate exercise.
+
+Sincerely yours,  
+Ben Hoskings  
+[ben@hoskings.net](mailto:ben@hoskings.net)
+
+This letter is licensed under a [Creative Commons Attribution-Noncommercial-Share Alike 2.5 Australia License](http://creativecommons.org/licenses/by-nc-sa/2.5/au/).
+adding-extended-modules	2009-07-29 13:43:00	adding extended_modules	It's easy to find the modules included in a given class:
+
+--- ruby
+>> String.included_modules
+=> [Enumerable, Comparable, Kernel]
+---
+
+*Quick update in case you're wondering: including a module makes its methods available as instance methods on the receiving class; extending a class with a module makes the methods available as class methods.*
+
+There's no way to directly query the extended modules of a class, but it's easy to get at the information. There's no such thing as extending a class really—"extending a class" just means including on its metaclass. So:
+
+--- ruby
+class Module # Thanks for this fix, Adam
+  def metaclass
+    class << self; self end
+  end
+  def extended_modules
+    metaclass.included_modules
+  end
+end
+---
+
+And then:
+
+--- ruby
+>> String.extended_modules
+=> [Kernel]
+---
+
+Bam!
+open-letter-to-senator-the-hon-stephen-conroy	2009-12-15 11:41:00	Open Letter to Senator the Hon Stephen Conroy, Australian Minister for Broadband, Communications and the Digital Economy	Dear Minister,
+
+As an Australian and an internet user, I have grave concerns regarding the [mandatory][ref1] [internet][ref2] [filter][ref3] that is currently being deployed in Australia. My concerns are three-fold.
+
+[ref1]: http://www.theage.com.au/technology/technology-news/internet-censorship-plan-gets-the-green-light-20091215-ktzc.html
+[ref2]: http://arstechnica.com/news.ars/post/20081016-net-filters-required-for-all-australians-no-opt-out.html
+[ref3]: http://www.somebodythinkofthechildren.com/no-opt-out-from-isp-filtering-two-black-lists-and-you-can-only-opt-out-from-one/
+
+- The filter will have no effect on the deliberate transfer of illegal content on the Internet.
+- The filter will fail to protect children from illegal and inappropriate content.
+- With the filter in place, Australians can no longer rely on having the uncensored, unmonitored access to legal content that democracy demands.
+
+Considering this, deploying any mandatory, nation-wide content filter is misguided, damaging and foolish in the extreme.
+
+__The filter will have no effect on the deliberate transfer of illegal content on the Internet.__
+
+As a web developer with an intimate understanding of how the Internet works, it is clear to me that the filter will fail to stop the transfer of the content it has been created to fight. Unlawful content---whether it be child pornography, copyrighted material, or anything else---can easily be moved around by those who are determined to do so.
+
+Encrypted connections, known as SSL connections, are trivially easy to create between a sender and receiver, so that the content passing between the two nodes is unreadable by a third party. The only way to prevent unfiltered content passing over SSL connections is to block them entirely. Blocking SSL traffic is not an option, because internet banking and all other secure websites rely on SSL and would be rendered non-functional. SSL connections are but one of many tools that criminals can and will employ to circumvent the filter.
+
+Illegal activity on the Internet shares an intrinsic trait with real-world illegal activity---those wishing to engage in it will find a way to do so, and it is the job of law enforcement to pursue them directly. Applying a blanket nation-wide restriction is an unacceptable solution. Those among us who choose to access or create illegal content will continue to do so, largely with impunity.
+
+__The filter will fail to protect children from illegal and inappropriate content.__
+
+Content filters, broadly, are based either on blacklists or heuristics. A blacklist is by definition reactive and cannot respond to emerging content immediately. Heuristics are by definition imprecise, blocking only the majority of content they are designed to detect.
+
+It is certainly possible that the filter could reduce the amount of illegal content that is readily available on the Internet, but reducing it to acceptably low levels is infeasible, and eliminating it is fundamentally impossible.
+
+
+__With the filter in place, Australians can no longer rely on having the uncensored, unmonitored access to legal content that democracy demands.__
+
+Installing technology that is designed expressly to censor, and then trusting that it will never be used inappropriately, is futile.
+
+Minister, please understand: I am not suggesting you or the Government harbour an ulterior motive, and I am not suggesting that you intend to curtail intellectual freedom in Australia.
+
+What I am saying, though, is that you have built a tool that is designed to perform exactly that task.
+
+What I am saying is that you have brought about a situation where such an eventual curtailment is inevitable. You may intend to block only content that we all agree is defenceless---child pornography, criminal activity. Who will personally see that the filter is never used politically? Some would say it is reasonable to also block hate speech that incites violence. Radical views that incite fanaticism. Fringe views that incite crackpottery. Controversial views that incite debate?
+
+With this tool in place, Australians can have no confidence that they have open access to information. I find it incredible that we have reached this point in Australia, a country that has fought wars to protect the freedoms of its own and other people.
+
+
+The safety of Australian children is of acute importance. The safety of Australian intellectual freedom, however, is even more important, and censorship of the world's primary communication channels is incomparably more damaging to the latter than it is protective of the former.
+
+A nation-wide internet filter will not stop illegal activity online, will fail to protect children, and will do nothing less than undermine our democracy.
+
+I trust that you will give my argument your careful consideration and re-evaluate the future of this unfortunate exercise.
+
+Sincerely yours,  
+Ben Hoskings  
+[ben@hoskings.net](mailto:ben@hoskings.net)
+
+This letter is licensed under a [Creative Commons Attribution-Noncommercial-Share Alike 2.5 Australia License](http://creativecommons.org/licenses/by-nc-sa/2.5/au/).
+drm	2009-01-08 01:47:00	DRM	I think the biggest news out of the Macworld keynote today was the announcement that the iTunes Store is now largely DRM-free, and completely so by March.
+
+Steve Jobs wrote [thoughts on music][1] almost two years ago, which left quite an impression on me. Many were sceptical of Apple's intent at the time, but Apple repeatedly put their money where their mouth was—first with EMI, then with several smaller labels, and today, with the lot. Top work, I say.
+
+[1]: http://www.apple.com/hotnews/thoughtsonmusic/
+
+Conceding tiered pricing to the record companies, which Apple have been holding back on for some time, seems to be a small price to pay—especially since I imagine that the top price bracket will be occupied mostly by new releases and useless pop music.
+
+Secondly, and this is why I think this is so important—we're in a situation now where **every major avenue you can purchase music through is DRM-free**. That's worth thinking about for a moment! CDs, the iTunes Store, and the Amazon MP3 store are all (or by the end of March, will be) totally DRM-free.
+
+Here's a thing: **every major avenue you can purchase video through is DRM-encumbered**. DVDs, Blu-Ray, Netflix, iTunes Store video.
+
+So, what the hell? Video hasn't caught up to audio yet? People think of video differently and will tolerate DRM? The movie industry thinks of it differently? Video is pirated more aggressively? Or maybe the left hand just doesn't know what the right hand is doing?
+
+I think it's a couple of things, but I think this is a crucial difference: music has a certain permanence that movies and TV shows do not.
+
+When I buy an album, I expect to listen to it lots of times—if I grow to truly love the album, maybe dozens or hundreds of times. But I can't imagine watching even life changingly good movies more than a couple of times.
+
+I'm probably biased because I live and breathe music and don't care all that much about movies or TV ([with][2] [notable][3] [exception][4]), but I think that's still a fairly major factor in the psychology of both the record companies and the listeners & viewers.
+
+[2]: http://www.imdb.com/title/tt1010048/
+[3]: http://www.imdb.com/title/tt0367279/ 
+[4]: http://www.imdb.com/title/tt0200276/
+
+Whatever the reason, this is huge news. Hat tip to Apple for doing it live, hat tip to the record companies for coming to their senses, and genuflection to the artists whose music I love.

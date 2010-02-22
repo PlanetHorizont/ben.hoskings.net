@@ -1,2 +1,3 @@
-destination: ./public
+# destination: ./public
 haml: true
+sass: true

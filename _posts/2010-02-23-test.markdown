@@ -3,6 +3,6 @@ layout: post
 title: "test"
 ---
 
-# {{ page.title }}
+## {{ page.title }}
 
 test post

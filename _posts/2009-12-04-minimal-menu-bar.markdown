@@ -3,8 +3,6 @@ layout: post
 title: "minimal menu bar"
 ---
 
-## {{ page.title }}
-
 After reading [Ross Hill's post](http://www.rosshill.com.au/article/minimal-mac-menubar/) about his minimal OS X menubar, I decided I'd try it on mine. I'm picky about these things, so I think my menu bar looked pretty good to start with, but it was busy.
 
 ![menubar, before](/images/minimal-menubar-before.png)

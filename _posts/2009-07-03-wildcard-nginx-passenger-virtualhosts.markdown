@@ -3,8 +3,6 @@ layout: post
 title: "wildcard nginx / passenger virtualhosts"
 ---
 
-## {{ page.title }}
-
 Hosting passenger apps on nginx is easy. If they don't need any specific webserver config, though, it's even easier.
 
 ---

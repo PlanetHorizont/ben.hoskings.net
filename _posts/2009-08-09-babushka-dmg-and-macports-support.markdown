@@ -3,8 +3,6 @@ layout: post
 title: "babushka: dmg and macports support"
 ---
 
-## {{ page.title }}
-
 I just added a few new tricks to Babushka. It knows how to open a DMG now:
 
 --- ruby

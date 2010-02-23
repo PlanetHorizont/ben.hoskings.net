@@ -3,8 +3,6 @@ layout: post
 title: "pull, inspect, update -- and then push."
 ---
 
-## {{ page.title }}
-
 A common thing I do with git is push my changes to a remote repo, after first updating my project locally with all the changes others have pushed. But I always forget to update first, so the process usually goes--
 
 - push

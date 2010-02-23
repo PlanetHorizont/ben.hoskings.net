@@ -3,8 +3,6 @@ layout: post
 title: "DRM"
 ---
 
-## {{ page.title }}
-
 I think the biggest news out of the Macworld keynote today was the announcement that the iTunes Store is now largely DRM-free, and completely so by March.
 
 Steve Jobs wrote [thoughts on music][1] almost two years ago, which left quite an impression on me. Many were sceptical of Apple's intent at the time, but Apple repeatedly put their money where their mouth was—first with EMI, then with several smaller labels, and today, with the lot. Top work, I say.

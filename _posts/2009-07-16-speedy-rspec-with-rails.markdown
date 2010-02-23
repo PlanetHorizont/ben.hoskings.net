@@ -3,8 +3,6 @@ layout: post
 title: "speedy rspec with rails"
 ---
 
-## {{ page.title }}
-
 So rails rspec runs are really slow to start up. There are two reasons why:
 
 - Rails is initialised each time, which takes a few seconds

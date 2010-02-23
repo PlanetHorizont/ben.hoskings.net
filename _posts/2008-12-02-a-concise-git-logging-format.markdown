@@ -3,8 +3,6 @@ layout: post
 title: "a concise git logging format"
 ---
 
-## {{ page.title }}
-
 A `git merge`, and hence also the merging stage of a `git pull`, sets `ORIG_HEAD` to the commit that `HEAD` pointed to before the merge. So the commits between these two points are the ones the most recent merge introduced.
 
 ---

@@ -3,8 +3,6 @@ layout: post
 title: "we can do better than meta"
 ---
 
-## {{ page.title }}
-
 I fixed a really tricky bug this afternoon. I took a roundabout path towards the bug's cause, and used a couple of tools from my ruby toolbox.
 
 So ruby is dynamically typed, for better or worse. I used to think that was a great idea - who cares what something *is*, as long as you know what it *does*, right? Ducks and all that?

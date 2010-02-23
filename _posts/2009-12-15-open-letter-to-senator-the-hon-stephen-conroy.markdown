@@ -3,8 +3,6 @@ layout: post
 title: "Open Letter to Senator the Hon Stephen Conroy, Australian Minister for Broadband, Communications and the Digital Economy"
 ---
 
-## {{ page.title }}
-
 Dear Minister,
 
 As an Australian and an internet user, I have grave concerns regarding the [mandatory][ref1] [internet][ref2] [filter][ref3] that is currently being deployed in Australia. My concerns are three-fold.

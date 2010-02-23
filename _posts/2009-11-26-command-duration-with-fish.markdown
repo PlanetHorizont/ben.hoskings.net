@@ -3,8 +3,6 @@ layout: post
 title: "command duration with fish"
 ---
 
-## {{ page.title }}
-
 It's often useful to see how long a command took to run. I used to have the date and time in my prompt for that reason--I could do some mental arithmetic to find out how long a command took.
 
 But, I've been trying to make my prompt more minimal after being inspired by [@topfunky](http://twitter.com/topfunky)'s zen-like prompt, and the date and time clutter it up.

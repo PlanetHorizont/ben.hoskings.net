@@ -3,8 +3,6 @@ layout: post
 title: "multi-line prompts in fish"
 ---
 
-## {{ page.title }}
-
 One thing I've missed since switching to fish is a multi-line prompt. If your prompt has newlines in it, they're stripped out when the prompt is rendered on-screen.
 
 First things first: [here's the patch](http://github.com/benhoskings/fish/commit/3e589050b1ab69e07982fb48e8a3bc80ccf1b09b).

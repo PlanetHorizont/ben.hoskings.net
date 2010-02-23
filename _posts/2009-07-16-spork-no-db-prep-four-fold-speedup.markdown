@@ -3,8 +3,6 @@ layout: post
 title: "spork + no db prep: four-fold speedup"
 ---
 
-## {{ page.title }}
-
 Here are some numbers for the rails rspeccing changes I [wrote about earlier today](http://ben.hoskings.net/2009/07/16/speedy-rspec-with-rails):
 
 before

@@ -3,8 +3,6 @@ layout: post
 title: "adding extended_modules"
 ---
 
-## {{ page.title }}
-
 It's easy to find the modules included in a given class:
 
 --- ruby

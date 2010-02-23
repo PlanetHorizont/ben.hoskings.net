@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>ben hoskings</title>
+    <link href="/stylesheets/styles.css" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+</html>
+<body>
+  <div id="page_container">
+    <h1 id="page_heading">
+      <a href="/">ben hoskings</a>
+    </h1>
+    <div id="navigation">
+      <a href="http://twitter.com/ben_h">twitter</a>
+      <a href="http://github.com/benhoskings">github</a>
+    </div>
+    <div id="main">
+      <div class="post">
+        <h2 class="title">pull, inspect, update -- and then push.</h2>
+        <p>A common thing I do with git is push my changes to a remote repo, after first updating my project locally with all the changes others have pushed. But I always forget to update first, so the process usually goes&#8211;</p>
+        
+        <ul>
+        <li>push</li>
+        
+        <li>rap my fingers on the table for five seconds while my laptop talks to github on the other side of the world</li>
+        
+        <li>&#8220;oh crap I should have pulled first&#8221;</li>
+        
+        <li>pull</li>
+        
+        <li>update submodules</li>
+        
+        <li>push</li>
+        
+        <li>&#8220;hmm, what did I just push&#8221;</li>
+        
+        <li>get a coffee (this step should have been first).</li>
+        </ul>
+        
+        <p>So, I made a little alias to handle it all for me, dropping in my <a href='http://ben.hoskings.net/2008/12/02/a-concise-git-logging-format'>new commits alias</a>:</p>
+        
+        <pre><code>alias gitp=&#39;git pull &amp;&amp;
+          git log ORIG_HEAD..HEAD \
+            --pretty=format:&quot;%Cblue%h%Creset %Cgreen%an%Creset %s&quot; | cat &amp;&amp;
+          echo &amp;&amp;
+          git submodule update &amp;&amp;
+          git log $(git config branch.master.remote)/master..master \
+            --pretty=format:&quot;%Cblue%h%Creset %Cgreen%an%Creset %s&quot; | cat &amp;&amp;
+          echo &amp;&amp;
+          git push&#39;</code></pre>
+        
+        <p>This alias pulls, lists the new commits, updates submodules, lists the commits that are about to be pushed, and then pushes them.</p>
+        
+        <p>Since the <code>log</code> comes after the <code>pull</code>, it shows a list of the commits that were just pulled down along with a snippet of their commit message. I like this because it lets me see what everyone else has done in the last little while every time I hit the shared repo.</p>
+      </div>
+    </div>
+    <div id="footer">
+      Powered by
+      <a href="http://github.com/mojombo/jekyll">Jekyll</a>
+      Content &amp; layout &copy; Ben Hoskings.
+    </div>
+  </div>
+  <script type="text/javascript">
+    //<![CDATA[
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      try {
+        var pageTracker = _gat._getTracker("UA-9740324-1");
+        pageTracker._trackPageview();
+      } catch(err) {}
+    //]]>
+  </script>
+</body>

@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>ben hoskings</title>
+    <link href="/stylesheets/styles.css" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+</html>
+<body>
+  <div id="page_container">
+    <h1 id="page_heading">
+      <a href="/">ben hoskings</a>
+    </h1>
+    <div id="navigation">
+      <a href="http://twitter.com/ben_h">twitter</a>
+      <a href="http://github.com/benhoskings">github</a>
+    </div>
+    <div id="main">
+      <div class="post">
+        <h2 class="title">command duration with fish</h2>
+        <p>It&#8217;s often useful to see how long a command took to run. I used to have the date and time in my prompt for that reason&#8211;I could do some mental arithmetic to find out how long a command took.</p>
+        
+        <p>But, I&#8217;ve been trying to make my prompt more minimal after being inspired by <a href='http://twitter.com/topfunky'>@topfunky</a>&#8217;s zen-like prompt, and the date and time clutter it up.</p>
+        
+        <p>So, I patched fish to measure how long commands take to run, and write the duration to an environment variable when it&#8217;s useful (i.e. more than a second).</p>
+        
+        <p>The patch is in <a href='http://github.com/benhoskings/fish/commit/b7d172719fc0321f384aa1cfb5a68f3295be6a17'>my fish fork</a>. Here&#8217;s the high-level part of it:</p>
+        
+        <pre><code>    term_donate();
+        
+        +   gettimeofday(&amp;time_before, NULL);
+        +
+            eval( cmd, 0, TOP );
+            job_reap( 1 );
+        
+        +   gettimeofday(&amp;time_after, NULL);
+        +   set_env_cmd_duration(&amp;time_after, &amp;time_before);
+        +
+            term_steal();</code></pre>
+        
+        <p>The call to <code>eval()</code> is where the command is run, so that&#8217;s the call that will block and take time. I&#8217;m using <code>gettimeofday()</code> to grab a unix timestamp directly before and after the call, and then a new function <code>set_env_cmd_duration()</code> to write the <code>CMD_DURATION</code> environment variable.</p>
+        
+        <p>The value in the var is pretty-printed using tiered rounding already, so it&#8217;s ready to echo as a string in your prompt. For example, for commands that take between 10 seconds and 1 minute:</p>
+        
+        <pre><code>swprintf(buf, 16, L&quot;%lu.%01us&quot;, secs, usecs / 100000);</code></pre>
+        
+        <p>Which produces output like this, running a <code>rake spec</code>:</p>
+        
+        <p><img src='/images/fish-cmd-duration.png' alt='fish CMD_DURATION example' /></p>
+      </div>
+    </div>
+    <div id="footer">
+      Powered by
+      <a href="http://github.com/mojombo/jekyll">Jekyll</a>
+      Content &amp; layout &copy; Ben Hoskings.
+    </div>
+  </div>
+  <script type="text/javascript">
+    //<![CDATA[
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      try {
+        var pageTracker = _gat._getTracker("UA-9740324-1");
+        pageTracker._trackPageview();
+      } catch(err) {}
+    //]]>
+  </script>
+</body>

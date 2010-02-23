@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>ben hoskings</title>
+    <link href="/stylesheets/styles.css" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+</html>
+<body>
+  <div id="page_container">
+    <h1 id="page_heading">
+      <a href="/">ben hoskings</a>
+    </h1>
+    <div id="navigation">
+      <a href="http://twitter.com/ben_h">twitter</a>
+      <a href="http://github.com/benhoskings">github</a>
+    </div>
+    <div id="main">
+      <div class="post">
+        <h2 class="title">wildcard nginx / passenger virtualhosts</h2>
+        <p>Hosting passenger apps on nginx is easy. If they don&#8217;t need any specific webserver config, though, it&#8217;s even easier.</p>
+        
+        <pre><code>server {
+          listen 80;
+          server_name *.com *.com.au *.net *.org;
+          root /home/$host/current/public;
+          passenger_enabled on;
+        }</code></pre>
+        
+        <p>This is particularly useful in a development environment - just set <code>rails_env development</code> in the <code>server { }</code> block, and <a href='http://github.com/bjeanes/ghost'>ghost</a> the domain to localhost.</p>
+        
+        <p>You should deploy your app to a directory, and as a user, with the same name as the app&#8217;s root domain. (You should do this anyway, because it&#8217;s neat and consistent.)</p>
+        
+        <p>Don&#8217;t forget to <code>chown $host /home/$host/current/config/environment.rb</code>, to run each app as its own user. (You should do this anyway, because it&#8217;s good security practice.)</p>
+        
+        <p>You can&#8217;t use <code>server_name *</code> &#8211; you can only wildcard a domain prefix, not the whole thing.</p>
+      </div>
+    </div>
+    <div id="footer">
+      Powered by
+      <a href="http://github.com/mojombo/jekyll">Jekyll</a>
+      Content &amp; layout &copy; Ben Hoskings.
+    </div>
+  </div>
+  <script type="text/javascript">
+    //<![CDATA[
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      try {
+        var pageTracker = _gat._getTracker("UA-9740324-1");
+        pageTracker._trackPageview();
+      } catch(err) {}
+    //]]>
+  </script>
+</body>

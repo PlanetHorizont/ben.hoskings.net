@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>ben hoskings</title>
+    <link href="/stylesheets/styles.css" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+</html>
+<body>
+  <div id="page_container">
+    <h1 id="page_heading">
+      <a href="/">ben hoskings</a>
+    </h1>
+    <div id="navigation">
+      <a href="http://twitter.com/ben_h">twitter</a>
+      <a href="http://github.com/benhoskings">github</a>
+    </div>
+    <div id="main">
+      <div class="post">
+        <h2 class="title">babushka: dmg and macports support</h2>
+        <p>I just added a few new tricks to Babushka. It knows how to open a DMG now:</p>
+        
+        <pre><code>dmg &quot;http://blah.org/appname.dmg&quot; do |path|
+          # Use the contents of the DMG here.
+          # path is the path at which the DMG was mounted.
+          # e.g. /Volumes/appname
+        end</code></pre>
+        
+        <p>The DMG is downloaded and mounted, and the unmount is handled automatically after the block returns.</p>
+        
+        <p>So now, among other things, it can install MacPorts (which is a dependency of git, wget, etc on OS X).</p>
+        
+        <pre><code>&gt; ruby bin/babushka.rb macports
+        Loaded 0 dependencies from ~/.babushka/deps.
+        Loaded 59 dependencies from ./deps.
+        macports {
+          build tools {
+            xcode tools {
+            } √ xcode tools
+            build tools / met? not defined.
+          } √ build tools
+          macports not already met.
+          Downloading MacPorts-1.7.1-10.5-Leopard.dmg... done.
+          Installing MacPorts-1.7.1... done.
+          Running port selfupdate... done.
+          macports met.
+        } √ macports</code></pre>
+      </div>
+    </div>
+    <div id="footer">
+      Powered by
+      <a href="http://github.com/mojombo/jekyll">Jekyll</a>
+      Content &amp; layout &copy; Ben Hoskings.
+    </div>
+  </div>
+  <script type="text/javascript">
+    //<![CDATA[
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      try {
+        var pageTracker = _gat._getTracker("UA-9740324-1");
+        pageTracker._trackPageview();
+      } catch(err) {}
+    //]]>
+  </script>
+</body>

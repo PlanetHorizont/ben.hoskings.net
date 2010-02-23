@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>ben hoskings</title>
+    <link href="/stylesheets/styles.css" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+</html>
+<body>
+  <div id="page_container">
+    <h1 id="page_heading">
+      <a href="/">ben hoskings</a>
+    </h1>
+    <div id="navigation">
+      <a href="http://twitter.com/ben_h">twitter</a>
+      <a href="http://github.com/benhoskings">github</a>
+    </div>
+    <div id="main">
+      <div class="post">
+        <h2 class="title">we can do better than meta</h2>
+        <p>I fixed a really tricky bug this afternoon. I took a roundabout path towards the bug&#8217;s cause, and used a couple of tools from my ruby toolbox.</p>
+        
+        <p>So ruby is dynamically typed, for better or worse. I used to think that was a great idea - who cares what something <em>is</em>, as long as you know what it <em>does</em>, right? Ducks and all that?</p>
+        
+        <p>Not always the case. I&#8217;m starting to think ruby is too permissive. Not only can you not be sure what type an object is until runtime, you can&#8217;t be sure what the types <em>themselves</em> consist of - and they can change from moment to moment.</p>
+        
+        <p>So here&#8217;s the problem:</p>
+        
+        <pre><code>Scenario: Uploading after logging in
+          Given I am logged in as &quot;member@test.org&quot;
+            undefined method `context=&#39; for #&lt;Ambition::Adapters::ActiveRecord::Select:0x3523494&gt;</code></pre>
+        
+        <p>The login step triggers a GET via webrat, and the call to ambition is far below that. About 25 method calls below:</p>
+        
+        <pre><code>benhoskings-ambition-0.5.4.3/.../base.rb:122</code></pre>
+        
+        <p>But the request works fine when hit from the browser&#8212;so maybe something&#8217;s undefining <code>#context</code> in the test environment, or similar. In ambition / <code>base.rb</code>:</p>
+        
+        <pre><code>unless instance.respond_to? :context
+          klass.class_eval do
+            attr_accessor :context, :negated
+            def owner;    @context.owner   end
+            def clauses;  @context.clauses end
+            def stash;    @context.stash   end
+            def negated?; @negated         end
+          end
+        end
+        
+        instance.context = context # line 122</code></pre>
+        
+        <p>Turns out, it&#8217;s the reverse. If we already have <code>#context</code>, <code>attr_accessor</code> (which defines it, along with <code>#context=</code>) is never called. But where the hell is <code>#context</code> coming from? This test involves rails, hammock, ambition, rspec, cucumber, webrat, machinist, and faker. Oh dear.</p>
+        
+        <p>So first, OK. Let&#8217;s just have a look at what that object can do. Just above that <code>respond_to?</code> check:</p>
+        
+        <pre><code># What methods does this object have, that aren&#39;t common to all objects?
+        p instance.methods.sort - Object.methods</code></pre>
+        
+        <p>Which gives us</p>
+        
+        <pre><code>[&quot;both&quot;, &quot;call&quot;, &quot;chained_call&quot;, &quot;dbadapter_name&quot;, &quot;downcase&quot;, &quot;either&quot;, &quot;not_equal&quot;, &quot;not_regexp&quot;, &quot;quote&quot;, &quot;quote_column_name&quot;, &quot;quote_string&quot;, &quot;quote_table_name&quot;, &quot;quoted_date&quot;, &quot;quoted_false&quot;, &quot;quoted_string_prefix&quot;, &quot;quoted_true&quot;, &quot;sanitize&quot;, &quot;statement&quot;, &quot;upcase&quot;]</code></pre>
+        
+        <p>Which doesn&#8217;t include <code>#context</code>. But <code>respond_to? :context</code> must have returned true, otherwise all those methods would have been <code>class_eval</code>ed. We&#8217;ll need a more subtle trick.</p>
+        
+        <pre><code>instance.method(:method_missing).owner #=&gt; Kernel</code></pre>
+        
+        <p>Damn, they must have known we&#8217;d check that first. If it&#8217;s owned by <code>Kernel</code>, then no parent or mixin&#8217;s <code>#method_missing</code> can be responding to the <code>#context</code> call. How about..</p>
+        
+        <pre><code>instance.method(:context).owner #=&gt; Spec::DSL::Main</code></pre>
+        
+        <p>Aha! <code>instance</code> responds to <code>Spec::DSL::Main#context</code>. It must have been mixed in by rspec. Let&#8217;s have a look in its source:</p>
+        
+        <pre><code>def describe(*args, &amp;block)
+          [ ... ]
+        end
+        alias :context :describe</code></pre>
+        
+        <p>Yep, every class responds to <code>#context</code> (and <code>#describe</code>) when rspec is in the mix. But why doesn&#8217;t it appear in the <code>instance.methods</code> list?</p>
+        
+        <p>I had to think about this for a bit. It&#8217;s because <em>every</em> class responds to <code>#context</code> when rspec is in the mix, including <code>Object</code> itself. When we subtracted globally shared methods from the list (<code>- Object.methods</code>), <code>#context</code> was one of them. Sure enough,</p>
+        
+        <pre><code>instance.methods.include? &#39;context&#39; #=&gt; true</code></pre>
+        
+        <p><a href='http://github.com/benhoskings/ambition/commit/22dba94f1b4ed144b57f3d8dc4a15c91a4c6f65e'>The fix</a> is easy - the naming collision can be easily avoided in ambition by checking for <code>#context=</code> instead:</p>
+        
+        <pre><code>unless instance.respond_to? :context=
+          [ ... ]
+        end</code></pre>
+        
+        <p>But there&#8217;s a good lesson here. Two completely unrelated bits of metaprogramming, each innocuous on their own, colliding and causing mayhem. It might seem like an elegant way to write code, and in some situations it is—but there&#8217;s got to be a better way. I&#8217;m hoping it&#8217;s <a href='http://www.scala-lang.org/'>this</a>.</p>
+      </div>
+    </div>
+    <div id="footer">
+      Powered by
+      <a href="http://github.com/mojombo/jekyll">Jekyll</a>
+      Content &amp; layout &copy; Ben Hoskings.
+    </div>
+  </div>
+  <script type="text/javascript">
+    //<![CDATA[
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      try {
+        var pageTracker = _gat._getTracker("UA-9740324-1");
+        pageTracker._trackPageview();
+      } catch(err) {}
+    //]]>
+  </script>
+</body>

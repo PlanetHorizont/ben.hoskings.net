@@ -1,0 +1,23 @@
+---
+layout: default
+title: ben hoskings
+---
+ 
+#home
+  %h1 posts
+  %ul.years
+    - site.posts.group_by {|p| p.date.year }.tap do |years|
+      - years.keys.sort.reverse.each do |year|
+        %li
+          %span.year= year
+          %ul.months
+            - years[year].group_by {|p| p.date.month }.tap do |months|
+              - months.keys.sort.reverse.each do |month|
+                %li
+                  %span.month= month
+                  %ul.posts
+                    - months[month].sort_by(&:date).reverse.each do |post|
+                      %li
+                        = post.date.strftime("%d %b")
+                        %a.title{:href => post.url}= post.title
+

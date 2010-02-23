@@ -7,18 +7,16 @@ One thing I've missed since switching to fish is a multi-line prompt. If your pr
 
 First things first: [here's the patch](http://github.com/benhoskings/fish/commit/3e589050b1ab69e07982fb48e8a3bc80ccf1b09b).
 
---- diff
-  for( i=0; i<al_get_count( &prompt_list); i++ )
-  {
-    sb_append( &data->prompt_buff, (wchar_t *)al_get( &prompt_list, i ) );
-+     if (i + 1 < al_get_count( &prompt_list))
-+     {
-+       sb_append( &data->prompt_buff, L"\n" );
-+     }
-  }
+      for( i=0; i<al_get_count( &prompt_list); i++ )
+      {
+        sb_append( &data->prompt_buff, (wchar_t *)al_get( &prompt_list, i ) );
+    +     if (i + 1 < al_get_count( &prompt_list))
+    +     {
+    +       sb_append( &data->prompt_buff, L"\n" );
+    +     }
+      }
 
-  al_foreach( &prompt_list, &free );
----
+      al_foreach( &prompt_list, &free );
 
 The reason the newlines are removed arises from the way fish runs subcommands. Rendering the prompt is a call to the `fish_prompt` function, which in turn runs other subcommands like `whoami`, `pwd` and `git ls-files`, depending what you have in your prompt.
 

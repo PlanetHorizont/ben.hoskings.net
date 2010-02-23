@@ -5,14 +5,12 @@ title: "wildcard nginx / passenger virtualhosts"
 
 Hosting passenger apps on nginx is easy. If they don't need any specific webserver config, though, it's even easier.
 
----
-server {
-  listen 80;
-  server_name *.com *.com.au *.net *.org;
-  root /home/$host/current/public;
-  passenger_enabled on;
-}
----
+    server {
+      listen 80;
+      server_name *.com *.com.au *.net *.org;
+      root /home/$host/current/public;
+      passenger_enabled on;
+    }
 
 This is particularly useful in a development environment - just set `rails_env development` in the `server { }` block, and [ghost](http://github.com/bjeanes/ghost) the domain to localhost.
 

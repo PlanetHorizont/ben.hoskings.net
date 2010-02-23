@@ -16,17 +16,15 @@ A common thing I do with git is push my changes to a remote repo, after first up
 
 So, I made a little alias to handle it all for me, dropping in my [new commits alias][1]:
 
----
-alias gitp='git pull &&
-  git log ORIG_HEAD..HEAD \
-    --pretty=format:"%Cblue%h%Creset %Cgreen%an%Creset %s" | cat &&
-  echo &&
-  git submodule update &&
-  git log $(git config branch.master.remote)/master..master \
-    --pretty=format:"%Cblue%h%Creset %Cgreen%an%Creset %s" | cat &&
-  echo &&
-  git push'
----
+    alias gitp='git pull &&
+      git log ORIG_HEAD..HEAD \
+        --pretty=format:"%Cblue%h%Creset %Cgreen%an%Creset %s" | cat &&
+      echo &&
+      git submodule update &&
+      git log $(git config branch.master.remote)/master..master \
+        --pretty=format:"%Cblue%h%Creset %Cgreen%an%Creset %s" | cat &&
+      echo &&
+      git push'
 
 This alias pulls, lists the new commits, updates submodules, lists the commits that are about to be pushed, and then pushes them.
 

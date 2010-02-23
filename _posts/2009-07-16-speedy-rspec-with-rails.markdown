@@ -13,13 +13,13 @@ These delays don't have anything to do with rspec. It's just the nature of the R
 To fix the first, install [spork](http://wiki.github.com/dchelimsky/rspec/spork-autospec-pure-bdd-joy) and configure it in `spec/spec_helper.rb`. Spork keeps an instance of your app running, and listens for connections from a spork-aware `rake spec` run. This removes the Rails startup delay more or less completely, since when you run `rake spec`, spork has your app ready and waiting to run specs transparently via DRb.
 
 As for the second, I don't see any need to run `db:test:prepare` before every run when transactional fixtures are being used. It's simple to disable. Change this
---- ruby
-Spec::Rake::SpecTask.new(:spec => spec_prereq) do |t|
----
+
+    Spec::Rake::SpecTask.new(:spec => spec_prereq) do |t|
+
 to this
---- ruby
-Spec::Rake::SpecTask.new(:spec) do |t|
----
+
+    Spec::Rake::SpecTask.new(:spec) do |t|
+
 in `lib/tasks/rspec.rake`.
 
 With `db:test:prepare` and its subtasks not running, spork there's less than a second of delay before specs start running. In my book, that's close to fast enough to pleasantly run, and get results in realtime. Coupled with autotest, this should mean much snappier pass/fail feedback too.

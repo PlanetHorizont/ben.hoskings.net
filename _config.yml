@@ -1,3 +1,4 @@
 # destination: ./public
 haml: true
 sass: true
+permalink: pretty

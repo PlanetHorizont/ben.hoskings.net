@@ -25,4 +25,3 @@ The reason the newlines are removed arises from the way fish runs subcommands. R
 When fish receives `fish_prompt`'s output, it splits on `\n` and stores each line in an array, specifically an `array_list_t`. When the output is reassembled by `exec_prompt()` for output to the terminal, however, it joins the lines in the array (that's `prompt_list` in the patch above) back together without any join token, so the line separation is gone.
 
 My patch adds a `\n` after every line but the last, so that the newlines in the original un-split output from `fish_prompt` are re-inserted for rendering.
-

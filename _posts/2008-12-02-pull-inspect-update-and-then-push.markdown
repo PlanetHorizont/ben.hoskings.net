@@ -33,4 +33,3 @@ This alias pulls, lists the new commits, updates submodules, lists the commits t
 Since the `log` comes after the `pull`, it shows a list of the commits that were just pulled down along with a snippet of their commit message. I like this because it lets me see what everyone else has done in the last little while every time I hit the shared repo.
 
 [1]: http://ben.hoskings.net/2008/12/02/a-concise-git-logging-format
-

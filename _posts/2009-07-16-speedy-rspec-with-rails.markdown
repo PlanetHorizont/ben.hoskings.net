@@ -29,4 +29,3 @@ It seems messy to me to have those tasks defined within the app. In fact, most o
 Next, to make ⌘R spec runs in TextMate spork-aware, head to the TextMate preferences and add `--drb` to the `TM_RSPEC_OPTS` variable (creating it if required). I also had to patch the `spec_mate` helper [like so](http://github.com/benhoskings/ruby-rspec.tmbundle/commit/c70b16106cd5ba74e97cc967d0e8f307850cbd28).
 
 Running through spork causes a bit of a performance hit, too---it eliminates the startup delay, but the specs run slower, since there's a DRb back and forth involved for each one. Spork is for running a few tests at a time, or for running through autotest, while you're developing. When you run your full suite, you should stop the spork listener and run them locally at full speed.
-

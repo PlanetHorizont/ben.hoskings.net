@@ -33,4 +33,3 @@ And then:
 ---
 
 Bam!
-

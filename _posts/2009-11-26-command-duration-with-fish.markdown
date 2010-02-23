@@ -36,5 +36,3 @@ swprintf(buf, 16, L"%lu.%01us", secs, usecs / 100000);
 Which produces output like this, running a `rake spec`:
 
 ![fish CMD_DURATION example](/images/fish-cmd-duration.png)
-
-

@@ -89,5 +89,3 @@ end
 ---
 
 But there's a good lesson here. Two completely unrelated bits of metaprogramming, each innocuous on their own, colliding and causing mayhem. It might seem like an elegant way to write code, and in some situations it is—but there's got to be a better way. I'm hoping it's [this](http://www.scala-lang.org/).
-
-

@@ -21,5 +21,3 @@ You should deploy your app to a directory, and as a user, with the same name as 
 Don't forget to `chown $host /home/$host/current/config/environment.rb`, to run each app as its own user. (You should do this anyway, because it's good security practice.)
 
 You can't use `server_name *` -- you can only wildcard a domain prefix, not the whole thing.
-
-

@@ -58,24 +58,29 @@ article
     color: #444
 
 ul.years
-  ul.months, ul.posts, a.title, span.year, span.month, span.day
+  li
+    display: block
+    overflow: hidden
+  ul.months, a.title, span.year, span.month, span.day
     display: block
     float: left
   ul.months
     width: $width - $col
-    margin-bottom: 1.7em
     border-bottom: $border
     ul.posts
-      width: $width - ($col * 2)
-      padding-bottom: 0.85em
-      margin-bottom: 0.85em
+      margin-left: $col
+      padding-left: $padding
+      padding-bottom: $margin
       border-bottom: $border
       border-bottom-color: $border-color * 1.2
       a.title
-        width: $width - ($col * 3)
+        float: none
+        margin-left: $col
+        padding-left: $padding
   span.year, span.month, span.day
     color: #777
-    width: $col
+    width: $col - $padding
+    padding-left: $padding
 
 ul.years li:last-child ul.months, ul.months li:last-child ul.posts
   border-bottom: none
@@ -143,10 +148,10 @@ nav
   a
     display: block
     float: left
+    width: $col / 0.8
     font-size: 0.8em
-    padding: 0 $padding / 0.8
+    padding-left: $padding / 0.8
     padding-bottom: ($margin * 2) / 0.8
-    margin-right: (0.6em - $padding) / 0.8
     line-height: 2.125
     color: #666
     font-weight: bold

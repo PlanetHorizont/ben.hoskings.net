@@ -18,7 +18,7 @@ ul { list-style: inside; }
 ul li { list-style-type: square; }
 ul.years li { list-style-type: none; }
 
-article p, article ul, article ol, article header { margin-bottom: 1.7em; }
+article p, article ul, article ol, article header, article pre { margin-bottom: 1.7em; }
 article p, article ul li { color: #444444; }
 
 ul.years li { display: block; overflow: hidden; }
@@ -37,9 +37,9 @@ article header h1 a, ul.posts li a.title { color: #197a9f; font-weight: bold; }
 a { color: #fe4892; text-decoration: none; }
 a:hover { background-color: #cccccc; }
 
-p code { color: white; }
-
-pre { padding: 0.85em 0; color: #cccccc; }
+code { color: #333333; font-size: 0.8em; background-color: #aaaaaa; -webkit-border-radius: 3px; -moz-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px; padding: 0 0.3em; }
+p code { display: inline-block; }
+pre code { display: block; }
 
 code pre { background-color: rgba(255, 255, 255, 0.12); }
 

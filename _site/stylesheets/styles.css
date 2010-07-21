@@ -12,7 +12,7 @@ h1, h2, h3, h4, h5 { color: #333333; font-size: 1em; }
 
 img { border: solid 1px #777777; }
 
-header, nav, article, footer { width: 32em; margin: 0 auto; }
+header, nav, article, footer, #home { width: 32em; margin: 0 auto; }
 
 ul { list-style: inside; }
 ul li { list-style-type: square; }
@@ -21,20 +21,14 @@ ul.years li { list-style-type: none; }
 article p, article ul, article ol, article header { margin-bottom: 1.7em; }
 article p, article ul li { color: #444444; }
 
-ul.months { margin-bottom: 1.7em; border-bottom: #444444 1px dashed; }
-
-ul.posts { padding-bottom: 0.85em; margin-bottom: 0.85em; border-bottom: #282828 1px dashed; }
+ul.years li { display: block; overflow: hidden; }
+ul.years ul.months, ul.years a.title, ul.years span.year, ul.years span.month, ul.years span.day { display: block; float: left; }
+ul.years ul.months { width: 28em; border-bottom: #777777 1px dotted; }
+ul.years ul.months ul.posts { margin-left: 4em; padding-left: 0.1em; padding-bottom: 1.7em; border-bottom: #777777 1px dotted; border-bottom-color: #8e8e8e; }
+ul.years ul.months ul.posts a.title { float: none; margin-left: 4em; padding-left: 0.1em; }
+ul.years span.year, ul.years span.month, ul.years span.day { color: #777777; width: 3.9em; padding-left: 0.1em; }
 
 ul.years li:last-child ul.months, ul.months li:last-child ul.posts { border-bottom: none; }
-
-ul.years { padding: 0 0.5em; }
-ul.years li { overflow: hidden; }
-ul.years ul.months, ul.years ul.posts, ul.years a.title, ul.years span.year, ul.years span.month, ul.years span.day { display: block; float: left; }
-ul.years ul.months { width: 35em; }
-ul.years ul.posts { width: 30em; }
-ul.years span.year, ul.years span.month, ul.years span.day { color: #777777; width: 5em; }
-ul.years span.year.current, ul.years span.month.current, ul.years span.day.current { opacity: 0; }
-ul.years a.title { width: 25em; }
 
 header h1 a { display: block; }
 
@@ -51,17 +45,17 @@ code pre { background-color: rgba(255, 255, 255, 0.12); }
 
 pre, input[type=text], textarea { background-color: transparent; }
 
-body > header, nav, article, footer { border-top: #777777 1px dotted; }
+body > header, nav, article, footer, #home { border-top: #777777 1px dotted; }
 
 body > header { margin-top: 1.7em; }
 body > header h1 a { padding-bottom: 3.4em; }
 
 article, footer { padding-bottom: 1.7em; margin-bottom: 1.7em; }
 
-body > footer { color: #555555; }
+body > footer { clear: both; color: #555555; }
 body > footer span { font-size: 0.7em; padding-left: 0.143em; padding-right: 0.143em; }
 
 header h1 a, article p, article li, code pre { padding-left: 0.1em; padding-right: 0.1em; }
 
 nav { overflow: hidden; }
-nav a { display: block; float: left; font-size: 0.8em; padding: 0 0.125em; padding-bottom: 4.25em; margin-right: 0.625em; line-height: 2.125; color: #666666; font-weight: bold; }
+nav a { display: block; float: left; width: 5em; font-size: 0.8em; padding-left: 0.125em; padding-bottom: 4.25em; line-height: 2.125; color: #666666; font-weight: bold; }

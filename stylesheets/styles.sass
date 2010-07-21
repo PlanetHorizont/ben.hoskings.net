@@ -1,6 +1,9 @@
 $width: 32em
+$col: 4em
 $padding: 0.1em
 $margin: 1.7em
+$border-color: #777
+$border: $border-color 1px dotted
 
 *
   margin: 0
@@ -36,7 +39,8 @@ img
 header,
 nav,
 article,
-footer
+footer,
+#home
   width: $width
   margin: 0 auto
 
@@ -53,35 +57,28 @@ article
   p, ul li
     color: #444
 
-ul.months
-  margin-bottom: 1.7em
-  border-bottom: #444 1px dashed
-ul.posts
-  padding-bottom: 0.85em
-  margin-bottom: 0.85em
-  border-bottom: #282828 1px dashed
-
-ul.years li:last-child ul.months, ul.months li:last-child ul.posts
-  border-bottom: none
-
 ul.years
-  padding: 0 0.5em
-  li
-    overflow: hidden
   ul.months, ul.posts, a.title, span.year, span.month, span.day
     display: block
     float: left
   ul.months
-    width: 35em
-  ul.posts
-    width: 30em
+    width: $width - $col
+    margin-bottom: 1.7em
+    border-bottom: $border
+    ul.posts
+      width: $width - ($col * 2)
+      padding-bottom: 0.85em
+      margin-bottom: 0.85em
+      border-bottom: $border
+      border-bottom-color: $border-color * 1.2
+      a.title
+        width: $width - ($col * 3)
   span.year, span.month, span.day
     color: #777
-    &.current
-      opacity: 0
-    width: 5em
-  a.title
-    width: 25em
+    width: $col
+
+ul.years li:last-child ul.months, ul.months li:last-child ul.posts
+  border-bottom: none
 
 header h1 a
   display: block
@@ -112,8 +109,9 @@ pre, input[type=text], textarea
 body > header,
 nav,
 article,
-footer
-  border-top: #777 1px dotted
+footer,
+#home
+  border-top: $border
 
 body > header
   margin-top: $margin
@@ -126,6 +124,7 @@ footer
   margin-bottom: $margin
 
 body > footer
+  clear: both
   color: #555
   span
     font-size: 0.7em

@@ -1,4 +1,4 @@
-!!! Strict
+<!DOCTYPE html>
 %html{html_attrs('en')}
   %head
     %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
@@ -6,25 +6,25 @@
     %link{:href => "/stylesheets/styles.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}
     %link{:href => "/index.atom", :title => "Atom feed", :rel => "alternate", :type => "application/atom+xml"}
 
-%body
-  #page_container
-    %h1#page_heading
-      %a{:href => '/'} ben hoskings
-    #navigation
+  %body
+    %header
+      %h1
+        %a{:href => '/'} ben hoskings
+    %nav
       %a{:rel => 'me', :href => 'http://twitter.com/ben_h'} twitter
       %a{:rel => 'me', :href => 'http://github.com/benhoskings'} github
 
-    #main= content
+    = content
 
-    #footer
+    %footer
       Powered by
       %a{:href => 'http://github.com/mojombo/jekyll'} Jekyll
       Content &amp; layout &copy; Ben Hoskings.
 
-  :javascript
-    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    try {
-      var pageTracker = _gat._getTracker("UA-9740324-2");
-      pageTracker._trackPageview();
-    } catch(err) {}
+    :javascript
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      try {
+        var pageTracker = _gat._getTracker("UA-9740324-2");
+        pageTracker._trackPageview();
+      } catch(err) {}

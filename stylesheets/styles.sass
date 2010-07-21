@@ -1,17 +1,20 @@
+$width: 32em
+$padding: 0.1em
+$margin: 1.7em
+
 *
   margin: 0
   padding: 0
 
-html
-  background: url(../images/bg.jpg) bottom left no-repeat
-  background-attachment: fixed
-
 body
   color: black
-  background-color: transparent
-  font: 12px/1.7 Lucida Grande, Helvetica, arial, sans-serif
+  background-color: #bbb
+  font: 16px/1.7 'Helvetica Neue', arial, sans-serif
+  font-weight: 200
   padding: 0
-  margin: 0
+
+header, nav, article, footer
+  display: block
 
 input, textarea, pre, code
   font-family: Menlo, Monaco, Consolas, sans-serif
@@ -30,9 +33,11 @@ h1, h2, h3, h4, h5
 img
   border: solid 1px #777
 
-#page_container
-  width: 41em
-  background-color: rgba(0,0,0,0.75)
+header,
+nav,
+article,
+footer
+  width: $width
   margin: 0 auto
 
 ul
@@ -42,14 +47,11 @@ ul
   &.years li
     list-style-type: none
 
-p, ul li
-  color: #aaa
-  text-shadow: #000 1px 1px 1px
-
-p, .post ul
-  padding-top: 0.85em
-p, .post ul, .post .title
-  padding-bottom: 0.85em
+article
+  p, ul, ol, header
+    margin-bottom: 1.7em
+  p, ul li
+    color: #444
 
 ul.months
   margin-bottom: 1.7em
@@ -81,11 +83,10 @@ ul.years
   a.title
     width: 25em
 
-#page_heading a
+header h1 a
   display: block
-  float: left
 
-.post h2, ul.posts li a.title
+article header h1 a, ul.posts li a.title
   color: #197a9f
   font-weight: bold
 
@@ -93,7 +94,7 @@ a
   color: #fe4892
   text-decoration: none
   &:hover
-    background-color: #2b2b2b
+    background-color: #ccc
 
 p code
   color: #fff
@@ -108,27 +109,45 @@ code pre
 pre, input[type=text], textarea
   background-color: transparent
 
-#page_heading, #navigation, .post, #footer
-  margin: 1.7em 0
-  padding: 1.7em 0
+body > header,
+nav,
+article,
+footer
+  border-top: #777 1px dotted
 
-#navigation
-  padding-top: 0
+body > header
+  margin-top: $margin
+  h1 a
+    padding-bottom: $margin * 2
 
-.post
-  padding-top: 0
+article,
+footer
+  padding-bottom: $margin
+  margin-bottom: $margin
 
-#footer
-  font-size: 8pt
+body > footer
   color: #555
+  span
+    font-size: 0.7em
+    padding-left: $padding / 0.7
+    padding-right: $padding / 0.7
 
-#page_heading a, #footer, #main p, .post li, .post h2, code pre
-  padding-left: 0.6em
-  padding-right: 0.6em
+header h1 a,
+article p,
+article li,
+code pre
+  padding-left: $padding
+  padding-right: $padding
 
-#navigation a
-  padding: 0 0.75em
-  font-size: 0.8em
-  line-height: 2.125
-  color: #666
-  font-weight: bold
+nav
+  overflow: hidden
+  a
+    display: block
+    float: left
+    font-size: 0.8em
+    padding: 0 $padding / 0.8
+    padding-bottom: ($margin * 2) / 0.8
+    margin-right: (0.6em - $padding) / 0.8
+    line-height: 2.125
+    color: #666
+    font-weight: bold

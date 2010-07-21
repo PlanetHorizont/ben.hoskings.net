@@ -26,17 +26,7 @@
       
       <p>Using fish and some applescript, you can do it all from your terminal by hitting ⌥R.</p>
       
-      <pre><code>function reload_webkit
-        osascript -e &#39;tell application &quot;WebKit&quot; to do JavaScript \
-          &quot;window.location.reload()&quot; in front document&#39;
-      end
-      
-      function restart_rails_app
-        touch tmp/restart.txt
-        reload_webkit
-      end
-      
-      bind \er &#39;restart_rails_app &gt;/dev/null&#39;</code></pre>
+      <pre><code>function reload_webkit&#x000A;  osascript -e &#39;tell application &quot;WebKit&quot; to do JavaScript \&#x000A;    &quot;window.location.reload()&quot; in front document&#39;&#x000A;end&#x000A;&#x000A;function restart_rails_app&#x000A;  touch tmp/restart.txt&#x000A;  reload_webkit&#x000A;end&#x000A;&#x000A;bind \er &#39;restart_rails_app &gt;/dev/null&#39;</code></pre>
     </article>
     <footer>
       <span>

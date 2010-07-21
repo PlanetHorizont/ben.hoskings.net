@@ -24,31 +24,13 @@
       </header>
       <p>I just added a few new tricks to Babushka. It knows how to open a DMG now:</p>
       
-      <pre><code>dmg &quot;http://blah.org/appname.dmg&quot; do |path|
-        # Use the contents of the DMG here.
-        # path is the path at which the DMG was mounted.
-        # e.g. /Volumes/appname
-      end</code></pre>
+      <pre><code>dmg &quot;http://blah.org/appname.dmg&quot; do |path|&#x000A;  # Use the contents of the DMG here.&#x000A;  # path is the path at which the DMG was mounted.&#x000A;  # e.g. /Volumes/appname&#x000A;end</code></pre>
       
       <p>The DMG is downloaded and mounted, and the unmount is handled automatically after the block returns.</p>
       
       <p>So now, among other things, it can install MacPorts (which is a dependency of git, wget, etc on OS X).</p>
       
-      <pre><code>&gt; ruby bin/babushka.rb macports
-      Loaded 0 dependencies from ~/.babushka/deps.
-      Loaded 59 dependencies from ./deps.
-      macports {
-        build tools {
-          xcode tools {
-          } √ xcode tools
-          build tools / met? not defined.
-        } √ build tools
-        macports not already met.
-        Downloading MacPorts-1.7.1-10.5-Leopard.dmg... done.
-        Installing MacPorts-1.7.1... done.
-        Running port selfupdate... done.
-        macports met.
-      } √ macports</code></pre>
+      <pre><code>&gt; ruby bin/babushka.rb macports&#x000A;Loaded 0 dependencies from ~/.babushka/deps.&#x000A;Loaded 59 dependencies from ./deps.&#x000A;macports {&#x000A;  build tools {&#x000A;    xcode tools {&#x000A;    } √ xcode tools&#x000A;    build tools / met? not defined.&#x000A;  } √ build tools&#x000A;  macports not already met.&#x000A;  Downloading MacPorts-1.7.1-10.5-Leopard.dmg... done.&#x000A;  Installing MacPorts-1.7.1... done.&#x000A;  Running port selfupdate... done.&#x000A;  macports met.&#x000A;} √ macports</code></pre>
     </article>
     <footer>
       <span>

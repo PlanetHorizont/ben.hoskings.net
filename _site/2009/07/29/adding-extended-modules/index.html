@@ -24,26 +24,17 @@
       </header>
       <p>It&#8217;s easy to find the modules included in a given class:</p>
       
-      <pre><code>&gt;&gt; String.included_modules
-      =&gt; [Enumerable, Comparable, Kernel]</code></pre>
+      <pre><code>&gt;&gt; String.included_modules&#x000A;=&gt; [Enumerable, Comparable, Kernel]</code></pre>
       
       <p><em>Quick update in case you&#8217;re wondering: including a module makes its methods available as instance methods on the receiving class; extending a class with a module makes the methods available as class methods.</em></p>
       
       <p>There&#8217;s no way to directly query the extended modules of a class, but it&#8217;s easy to get at the information. There&#8217;s no such thing as extending a class really—&#8221;extending a class&#8221; just means including on its metaclass. So:</p>
       
-      <pre><code>class Module # Thanks for this fix, Adam
-        def metaclass
-          class &lt;&lt; self; self end
-        end
-        def extended_modules
-          metaclass.included_modules
-        end
-      end</code></pre>
+      <pre><code>class Module # Thanks for this fix, Adam&#x000A;  def metaclass&#x000A;    class &lt;&lt; self; self end&#x000A;  end&#x000A;  def extended_modules&#x000A;    metaclass.included_modules&#x000A;  end&#x000A;end</code></pre>
       
       <p>And then:</p>
       
-      <pre><code>&gt;&gt; String.extended_modules
-      =&gt; [Kernel]</code></pre>
+      <pre><code>&gt;&gt; String.extended_modules&#x000A;=&gt; [Kernel]</code></pre>
       
       <p>Bam!</p>
     </article>

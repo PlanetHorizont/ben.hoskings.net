@@ -30,9 +30,7 @@
       
       <p>So here&#8217;s the problem:</p>
       
-      <pre><code>Scenario: Uploading after logging in
-        Given I am logged in as &quot;member@test.org&quot;
-          undefined method `context=&#39; for #&lt;Ambition::Adapters::ActiveRecord::Select:0x3523494&gt;</code></pre>
+      <pre><code>Scenario: Uploading after logging in&#x000A;  Given I am logged in as &quot;member@test.org&quot;&#x000A;    undefined method `context=&#39; for #&lt;Ambition::Adapters::ActiveRecord::Select:0x3523494&gt;</code></pre>
       
       <p>The login step triggers a GET via webrat, and the call to ambition is far below that. About 25 method calls below:</p>
       
@@ -40,24 +38,13 @@
       
       <p>But the request works fine when hit from the browser&#8212;so maybe something&#8217;s undefining <code>#context</code> in the test environment, or similar. In ambition / <code>base.rb</code>:</p>
       
-      <pre><code>unless instance.respond_to? :context
-        klass.class_eval do
-          attr_accessor :context, :negated
-          def owner;    @context.owner   end
-          def clauses;  @context.clauses end
-          def stash;    @context.stash   end
-          def negated?; @negated         end
-        end
-      end
-      
-      instance.context = context # line 122</code></pre>
+      <pre><code>unless instance.respond_to? :context&#x000A;  klass.class_eval do&#x000A;    attr_accessor :context, :negated&#x000A;    def owner;    @context.owner   end&#x000A;    def clauses;  @context.clauses end&#x000A;    def stash;    @context.stash   end&#x000A;    def negated?; @negated         end&#x000A;  end&#x000A;end&#x000A;&#x000A;instance.context = context # line 122</code></pre>
       
       <p>Turns out, it&#8217;s the reverse. If we already have <code>#context</code>, <code>attr_accessor</code> (which defines it, along with <code>#context=</code>) is never called. But where the hell is <code>#context</code> coming from? This test involves rails, hammock, ambition, rspec, cucumber, webrat, machinist, and faker. Oh dear.</p>
       
       <p>So first, OK. Let&#8217;s just have a look at what that object can do. Just above that <code>respond_to?</code> check:</p>
       
-      <pre><code># What methods does this object have, that aren&#39;t common to all objects?
-      p instance.methods.sort - Object.methods</code></pre>
+      <pre><code># What methods does this object have, that aren&#39;t common to all objects?&#x000A;p instance.methods.sort - Object.methods</code></pre>
       
       <p>Which gives us</p>
       
@@ -73,10 +60,7 @@
       
       <p>Aha! <code>instance</code> responds to <code>Spec::DSL::Main#context</code>. It must have been mixed in by rspec. Let&#8217;s have a look in its source:</p>
       
-      <pre><code>def describe(*args, &amp;block)
-        [ ... ]
-      end
-      alias :context :describe</code></pre>
+      <pre><code>def describe(*args, &amp;block)&#x000A;  [ ... ]&#x000A;end&#x000A;alias :context :describe</code></pre>
       
       <p>Yep, every class responds to <code>#context</code> (and <code>#describe</code>) when rspec is in the mix. But why doesn&#8217;t it appear in the <code>instance.methods</code> list?</p>
       
@@ -86,9 +70,7 @@
       
       <p><a href='http://github.com/benhoskings/ambition/commit/22dba94f1b4ed144b57f3d8dc4a15c91a4c6f65e'>The fix</a> is easy - the naming collision can be easily avoided in ambition by checking for <code>#context=</code> instead:</p>
       
-      <pre><code>unless instance.respond_to? :context=
-        [ ... ]
-      end</code></pre>
+      <pre><code>unless instance.respond_to? :context=&#x000A;  [ ... ]&#x000A;end</code></pre>
       
       <p>But there&#8217;s a good lesson here. Two completely unrelated bits of metaprogramming, each innocuous on their own, colliding and causing mayhem. It might seem like an elegant way to write code, and in some situations it is—but there&#8217;s got to be a better way. I&#8217;m hoping it&#8217;s <a href='http://www.scala-lang.org/'>this</a>.</p>
     </article>

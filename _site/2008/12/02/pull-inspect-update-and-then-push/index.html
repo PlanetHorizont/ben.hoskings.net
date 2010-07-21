@@ -44,15 +44,7 @@
       
       <p>So, I made a little alias to handle it all for me, dropping in my <a href='http://ben.hoskings.net/2008/12/02/a-concise-git-logging-format'>new commits alias</a>:</p>
       
-      <pre><code>alias gitp=&#39;git pull &amp;&amp;
-        git log ORIG_HEAD..HEAD \
-          --pretty=format:&quot;%Cblue%h%Creset %Cgreen%an%Creset %s&quot; | cat &amp;&amp;
-        echo &amp;&amp;
-        git submodule update &amp;&amp;
-        git log $(git config branch.master.remote)/master..master \
-          --pretty=format:&quot;%Cblue%h%Creset %Cgreen%an%Creset %s&quot; | cat &amp;&amp;
-        echo &amp;&amp;
-        git push&#39;</code></pre>
+      <pre><code>alias gitp=&#39;git pull &amp;&amp;&#x000A;  git log ORIG_HEAD..HEAD \&#x000A;    --pretty=format:&quot;%Cblue%h%Creset %Cgreen%an%Creset %s&quot; | cat &amp;&amp;&#x000A;  echo &amp;&amp;&#x000A;  git submodule update &amp;&amp;&#x000A;  git log $(git config branch.master.remote)/master..master \&#x000A;    --pretty=format:&quot;%Cblue%h%Creset %Cgreen%an%Creset %s&quot; | cat &amp;&amp;&#x000A;  echo &amp;&amp;&#x000A;  git push&#39;</code></pre>
       
       <p>This alias pulls, lists the new commits, updates submodules, lists the commits that are about to be pushed, and then pushes them.</p>
       

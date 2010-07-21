@@ -24,8 +24,7 @@
       </header>
       <p>A <code>git merge</code>, and hence also the merging stage of a <code>git pull</code>, sets <code>ORIG_HEAD</code> to the commit that <code>HEAD</code> pointed to before the merge. So the commits between these two points are the ones the most recent merge introduced.</p>
       
-      <pre><code>git log ORIG_HEAD..HEAD \
-        --pretty=format:&quot;%Cblue%h%Creset %Cgreen%an%Creset %s&quot;</code></pre>
+      <pre><code>git log ORIG_HEAD..HEAD \&#x000A;  --pretty=format:&quot;%Cblue%h%Creset %Cgreen%an%Creset %s&quot;</code></pre>
     </article>
     <footer>
       <span>

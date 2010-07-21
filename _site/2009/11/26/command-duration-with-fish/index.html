@@ -30,17 +30,7 @@
       
       <p>The patch is in <a href='http://github.com/benhoskings/fish/commit/b7d172719fc0321f384aa1cfb5a68f3295be6a17'>my fish fork</a>. Here&#8217;s the high-level part of it:</p>
       
-      <pre><code>    term_donate();
-      
-      +   gettimeofday(&amp;time_before, NULL);
-      +
-          eval( cmd, 0, TOP );
-          job_reap( 1 );
-      
-      +   gettimeofday(&amp;time_after, NULL);
-      +   set_env_cmd_duration(&amp;time_after, &amp;time_before);
-      +
-          term_steal();</code></pre>
+      <pre><code>    term_donate();&#x000A;&#x000A;+   gettimeofday(&amp;time_before, NULL);&#x000A;+&#x000A;    eval( cmd, 0, TOP );&#x000A;    job_reap( 1 );&#x000A;&#x000A;+   gettimeofday(&amp;time_after, NULL);&#x000A;+   set_env_cmd_duration(&amp;time_after, &amp;time_before);&#x000A;+&#x000A;    term_steal();</code></pre>
       
       <p>The call to <code>eval()</code> is where the command is run, so that&#8217;s the call that will block and take time. I&#8217;m using <code>gettimeofday()</code> to grab a unix timestamp directly before and after the call, and then a new function <code>set_env_cmd_duration()</code> to write the <code>CMD_DURATION</code> environment variable.</p>
       

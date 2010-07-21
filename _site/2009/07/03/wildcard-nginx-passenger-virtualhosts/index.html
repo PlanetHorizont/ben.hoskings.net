@@ -24,12 +24,7 @@
       </header>
       <p>Hosting passenger apps on nginx is easy. If they don&#8217;t need any specific webserver config, though, it&#8217;s even easier.</p>
       
-      <pre><code>server {
-        listen 80;
-        server_name *.com *.com.au *.net *.org;
-        root /home/$host/current/public;
-        passenger_enabled on;
-      }</code></pre>
+      <pre><code>server {&#x000A;  listen 80;&#x000A;  server_name *.com *.com.au *.net *.org;&#x000A;  root /home/$host/current/public;&#x000A;  passenger_enabled on;&#x000A;}</code></pre>
       
       <p>This is particularly useful in a development environment - just set <code>rails_env development</code> in the <code>server { }</code> block, and <a href='http://github.com/bjeanes/ghost'>ghost</a> the domain to localhost.</p>
       

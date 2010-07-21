@@ -4,6 +4,14 @@ $padding: 0.1em
 $margin: 1.7em
 $border-color: #777
 $border: $border-color 1px dotted
+$color: #444
+$background: #bbb
+
+@mixin radius($rad = 3px)
+  -webkit-border-radius: $rad
+  -moz-border-radius: $rad
+  -o-border-radius: $rad
+  border-radius: $rad
 
 *
   margin: 0
@@ -11,7 +19,7 @@ $border: $border-color 1px dotted
 
 body
   color: black
-  background-color: #bbb
+  background-color: $background
   font: 16px/1.7 'Helvetica Neue', arial, sans-serif
   font-weight: 200
   padding: 0
@@ -52,10 +60,10 @@ ul
     list-style-type: none
 
 article
-  p, ul, ol, header
-    margin-bottom: 1.7em
+  p, ul, ol, header, pre
+    margin-bottom: $margin
   p, ul li
-    color: #444
+    color: $color
 
 ul.years
   li
@@ -98,12 +106,16 @@ a
   &:hover
     background-color: #ccc
 
-p code
-  color: #fff
-
-pre
-  padding: 0.85em 0
-  color: #ccc
+code
+  color: $color - #111
+  font-size: 0.8em
+  background-color: #bbb - #111
+  @include radius
+  padding: 0 0.3em
+  p &
+    display: inline-block
+  pre &
+    display: block
 
 code pre
   background-color: rgba(255,255,255,0.12)

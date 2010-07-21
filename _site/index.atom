@@ -4,30 +4,12 @@
   <title>benhoskin.gs</title>
   <link href="http://benhoskin.gs" rel="alternate"/>
   <link href="http://benhoskin.gs/index.atom" rel="self"/>
-  <updated>2010-07-21T19:21:37+10:00</updated>
+  <updated>2010-07-21T19:23:35+10:00</updated>
   <author>
     <name>Ben Hoskings</name>
     <email>ben@hoskings.net</email>
     <uri>http://benhoskin.gs</uri>
   </author>
-
-  <entry>
-    <title>babushka update</title>
-    <link href="http://benhoskin.gs/2010/07/21/babushka-update"/>
-    <updated>2010-07-21T00:00:00+10:00</updated>
-    <id>http://benhoskin.gs/2010/07/21/babushka-update</id>
-    <content type="html">&lt;p&gt;hello world&lt;/p&gt;
-
-&lt;p&gt;test&lt;/p&gt;</content>
-  </entry>
-
-  <entry>
-    <title>zsh</title>
-    <link href="http://benhoskin.gs/2010/06/27/zsh"/>
-    <updated>2010-06-27T00:00:00+10:00</updated>
-    <id>http://benhoskin.gs/2010/06/27/zsh</id>
-    <content type="html"></content>
-  </entry>
 
   <entry>
     <title>Open Letter to Senator the Hon Stephen Conroy, Australian Minister for Broadband, Communications and the Digital Economy</title>
@@ -312,26 +294,6 @@ end&lt;/code&gt;&lt;/pre&gt;
   </entry>
 
   <entry>
-    <title>spork + no db prep: four-fold speedup</title>
-    <link href="http://benhoskin.gs/2009/07/16/spork-no-db-prep-four-fold-speedup"/>
-    <updated>2009-07-16T00:00:00+10:00</updated>
-    <id>http://benhoskin.gs/2009/07/16/spork-no-db-prep-four-fold-speedup</id>
-    <content type="html">&lt;p&gt;Here are some numbers for the rails rspeccing changes I &lt;a href='http://ben.hoskings.net/2009/07/16/speedy-rspec-with-rails'&gt;wrote about earlier today&lt;/a&gt;:&lt;/p&gt;
-
-&lt;p&gt;before&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; time rake spec
-13.27 real         9.93 user         2.18 sys&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;after&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; time rake spec
-3.35 real         0.88 user         0.25 sys&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Nice.&lt;/p&gt;</content>
-  </entry>
-
-  <entry>
     <title>speedy rspec with rails</title>
     <link href="http://benhoskin.gs/2009/07/16/speedy-rspec-with-rails"/>
     <updated>2009-07-16T00:00:00+10:00</updated>
@@ -365,6 +327,26 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Next, to make ⌘R spec runs in TextMate spork-aware, head to the TextMate preferences and add &lt;code&gt;--drb&lt;/code&gt; to the &lt;code&gt;TM_RSPEC_OPTS&lt;/code&gt; variable (creating it if required). I also had to patch the &lt;code&gt;spec_mate&lt;/code&gt; helper &lt;a href='http://github.com/benhoskings/ruby-rspec.tmbundle/commit/c70b16106cd5ba74e97cc967d0e8f307850cbd28'&gt;like so&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Running through spork causes a bit of a performance hit, too&amp;#8212;it eliminates the startup delay, but the specs run slower, since there&amp;#8217;s a DRb back and forth involved for each one. Spork is for running a few tests at a time, or for running through autotest, while you&amp;#8217;re developing. When you run your full suite, you should stop the spork listener and run them locally at full speed.&lt;/p&gt;</content>
+  </entry>
+
+  <entry>
+    <title>spork + no db prep: four-fold speedup</title>
+    <link href="http://benhoskin.gs/2009/07/16/spork-no-db-prep-four-fold-speedup"/>
+    <updated>2009-07-16T00:00:00+10:00</updated>
+    <id>http://benhoskin.gs/2009/07/16/spork-no-db-prep-four-fold-speedup</id>
+    <content type="html">&lt;p&gt;Here are some numbers for the rails rspeccing changes I &lt;a href='http://ben.hoskings.net/2009/07/16/speedy-rspec-with-rails'&gt;wrote about earlier today&lt;/a&gt;:&lt;/p&gt;
+
+&lt;p&gt;before&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; time rake spec
+13.27 real         9.93 user         2.18 sys&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;after&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; time rake spec
+3.35 real         0.88 user         0.25 sys&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Nice.&lt;/p&gt;</content>
   </entry>
 
   <entry>

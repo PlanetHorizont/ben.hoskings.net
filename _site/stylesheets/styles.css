@@ -34,7 +34,7 @@ header h1 a { display: block; }
 
 article header h1 a, ul.posts li a.title { color: #197a9f; font-weight: bold; }
 
-a { color: #fe4892; text-decoration: none; }
+a { color: #e13d87; text-decoration: none; }
 a:hover { background-color: #cccccc; }
 
 code { color: #333333; font-size: 0.8em; background-color: #aaaaaa; -webkit-border-radius: 3px; -moz-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px; padding: 0 0.3em; }

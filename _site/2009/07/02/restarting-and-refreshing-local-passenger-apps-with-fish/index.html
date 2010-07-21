@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
@@ -6,50 +6,54 @@
     <link href="/stylesheets/styles.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="/index.atom" rel="alternate" title="Atom feed" type="application/atom+xml" />
   </head>
-</html>
-<body>
-  <div id="page_container">
-    <h1 id="page_heading">
-      <a href="/">ben hoskings</a>
-    </h1>
-    <div id="navigation">
+  <body>
+    <header>
+      <h1>
+        <a href="/">ben hoskings</a>
+      </h1>
+    </header>
+    <nav>
       <a href="http://twitter.com/ben_h" rel="me">twitter</a>
       <a href="http://github.com/benhoskings" rel="me">github</a>
-    </div>
-    <div id="main">
-      <div class="post">
-        <h2 class="title">restarting and refreshing local passenger apps with fish</h2>
-        <p>Running passenger for development is great, but if you&#8217;re hacking code within a plugin then it&#8217;s cumbersome to constantly <code>touch tmp/restart.txt</code> and refresh your browser, even if you use <code>tou[UP]</code> to pick the command from your history.</p>
-        
-        <p>Using fish and some applescript, you can do it all from your terminal by hitting ⌥R.</p>
-        
-        <pre><code>function reload_webkit
-          osascript -e &#39;tell application &quot;WebKit&quot; to do JavaScript \
-            &quot;window.location.reload()&quot; in front document&#39;
-        end
-        
-        function restart_rails_app
-          touch tmp/restart.txt
-          reload_webkit
-        end
-        
-        bind \er &#39;restart_rails_app &gt;/dev/null&#39;</code></pre>
-      </div>
-    </div>
-    <div id="footer">
-      Powered by
-      <a href="http://github.com/mojombo/jekyll">Jekyll</a>
-      Content &amp; layout &copy; Ben Hoskings.
-    </div>
-  </div>
-  <script type="text/javascript">
-    //<![CDATA[
-      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-      try {
-        var pageTracker = _gat._getTracker("UA-9740324-2");
-        pageTracker._trackPageview();
-      } catch(err) {}
-    //]]>
-  </script>
-</body>
+    </nav>
+    <article>
+      <header>
+        <h1>
+          <a href="/">restarting and refreshing local passenger apps with fish</a>
+        </h1>
+      </header>
+      <p>Running passenger for development is great, but if you&#8217;re hacking code within a plugin then it&#8217;s cumbersome to constantly <code>touch tmp/restart.txt</code> and refresh your browser, even if you use <code>tou[UP]</code> to pick the command from your history.</p>
+      
+      <p>Using fish and some applescript, you can do it all from your terminal by hitting ⌥R.</p>
+      
+      <pre><code>function reload_webkit
+        osascript -e &#39;tell application &quot;WebKit&quot; to do JavaScript \
+          &quot;window.location.reload()&quot; in front document&#39;
+      end
+      
+      function restart_rails_app
+        touch tmp/restart.txt
+        reload_webkit
+      end
+      
+      bind \er &#39;restart_rails_app &gt;/dev/null&#39;</code></pre>
+    </article>
+    <footer>
+      <span>
+        Powered by
+        <a href="http://github.com/mojombo/jekyll">Jekyll</a>
+        Content &amp; layout &copy; Ben Hoskings.
+      </span>
+    </footer>
+    <script type="text/javascript">
+      //<![CDATA[
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        try {
+          var pageTracker = _gat._getTracker("UA-9740324-2");
+          pageTracker._trackPageview();
+        } catch(err) {}
+      //]]>
+    </script>
+  </body>
+</html>

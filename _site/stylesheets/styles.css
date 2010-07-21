@@ -1,8 +1,8 @@
 * { margin: 0; padding: 0; }
 
-html { background: url(../images/bg.jpg) bottom left no-repeat; background-attachment: fixed; }
+body { color: black; background-color: #bbbbbb; font: 16px/1.7 "Helvetica Neue", arial, sans-serif; font-weight: 200; padding: 0; }
 
-body { color: black; background-color: transparent; font: 12px/1.7 Lucida Grande, Helvetica, arial, sans-serif; padding: 0; margin: 0; }
+header, nav, article, footer { display: block; }
 
 input, textarea, pre, code { font-family: Menlo, Monaco, Consolas, sans-serif; }
 
@@ -12,17 +12,14 @@ h1, h2, h3, h4, h5 { color: #333333; font-size: 1em; }
 
 img { border: solid 1px #777777; }
 
-#page_container { width: 41em; background-color: rgba(0, 0, 0, 0.75); margin: 0 auto; }
+header, nav, article, footer { width: 32em; margin: 0 auto; }
 
 ul { list-style: inside; }
 ul li { list-style-type: square; }
 ul.years li { list-style-type: none; }
 
-p, ul li { color: #aaaaaa; text-shadow: black 1px 1px 1px; }
-
-p, .post ul { padding-top: 0.85em; }
-
-p, .post ul, .post .title { padding-bottom: 0.85em; }
+article p, article ul, article ol, article header { margin-bottom: 1.7em; }
+article p, article ul li { color: #444444; }
 
 ul.months { margin-bottom: 1.7em; border-bottom: #444444 1px dashed; }
 
@@ -39,12 +36,12 @@ ul.years span.year, ul.years span.month, ul.years span.day { color: #777777; wid
 ul.years span.year.current, ul.years span.month.current, ul.years span.day.current { opacity: 0; }
 ul.years a.title { width: 25em; }
 
-#page_heading a { display: block; float: left; }
+header h1 a { display: block; }
 
-.post h2, ul.posts li a.title { color: #197a9f; font-weight: bold; }
+article header h1 a, ul.posts li a.title { color: #197a9f; font-weight: bold; }
 
 a { color: #fe4892; text-decoration: none; }
-a:hover { background-color: #2b2b2b; }
+a:hover { background-color: #cccccc; }
 
 p code { color: white; }
 
@@ -54,14 +51,17 @@ code pre { background-color: rgba(255, 255, 255, 0.12); }
 
 pre, input[type=text], textarea { background-color: transparent; }
 
-#page_heading, #navigation, .post, #footer { margin: 1.7em 0; padding: 1.7em 0; }
+body > header, nav, article, footer { border-top: #777777 1px dotted; }
 
-#navigation { padding-top: 0; }
+body > header { margin-top: 1.7em; }
+body > header h1 a { padding-bottom: 3.4em; }
 
-.post { padding-top: 0; }
+article, footer { padding-bottom: 1.7em; margin-bottom: 1.7em; }
 
-#footer { font-size: 8pt; color: #555555; }
+body > footer { color: #555555; }
+body > footer span { font-size: 0.7em; padding-left: 0.143em; padding-right: 0.143em; }
 
-#page_heading a, #footer, #main p, .post li, .post h2, code pre { padding-left: 0.6em; padding-right: 0.6em; }
+header h1 a, article p, article li, code pre { padding-left: 0.1em; padding-right: 0.1em; }
 
-#navigation a { padding: 0 0.75em; font-size: 0.8em; line-height: 2.125; color: #666666; font-weight: bold; }
+nav { overflow: hidden; }
+nav a { display: block; float: left; font-size: 0.8em; padding: 0 0.125em; padding-bottom: 4.25em; margin-right: 0.625em; line-height: 2.125; color: #666666; font-weight: bold; }

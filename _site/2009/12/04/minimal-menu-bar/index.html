@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
@@ -6,50 +6,54 @@
     <link href="/stylesheets/styles.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="/index.atom" rel="alternate" title="Atom feed" type="application/atom+xml" />
   </head>
-</html>
-<body>
-  <div id="page_container">
-    <h1 id="page_heading">
-      <a href="/">ben hoskings</a>
-    </h1>
-    <div id="navigation">
+  <body>
+    <header>
+      <h1>
+        <a href="/">ben hoskings</a>
+      </h1>
+    </header>
+    <nav>
       <a href="http://twitter.com/ben_h" rel="me">twitter</a>
       <a href="http://github.com/benhoskings" rel="me">github</a>
-    </div>
-    <div id="main">
-      <div class="post">
-        <h2 class="title">minimal menu bar</h2>
-        <p>After reading <a href='http://www.rosshill.com.au/article/minimal-mac-menubar/'>Ross Hill&#8217;s post</a> about his minimal OS X menubar, I decided I&#8217;d try it on mine. I&#8217;m picky about these things, so I think my menu bar looked pretty good to start with, but it was busy.</p>
-        
-        <p><img src='/images/minimal-menubar-before.png' alt='menubar, before' /></p>
-        
-        <p>So I started looking, and thought, well there are a couple of things I can remove, but no, I use almost all of that stuff!</p>
-        
-        <p>With Ross&#8217; help though (i.e. him telling me I was wrong), I pared it down to something that I think is looking pretty good.</p>
-        
-        <p><img src='/images/minimal-menubar-after.png' alt='menubar, after' /></p>
-        
-        <p>All the stuff left I actually really do use a lot. In particular, the CPU/memory/network meters are really useful to tell what&#8217;s going on with the system, when I&#8217;m writing code and running specs etc, I use them constantly.</p>
-        
-        <p>A nice improvement I&#8217;ve noticed already is that now Tweetie is only visible in my Dock (which is hidden), I&#8217;m not constantly distracted by new tweets. When that little icon turns blue, I can&#8217;t help but click it. Marking the hidden dock icon on mentions and DMs, and then checking it periodically, when I think to, is much less disruptive.</p>
-        
-        <p>Cheers Ross :)</p>
-      </div>
-    </div>
-    <div id="footer">
-      Powered by
-      <a href="http://github.com/mojombo/jekyll">Jekyll</a>
-      Content &amp; layout &copy; Ben Hoskings.
-    </div>
-  </div>
-  <script type="text/javascript">
-    //<![CDATA[
-      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-      try {
-        var pageTracker = _gat._getTracker("UA-9740324-2");
-        pageTracker._trackPageview();
-      } catch(err) {}
-    //]]>
-  </script>
-</body>
+    </nav>
+    <article>
+      <header>
+        <h1>
+          <a href="/">minimal menu bar</a>
+        </h1>
+      </header>
+      <p>After reading <a href='http://www.rosshill.com.au/article/minimal-mac-menubar/'>Ross Hill&#8217;s post</a> about his minimal OS X menubar, I decided I&#8217;d try it on mine. I&#8217;m picky about these things, so I think my menu bar looked pretty good to start with, but it was busy.</p>
+      
+      <p><img src='/images/minimal-menubar-before.png' alt='menubar, before' /></p>
+      
+      <p>So I started looking, and thought, well there are a couple of things I can remove, but no, I use almost all of that stuff!</p>
+      
+      <p>With Ross&#8217; help though (i.e. him telling me I was wrong), I pared it down to something that I think is looking pretty good.</p>
+      
+      <p><img src='/images/minimal-menubar-after.png' alt='menubar, after' /></p>
+      
+      <p>All the stuff left I actually really do use a lot. In particular, the CPU/memory/network meters are really useful to tell what&#8217;s going on with the system, when I&#8217;m writing code and running specs etc, I use them constantly.</p>
+      
+      <p>A nice improvement I&#8217;ve noticed already is that now Tweetie is only visible in my Dock (which is hidden), I&#8217;m not constantly distracted by new tweets. When that little icon turns blue, I can&#8217;t help but click it. Marking the hidden dock icon on mentions and DMs, and then checking it periodically, when I think to, is much less disruptive.</p>
+      
+      <p>Cheers Ross :)</p>
+    </article>
+    <footer>
+      <span>
+        Powered by
+        <a href="http://github.com/mojombo/jekyll">Jekyll</a>
+        Content &amp; layout &copy; Ben Hoskings.
+      </span>
+    </footer>
+    <script type="text/javascript">
+      //<![CDATA[
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        try {
+          var pageTracker = _gat._getTracker("UA-9740324-2");
+          pageTracker._trackPageview();
+        } catch(err) {}
+      //]]>
+    </script>
+  </body>
+</html>

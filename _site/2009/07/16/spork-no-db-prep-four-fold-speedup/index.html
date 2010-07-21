@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
@@ -6,48 +6,52 @@
     <link href="/stylesheets/styles.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="/index.atom" rel="alternate" title="Atom feed" type="application/atom+xml" />
   </head>
-</html>
-<body>
-  <div id="page_container">
-    <h1 id="page_heading">
-      <a href="/">ben hoskings</a>
-    </h1>
-    <div id="navigation">
+  <body>
+    <header>
+      <h1>
+        <a href="/">ben hoskings</a>
+      </h1>
+    </header>
+    <nav>
       <a href="http://twitter.com/ben_h" rel="me">twitter</a>
       <a href="http://github.com/benhoskings" rel="me">github</a>
-    </div>
-    <div id="main">
-      <div class="post">
-        <h2 class="title">spork + no db prep: four-fold speedup</h2>
-        <p>Here are some numbers for the rails rspeccing changes I <a href='http://ben.hoskings.net/2009/07/16/speedy-rspec-with-rails'>wrote about earlier today</a>:</p>
-        
-        <p>before</p>
-        
-        <pre><code>&gt; time rake spec
-        13.27 real         9.93 user         2.18 sys</code></pre>
-        
-        <p>after</p>
-        
-        <pre><code>&gt; time rake spec
-        3.35 real         0.88 user         0.25 sys</code></pre>
-        
-        <p>Nice.</p>
-      </div>
-    </div>
-    <div id="footer">
-      Powered by
-      <a href="http://github.com/mojombo/jekyll">Jekyll</a>
-      Content &amp; layout &copy; Ben Hoskings.
-    </div>
-  </div>
-  <script type="text/javascript">
-    //<![CDATA[
-      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-      try {
-        var pageTracker = _gat._getTracker("UA-9740324-2");
-        pageTracker._trackPageview();
-      } catch(err) {}
-    //]]>
-  </script>
-</body>
+    </nav>
+    <article>
+      <header>
+        <h1>
+          <a href="/">spork + no db prep: four-fold speedup</a>
+        </h1>
+      </header>
+      <p>Here are some numbers for the rails rspeccing changes I <a href='http://ben.hoskings.net/2009/07/16/speedy-rspec-with-rails'>wrote about earlier today</a>:</p>
+      
+      <p>before</p>
+      
+      <pre><code>&gt; time rake spec
+      13.27 real         9.93 user         2.18 sys</code></pre>
+      
+      <p>after</p>
+      
+      <pre><code>&gt; time rake spec
+      3.35 real         0.88 user         0.25 sys</code></pre>
+      
+      <p>Nice.</p>
+    </article>
+    <footer>
+      <span>
+        Powered by
+        <a href="http://github.com/mojombo/jekyll">Jekyll</a>
+        Content &amp; layout &copy; Ben Hoskings.
+      </span>
+    </footer>
+    <script type="text/javascript">
+      //<![CDATA[
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        try {
+          var pageTracker = _gat._getTracker("UA-9740324-2");
+          pageTracker._trackPageview();
+        } catch(err) {}
+      //]]>
+    </script>
+  </body>
+</html>

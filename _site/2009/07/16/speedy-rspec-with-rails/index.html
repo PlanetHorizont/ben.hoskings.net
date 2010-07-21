@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
@@ -6,64 +6,68 @@
     <link href="/stylesheets/styles.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="/index.atom" rel="alternate" title="Atom feed" type="application/atom+xml" />
   </head>
-</html>
-<body>
-  <div id="page_container">
-    <h1 id="page_heading">
-      <a href="/">ben hoskings</a>
-    </h1>
-    <div id="navigation">
+  <body>
+    <header>
+      <h1>
+        <a href="/">ben hoskings</a>
+      </h1>
+    </header>
+    <nav>
       <a href="http://twitter.com/ben_h" rel="me">twitter</a>
       <a href="http://github.com/benhoskings" rel="me">github</a>
-    </div>
-    <div id="main">
-      <div class="post">
-        <h2 class="title">speedy rspec with rails</h2>
-        <p>So rails rspec runs are really slow to start up. There are two reasons why:</p>
-        
-        <ul>
-        <li>Rails is initialised each time, which takes a few seconds</li>
-        
-        <li><code>db:test:prepare</code> runs before each run, which is another complete rails initialisation in itself</li>
-        </ul>
-        
-        <p>These delays don&#8217;t have anything to do with rspec. It&#8217;s just the nature of the Rails framework—there&#8217;s a lot of ruby to load, to get the framework off the ground. These tweaks don&#8217;t make that process any faster, they avoid it&#8212;firstly by removing a rails initialisation, and then by moving the delay of another away from each rspec run.</p>
-        
-        <p>To fix the first, install <a href='http://wiki.github.com/dchelimsky/rspec/spork-autospec-pure-bdd-joy'>spork</a> and configure it in <code>spec/spec_helper.rb</code>. Spork keeps an instance of your app running, and listens for connections from a spork-aware <code>rake spec</code> run. This removes the Rails startup delay more or less completely, since when you run <code>rake spec</code>, spork has your app ready and waiting to run specs transparently via DRb.</p>
-        
-        <p>As for the second, I don&#8217;t see any need to run <code>db:test:prepare</code> before every run when transactional fixtures are being used. It&#8217;s simple to disable. Change this</p>
-        
-        <pre><code>Spec::Rake::SpecTask.new(:spec =&gt; spec_prereq) do |t|</code></pre>
-        
-        <p>to this</p>
-        
-        <pre><code>Spec::Rake::SpecTask.new(:spec) do |t|</code></pre>
-        
-        <p>in <code>lib/tasks/rspec.rake</code>.</p>
-        
-        <p>With <code>db:test:prepare</code> and its subtasks not running, spork there&#8217;s less than a second of delay before specs start running. In my book, that&#8217;s close to fast enough to pleasantly run, and get results in realtime. Coupled with autotest, this should mean much snappier pass/fail feedback too.</p>
-        
-        <p>It seems messy to me to have those tasks defined within the app. In fact, most of the rails testing / speccing setup seems to involve just spraying messy generated code around the place. I think this is an example of something done wrong in spite of the fact that the tests may be passing.</p>
-        
-        <p>Next, to make ⌘R spec runs in TextMate spork-aware, head to the TextMate preferences and add <code>--drb</code> to the <code>TM_RSPEC_OPTS</code> variable (creating it if required). I also had to patch the <code>spec_mate</code> helper <a href='http://github.com/benhoskings/ruby-rspec.tmbundle/commit/c70b16106cd5ba74e97cc967d0e8f307850cbd28'>like so</a>.</p>
-        
-        <p>Running through spork causes a bit of a performance hit, too&#8212;it eliminates the startup delay, but the specs run slower, since there&#8217;s a DRb back and forth involved for each one. Spork is for running a few tests at a time, or for running through autotest, while you&#8217;re developing. When you run your full suite, you should stop the spork listener and run them locally at full speed.</p>
-      </div>
-    </div>
-    <div id="footer">
-      Powered by
-      <a href="http://github.com/mojombo/jekyll">Jekyll</a>
-      Content &amp; layout &copy; Ben Hoskings.
-    </div>
-  </div>
-  <script type="text/javascript">
-    //<![CDATA[
-      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-      try {
-        var pageTracker = _gat._getTracker("UA-9740324-2");
-        pageTracker._trackPageview();
-      } catch(err) {}
-    //]]>
-  </script>
-</body>
+    </nav>
+    <article>
+      <header>
+        <h1>
+          <a href="/">speedy rspec with rails</a>
+        </h1>
+      </header>
+      <p>So rails rspec runs are really slow to start up. There are two reasons why:</p>
+      
+      <ul>
+      <li>Rails is initialised each time, which takes a few seconds</li>
+      
+      <li><code>db:test:prepare</code> runs before each run, which is another complete rails initialisation in itself</li>
+      </ul>
+      
+      <p>These delays don&#8217;t have anything to do with rspec. It&#8217;s just the nature of the Rails framework—there&#8217;s a lot of ruby to load, to get the framework off the ground. These tweaks don&#8217;t make that process any faster, they avoid it&#8212;firstly by removing a rails initialisation, and then by moving the delay of another away from each rspec run.</p>
+      
+      <p>To fix the first, install <a href='http://wiki.github.com/dchelimsky/rspec/spork-autospec-pure-bdd-joy'>spork</a> and configure it in <code>spec/spec_helper.rb</code>. Spork keeps an instance of your app running, and listens for connections from a spork-aware <code>rake spec</code> run. This removes the Rails startup delay more or less completely, since when you run <code>rake spec</code>, spork has your app ready and waiting to run specs transparently via DRb.</p>
+      
+      <p>As for the second, I don&#8217;t see any need to run <code>db:test:prepare</code> before every run when transactional fixtures are being used. It&#8217;s simple to disable. Change this</p>
+      
+      <pre><code>Spec::Rake::SpecTask.new(:spec =&gt; spec_prereq) do |t|</code></pre>
+      
+      <p>to this</p>
+      
+      <pre><code>Spec::Rake::SpecTask.new(:spec) do |t|</code></pre>
+      
+      <p>in <code>lib/tasks/rspec.rake</code>.</p>
+      
+      <p>With <code>db:test:prepare</code> and its subtasks not running, spork there&#8217;s less than a second of delay before specs start running. In my book, that&#8217;s close to fast enough to pleasantly run, and get results in realtime. Coupled with autotest, this should mean much snappier pass/fail feedback too.</p>
+      
+      <p>It seems messy to me to have those tasks defined within the app. In fact, most of the rails testing / speccing setup seems to involve just spraying messy generated code around the place. I think this is an example of something done wrong in spite of the fact that the tests may be passing.</p>
+      
+      <p>Next, to make ⌘R spec runs in TextMate spork-aware, head to the TextMate preferences and add <code>--drb</code> to the <code>TM_RSPEC_OPTS</code> variable (creating it if required). I also had to patch the <code>spec_mate</code> helper <a href='http://github.com/benhoskings/ruby-rspec.tmbundle/commit/c70b16106cd5ba74e97cc967d0e8f307850cbd28'>like so</a>.</p>
+      
+      <p>Running through spork causes a bit of a performance hit, too&#8212;it eliminates the startup delay, but the specs run slower, since there&#8217;s a DRb back and forth involved for each one. Spork is for running a few tests at a time, or for running through autotest, while you&#8217;re developing. When you run your full suite, you should stop the spork listener and run them locally at full speed.</p>
+    </article>
+    <footer>
+      <span>
+        Powered by
+        <a href="http://github.com/mojombo/jekyll">Jekyll</a>
+        Content &amp; layout &copy; Ben Hoskings.
+      </span>
+    </footer>
+    <script type="text/javascript">
+      //<![CDATA[
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        try {
+          var pageTracker = _gat._getTracker("UA-9740324-2");
+          pageTracker._trackPageview();
+        } catch(err) {}
+      //]]>
+    </script>
+  </body>
+</html>

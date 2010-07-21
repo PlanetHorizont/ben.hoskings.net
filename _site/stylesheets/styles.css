@@ -52,6 +52,8 @@ body > header h1 a { padding-bottom: 3.4em; }
 
 article, footer { padding-bottom: 1.7em; margin-bottom: 1.7em; }
 
+#home { margin-bottom: 1.7em; }
+
 body > footer { clear: both; color: #555555; }
 body > footer span { font-size: 0.7em; padding-left: 0.143em; padding-right: 0.143em; }
 

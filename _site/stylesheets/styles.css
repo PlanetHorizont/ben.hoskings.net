@@ -21,14 +21,17 @@ ul.years li { list-style-type: none; }
 article p, article ul, article ol, article header, article pre { margin-bottom: 1.7em; }
 article p, article ul li { color: #444444; }
 
-ul.years li { display: block; overflow: hidden; }
+ul.years li { display: block; overflow: hidden; border-bottom: #777777 1px dotted; }
+ul.years li li { border-bottom: none; }
 ul.years ul.months, ul.years a.title, ul.years span.year, ul.years span.month, ul.years span.day { display: block; float: left; }
-ul.years ul.months { width: 28em; border-bottom: #777777 1px dotted; }
-ul.years ul.months ul.posts { margin-left: 4em; padding-left: 0.1em; padding-bottom: 1.7em; border-bottom: #777777 1px dotted; border-bottom-color: #8e8e8e; }
+ul.years ul.months { width: 28em; }
+ul.years ul.months li { border-bottom: #777777 1px dotted; border-bottom-color: #8e8e8e; }
+ul.years ul.months li li { border-bottom: none; }
+ul.years ul.months ul.posts { margin-left: 4em; padding-left: 0.1em; padding-bottom: 1.7em; }
 ul.years ul.months ul.posts a.title { float: none; margin-left: 4em; padding-left: 0.1em; }
 ul.years span.year, ul.years span.month, ul.years span.day { color: #777777; width: 3.9em; padding-left: 0.1em; }
 
-ul.years li:last-child ul.months, ul.months li:last-child ul.posts { border-bottom: none; }
+ul.years li:last-child, ul.years ul.months li:last-child { border-bottom: none; }
 
 header h1 a { display: block; }
 
@@ -60,4 +63,4 @@ body > footer span { font-size: 0.7em; padding-left: 0.143em; padding-right: 0.1
 header h1 a, article p, article li, code pre { padding-left: 0.1em; padding-right: 0.1em; }
 
 nav { overflow: hidden; }
-nav a { display: block; float: left; width: 5em; font-size: 0.8em; padding-left: 0.125em; padding-bottom: 4.25em; line-height: 2.125; color: #666666; font-weight: bold; }
+nav a { display: block; float: left; width: 4.875em; font-size: 0.8em; padding-left: 0.125em; padding-bottom: 4.25em; line-height: 2.125; color: #666666; font-weight: bold; }

@@ -69,18 +69,23 @@ ul.years
   li
     display: block
     overflow: hidden
+    border-bottom: $border
+    li
+      border-bottom: none
   ul.months, a.title, span.year, span.month, span.day
     display: block
     float: left
   ul.months
     width: $width - $col
-    border-bottom: $border
+    li
+      border-bottom: $border
+      border-bottom-color: $border-color * 1.2
+      li
+        border-bottom: none
     ul.posts
       margin-left: $col
       padding-left: $padding
       padding-bottom: $margin
-      border-bottom: $border
-      border-bottom-color: $border-color * 1.2
       a.title
         float: none
         margin-left: $col
@@ -90,7 +95,7 @@ ul.years
     width: $col - $padding
     padding-left: $padding
 
-ul.years li:last-child ul.months, ul.months li:last-child ul.posts
+ul.years li:last-child, ul.years ul.months li:last-child
   border-bottom: none
 
 header h1 a
@@ -162,7 +167,7 @@ nav
   a
     display: block
     float: left
-    width: $col / 0.8
+    width: ($col - $padding) / 0.8
     font-size: 0.8em
     padding-left: $padding / 0.8
     padding-bottom: ($margin * 2) / 0.8

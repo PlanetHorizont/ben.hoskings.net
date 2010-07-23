@@ -1,10 +1,11 @@
-$width: 32em
+$width: 40em
+$leading: 1.5
+$margin: 1.5em
 $col: 4em
 $padding: 0.1em
-$margin: 1.7em
 $border-color: #777
 $border: $border-color 1px dotted
-$color: #444
+$color: #333
 $background: #bbb
 
 @mixin radius($rad: 3px)
@@ -20,9 +21,9 @@ $background: #bbb
 body
   color: black
   background-color: $background
-  font: 16px/1.7 'Helvetica Neue', arial, sans-serif
+  font: 16px/#{$leading} 'Helvetica Neue', arial, sans-serif
   font-weight: 200
-  padding: 0
+  padding: 0 #{$leading / 2}em
 
 header, nav, article, footer
   display: block

@@ -40,6 +40,10 @@ The changes have made both writing and running deps a lot more intuitive, and re
 
 Everything that you can declare with babushka's DSL is a dep or a template. A dep at its lowest level is defined by the three declarations `requires`, `met?` and `meet`, and all deps are based on those three, whether they explicitly define them or not.
 
-You can't get true conciseness without wrapping up common patterns, and so you can use templates, 
+You can't get true conciseness without wrapping up common patterns, though, and so you can use templates, like `tmbundle`, `vim-plugin` or whatever you like. Because some things are universal, though, a few of these were bundled along with babushka itself---like `pkg` for writing deps that work with the system's package manager, or `gem` for rubygems.
+
+These special templates were defined in an outdated way that predated templates, but in essence they were the same thing. But because those top-level methods like `pkg` were there in babushka core, they appeared to be special, and their relation to a standard `dep` wasn't clear.
+
+That's all cleaned up now as well. Just as manual and auto sources have been unified, all deps are defined with the `dep` top-level method now, whether they use a template or not.
 
 Instead of saying `pkg 'mongo'`, you say either `dep 'mongo', :template => 'managed'`, or `dep 'mongo.managed'` - whichever suits the situation better.

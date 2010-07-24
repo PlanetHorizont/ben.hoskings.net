@@ -1,6 +1,6 @@
 * { margin: 0; padding: 0; }
 
-body { color: black; background-color: #bbbbbb; font: 16px/1.7 "Helvetica Neue", arial, sans-serif; font-weight: 200; padding: 0; }
+body { color: black; background-color: #bbbbbb; font: 16px/1.5 "Helvetica Neue", arial, sans-serif; font-weight: 200; padding: 0 0.75em; }
 
 header, nav, article, footer { display: block; }
 
@@ -12,22 +12,22 @@ h1, h2, h3, h4, h5 { color: #333333; font-size: 1em; }
 
 img { border: solid 1px #777777; }
 
-header, nav, article, footer, #home { width: 32em; margin: 0 auto; }
+header, nav, article, footer, #home { width: 40em; margin: 0 auto; }
 
 ul { list-style: inside; }
 ul li { list-style-type: square; }
 ul.years li { list-style-type: none; }
 
-article p, article ul, article ol, article header, article pre { margin-bottom: 1.7em; }
-article p, article ul li { color: #444444; }
+article p, article ul, article ol, article header, article pre { margin-bottom: 1.5em; }
+article p, article ul li { color: #333333; }
 
 ul.years li { display: block; overflow: hidden; border-bottom: #777777 1px dotted; }
 ul.years li li { border-bottom: none; }
 ul.years ul.months, ul.years a.title, ul.years span.year, ul.years span.month, ul.years span.day { display: block; float: left; }
-ul.years ul.months { width: 28em; }
+ul.years ul.months { width: 36em; }
 ul.years ul.months li { border-bottom: #777777 1px dotted; border-bottom-color: #8e8e8e; }
 ul.years ul.months li li { border-bottom: none; }
-ul.years ul.months ul.posts { margin-left: 4em; padding-left: 0.1em; padding-bottom: 1.7em; }
+ul.years ul.months ul.posts { margin-left: 4em; padding-left: 0.1em; padding-bottom: 1.5em; }
 ul.years ul.months ul.posts a.title { float: none; margin-left: 4em; padding-left: 0.1em; }
 ul.years span.year, ul.years span.month, ul.years span.day { color: #777777; width: 3.9em; padding-left: 0.1em; }
 
@@ -40,7 +40,7 @@ article header h1 a, ul.posts li a.title { color: #197a9f; font-weight: bold; }
 a { color: #e13d87; text-decoration: none; }
 a:hover { background-color: #cccccc; }
 
-code { color: #333333; font-size: 0.8em; background-color: #aaaaaa; -webkit-border-radius: 3px; -moz-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px; padding: 0 0.3em; }
+code { color: #222222; font-size: 0.8em; background-color: #aaaaaa; -webkit-border-radius: 3px; -moz-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px; padding: 0 0.3em; }
 p code { display: inline-block; }
 pre code { display: block; }
 
@@ -50,12 +50,12 @@ pre, input[type=text], textarea { background-color: transparent; }
 
 body > header, nav, article, footer, #home { border-top: #777777 1px dotted; }
 
-body > header { margin-top: 1.7em; }
-body > header h1 a { padding-bottom: 3.4em; }
+body > header { margin-top: 1.5em; }
+body > header h1 a { padding-bottom: 3em; }
 
-article, footer { padding-bottom: 1.7em; margin-bottom: 1.7em; }
+article, footer { padding-bottom: 1.5em; margin-bottom: 1.5em; }
 
-#home { margin-bottom: 1.7em; }
+#home { margin-bottom: 1.5em; }
 
 body > footer { clear: both; color: #555555; }
 body > footer span { font-size: 0.7em; padding-left: 0.143em; padding-right: 0.143em; }
@@ -63,4 +63,4 @@ body > footer span { font-size: 0.7em; padding-left: 0.143em; padding-right: 0.1
 header h1 a, article p, article li, code pre { padding-left: 0.1em; padding-right: 0.1em; }
 
 nav { overflow: hidden; }
-nav a { display: block; float: left; width: 4.875em; font-size: 0.8em; padding-left: 0.125em; padding-bottom: 4.25em; line-height: 2.125; color: #666666; font-weight: bold; }
+nav a { display: block; float: left; width: 4.875em; font-size: 0.8em; padding-left: 0.125em; padding-bottom: 3.75em; line-height: 2.125; color: #666666; font-weight: bold; }

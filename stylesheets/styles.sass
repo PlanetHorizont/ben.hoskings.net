@@ -6,6 +6,7 @@ $padding: 0.1em
 $border-color: #777
 $border: $border-color 1px dotted
 $color: #333
+$date-color: #777
 $background: #bbb
 
 @mixin radius($rad: 3px)
@@ -13,6 +14,17 @@ $background: #bbb
   -moz-border-radius: $rad
   -o-border-radius: $rad
   border-radius: $rad
+
+@mixin top-border($color-multiplier: 1)
+  margin-top: -1px
+  border-top: $border
+  border-top-color: $border-color * $color-multiplier
+
+@mixin nesting-border($color-multiplier: 1)
+  @include top-border($color-multiplier)
+  &:first-child, li
+    border-top: none
+    margin-top: 0
 
 *
   margin: 0
@@ -65,24 +77,22 @@ article
     margin-bottom: $margin
   p, ul li
     color: $color
+  header time
+    color: $date-color
+    float: right
 
 ul.years
   li
     display: block
     overflow: hidden
-    border-bottom: $border
-    li
-      border-bottom: none
+    @include nesting-border
   ul.months, a.title, span.year, span.month, span.day
     display: block
     float: left
   ul.months
     width: $width - $col
     li
-      border-bottom: $border
-      border-bottom-color: $border-color * 1.2
-      li
-        border-bottom: none
+      @include nesting-border
     ul.posts
       margin-left: $col
       padding-left: $padding
@@ -92,15 +102,9 @@ ul.years
         margin-left: $col
         padding-left: $padding
   span.year, span.month, span.day
-    color: #777
+    color: $date-color
     width: $col - $padding
     padding-left: $padding
-
-ul.years li:last-child, ul.years ul.months li:last-child
-  border-bottom: none
-
-header h1 a
-  display: block
 
 article header h1 a, ul.posts li a.title
   color: #197a9f
@@ -134,17 +138,17 @@ nav,
 article,
 footer,
 #home
-  border-top: $border
+  @include top-border
 
-body > header
-  margin-top: $margin
-  h1 a
-    padding-bottom: $margin * 2
+body
+  padding-top: $margin
 
-article,
-footer
-  padding-bottom: $margin
-  margin-bottom: $margin
+body > header,
+nav,
+article
+  margin-bottom: $margin * 2
+
+footer,
 #home
   margin-bottom: $margin
 
@@ -171,7 +175,6 @@ nav
     width: ($col - $padding) / 0.8
     font-size: 0.8em
     padding-left: $padding / 0.8
-    padding-bottom: ($margin * 2) / 0.8
-    line-height: 2.125
+    line-height: $leading / 0.8
     color: #666
     font-weight: bold

@@ -3,6 +3,7 @@ layout: default
 ---
 %article
   %header
+    %time{:pubdate => 'pubdate'}= page.date.strftime "%Y %B %e"
     %h1
       %a{:href => '/'}= page.title
   ~ content

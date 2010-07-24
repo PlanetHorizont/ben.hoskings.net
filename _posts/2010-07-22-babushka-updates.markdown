@@ -3,13 +3,32 @@ layout: post
 title: "babushka v0.6"
 ---
 
-I've been chipping away at the latest round of babushka updates over the last six weeks or so. They involved changes to several babushka components, and several new ones. I let the updates cool in a topic branch while I turned the design over in my hands to see if it felt right. After some tweaks I've decided it does, and so earlier this week I merged the changes to master. If you update or install today you'll have the latest updates---as I write, at v0.6.1.
+I've been chipping away at the latest round of babushka updates over the last six weeks or so. They involved changes to several babushka components, and several new ones. I let the updates cool in a topic branch while I turned the design over in my hands to see if it felt right. After some tweaks I've decided it does, and so earlier this week I merged the changes to [master][master]. If you update or install today you'll have the latest updates---as I write, at v0.6.1.
 
-To install for the first time, or update an existing system, just run
+If you haven't used babushka before, [here's a quick getting started guide][getting-started].
 
-    bash -c "`curl babushka.me/up`"
+The latest round of updates involved a redesign of the way deps and dep sources work, in order to make collaboration easier, nudge usage in the direction of decentralised collaboration, and address what were obvious scaling barriers. The syntax has largely remained the same, but a lot of the plumbing has been redesigned and reconnected, and a couple of changes to the DSL were required.
 
-That script downloads a temporary copy of babushka that is used to run `babushka babushka`, which installs babushka for real. So if you already have babushka installed, you can just run that instead.
+A lot of the internal changes aren't directly visible; they just mean that dep sources are a lot smoother and more automatic now. The visible changes arose from the fact that the more people start writing deps, the more people tread on each others' toes with naming collisions. As such, dep sources had to be made completely independent of each other. This involved a few separate changes to the way sources work. I'm sure there's a good foot-related pun there that explains 
+
+
+
+- Instead of loading deps from all sources into a single pool, each source has its own pool now, so there are no naming conflicts across sources.
+
+- To reference a dep that isn't in the same source or one of the core sources, its name has to be namespaced---like `benhoskings:textmate` above.
+- The source system was redesigned so that it no longer distinguishes between sources that were added manually, and sources that were auto-added by a namespaced dep. Everything is automatic now, and the sources.yml config file has been eliminated. The only use of sources.yml was specifying load order, and now that sources are independent, load order doesn't really mean anything.
+- Instead of storing sources in `/usr/local/babushka/sources` for all to share, they're user-specific now, and live in `~/.babushka/sources`.
+- Now that babushka knows where to look for namespaced deps, sources are only loaded when a dep inside them is required. The old design loaded all known sources all the time.
+
+
+
+
+
+- Defining meta deps used to add a top-level method, like `pkg` or `tmbundle`, and since those can't be namespaced, they had to go.
+
+
+
+
 
 ## But,
 
@@ -25,15 +44,6 @@ The next step was to separate the deps from the engine by adding dep sources. Bu
 
 The next problem was scaling. Things worked alright when it was just a few dudes writing deps, but very quickly, dep names started to conflict, and it was clear that the dep source idea wouldn't scale as it was without people constantly treading on others' toes.
 
-So, the purpose of the updates is to make dep sources independent of each other. This involved a few separate changes to the way sources work.
-
-- Instead of loading sources into a single DepPool, each source has its own now, so it can independently maintain its own deps.
-- To reference a dep that isn't in the same source or one of the core sources, its name has to be namespaced---like `benhoskings:textmate` above.
-- Defining meta deps used to add a top-level method, like `pkg` or `tmbundle`, and since those can't be namespaced, they had to go.
-- The source system was redesigned so that it no longer distinguishes between sources that were added manually, and sources that were auto-added by a namespaced dep. Everything is automatic now, and the sources.yml config file has been eliminated. The only use of sources.yml was specifying load order, and now that sources are independent, load order doesn't really mean anything.
-- Instead of storing sources in `/usr/local/babushka/sources` for all to share, they're user-specific now, and live in `~/.babushka/sources`.
-- Now that babushka knows where to look for namespaced deps, sources are only loaded when a dep inside them is required. The old design loaded all known sources all the time.
-
 ## Everything is just a dep (and always was)
 
 The changes have made both writing and running deps a lot more intuitive, and removed a couple of elements of the original design that tended to confuse.
@@ -47,3 +57,6 @@ These special templates were defined in an outdated way that predated templates,
 That's all cleaned up now as well. Just as manual and auto sources have been unified, all deps are defined with the `dep` top-level method now, whether they use a template or not.
 
 Instead of saying `pkg 'mongo'`, you say either `dep 'mongo', :template => 'managed'`, or `dep 'mongo.managed'` - whichever suits the situation better.
+
+[getting-started]: /2010/07/24/getting-started-with-babushka
+[master]: http://github.com/benhoskings/babushka

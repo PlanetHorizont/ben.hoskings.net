@@ -6,6 +6,7 @@ $padding: 0.1em
 $border-color: #777
 $border: $border-color 1px dotted
 $color: #333
+$date-color: #777
 $background: #bbb
 
 @mixin radius($rad: 3px)
@@ -76,6 +77,9 @@ article
     margin-bottom: $margin
   p, ul li
     color: $color
+  header time
+    color: $date-color
+    float: right
 
 ul.years
   li
@@ -98,7 +102,7 @@ ul.years
         margin-left: $col
         padding-left: $padding
   span.year, span.month, span.day
-    color: #777
+    color: $date-color
     width: $col - $padding
     padding-left: $padding
 

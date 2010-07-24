@@ -20,6 +20,7 @@ ul.years li { list-style-type: none; }
 
 article p, article ul, article ol, article header, article pre { margin-bottom: 1.5em; }
 article p, article ul li { color: #333333; }
+article header time { color: #777777; float: right; }
 
 ul.years li { display: block; overflow: hidden; margin-top: -1px; border-top: #777777 1px dotted; border-top-color: #777777; }
 ul.years li:first-child, ul.years li li { border-top: none; margin-top: 0; }
@@ -34,7 +35,7 @@ ul.years span.year, ul.years span.month, ul.years span.day { color: #777777; wid
 article header h1 a, ul.posts li a.title { color: #197a9f; font-weight: bold; }
 
 a { color: #e13d87; text-decoration: none; }
-a:hover { background-color: #cccccc; }
+a:hover { text-shadow: 0px 0px 5px white; }
 
 code { color: #222222; font-size: 0.8em; background-color: #aaaaaa; -webkit-border-radius: 3px; -moz-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px; padding: 0 0.3em; }
 p code { display: inline-block; }

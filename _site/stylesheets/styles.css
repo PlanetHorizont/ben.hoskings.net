@@ -21,19 +21,15 @@ ul.years li { list-style-type: none; }
 article p, article ul, article ol, article header, article pre { margin-bottom: 1.5em; }
 article p, article ul li { color: #333333; }
 
-ul.years li { display: block; overflow: hidden; border-bottom: #777777 1px dotted; }
-ul.years li li { border-bottom: none; }
+ul.years li { display: block; overflow: hidden; margin-top: -1px; border-top: #777777 1px dotted; border-top-color: #777777; }
+ul.years li:first-child, ul.years li li { border-top: none; margin-top: 0; }
 ul.years ul.months, ul.years a.title, ul.years span.year, ul.years span.month, ul.years span.day { display: block; float: left; }
 ul.years ul.months { width: 36em; }
-ul.years ul.months li { border-bottom: #777777 1px dotted; border-bottom-color: #8e8e8e; }
-ul.years ul.months li li { border-bottom: none; }
+ul.years ul.months li { margin-top: -1px; border-top: #777777 1px dotted; border-top-color: #777777; }
+ul.years ul.months li:first-child, ul.years ul.months li li { border-top: none; margin-top: 0; }
 ul.years ul.months ul.posts { margin-left: 4em; padding-left: 0.1em; padding-bottom: 1.5em; }
 ul.years ul.months ul.posts a.title { float: none; margin-left: 4em; padding-left: 0.1em; }
 ul.years span.year, ul.years span.month, ul.years span.day { color: #777777; width: 3.9em; padding-left: 0.1em; }
-
-ul.years li:last-child, ul.years ul.months li:last-child { border-bottom: none; }
-
-header h1 a { display: block; }
 
 article header h1 a, ul.posts li a.title { color: #197a9f; font-weight: bold; }
 
@@ -48,14 +44,13 @@ code pre { background-color: rgba(255, 255, 255, 0.12); }
 
 pre, input[type=text], textarea { background-color: transparent; }
 
-body > header, nav, article, footer, #home { border-top: #777777 1px dotted; }
+body > header, nav, article, footer, #home { margin-top: -1px; border-top: #777777 1px dotted; border-top-color: #777777; }
 
-body > header { margin-top: 1.5em; }
-body > header h1 a { padding-bottom: 3em; }
+body { padding-top: 1.5em; }
 
-article, footer { padding-bottom: 1.5em; margin-bottom: 1.5em; }
+body > header, nav, article { margin-bottom: 3em; }
 
-#home { margin-bottom: 1.5em; }
+footer, #home { margin-bottom: 1.5em; }
 
 body > footer { clear: both; color: #555555; }
 body > footer span { font-size: 0.7em; padding-left: 0.143em; padding-right: 0.143em; }
@@ -63,4 +58,4 @@ body > footer span { font-size: 0.7em; padding-left: 0.143em; padding-right: 0.1
 header h1 a, article p, article li, code pre { padding-left: 0.1em; padding-right: 0.1em; }
 
 nav { overflow: hidden; }
-nav a { display: block; float: left; width: 4.875em; font-size: 0.8em; padding-left: 0.125em; padding-bottom: 3.75em; line-height: 2.125; color: #666666; font-weight: bold; }
+nav a { display: block; float: left; width: 4.875em; font-size: 0.8em; padding-left: 0.125em; line-height: 1.875; color: #666666; font-weight: bold; }

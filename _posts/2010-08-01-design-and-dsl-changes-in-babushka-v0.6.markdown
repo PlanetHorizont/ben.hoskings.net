@@ -17,7 +17,7 @@ For the impatient, here's the short version.
 
 ---
 
-The latest round of updates involved redesigning the way deps and dep sources work, in order to make collaboration easier, encourage trust-based source sharing, and address what were obvious scaling barriers. A lot of the plumbing has been redesigned and reconnected. A couple of changes to the DSL were required, but it's remained largely the same.
+The latest round of updates involved redesigning the way deps and dep sources work, in order to make collaboration easier, encourage trust-based source sharing, and address what were obvious scaling barriers. A lot of the plumbing has been redesigned and reconnected. A couple of changes to the DSL were required, but the syntax has remained largely the same.
 
 A lot of the internal changes aren't directly visible; together, they mean that dep sources are a lot smoother and more automatic now. The visible changes arose from the fact that the more people start writing deps, the more everyone treads on each others' toes with naming collisions. As such, dep sources had to be made completely independent of each other. This involved a few separate changes to the way sources work.
 

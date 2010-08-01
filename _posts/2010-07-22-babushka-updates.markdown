@@ -40,24 +40,25 @@ Specifying dep names with `requires` statements follows the same pattern. To req
 
 _The source system has been totally redesigned, so that it no longer requires a config file, is much more hackable, and can be completely automatic._
 
-Firstly, sources are stored in `~/.babushka/sources` now, instead of within the babushka installation like before (by default, `/usr/local/babushka/sources`).
+Firstly, sources are user-specific now, and stored in `~/.babushka/sources` instead of within the babushka installation for all to share (by default, `/usr/local/babushka/sources`).
 
-Secondly, since deps can't conflict with each other anymore, there's no need to set source load order, and so `sources.yml` is gone. This makes the source system much simpler: a source's name is defined by the name of the directory it's in. This allows the source system to be used in a few different ways.
+Secondly, now that babushka knows where to look for namespaced deps, sources are only loaded when a dep they contain is required. The old design loaded all known sources all the time.
+
+Thirdly, since deps can't conflict with each other anymore, there's no need to set source load order, and so `sources.yml` is gone. This makes the source system much simpler: a source's name is defined by the name of the directory it's in. This allows the source system to be used in a few different ways.
 
 - If you run a dep like `benhoskings:Chromium.app`, the source at `~/.babushka/sources/benhoskings` will be loaded, no matter how it got there. So adding sources with custom names, or overriding someone else's source with one of your own, is simple---just name its directory accordingly.
 
 - But, if `~/.babushka/sources/benhoskings` doesn't exist, it will be cloned from `http://github.com/benhoskings/babushka-deps.git`. This is probably what you'll want in most cases.
 
+- You can still use `babushka sources -a <name> <uri>` to add a source with a custom name; that will clone `<uri>` into `~/.babushka/sources/<name>`.
+
+- You can inspect all the present sources with `babushka sources -l`, which shows some info on each source that babushka can see, including the path from which babushka will try to update it when it's used.
+
 - Since `sources.yml` is gone, the only stored state is in the names of the source directories. So it's completely safe to manually add, move, rename or delete directories within `~/.babushka/sources`.
 
-- **But, there is one caveat:** babushka assumes that it has control of any 
+All together, this means that the source system has been unified, so that it no longer distinguishes between sources that were added manually, and sources that were auto-added when a namespaced dep was run. They're all one and the same now, in `~/.babushka/sources`.
 
-- The source system was redesigned so that it no longer distinguishes between sources that were added manually, and sources that were auto-added by a namespaced dep. Everything is automatic now, and the sources.yml config file has been eliminated. The only use of sources.yml was specifying load order, and now that sources are independent, load order doesn't really mean anything.
-- Instead of storing sources in `/usr/local/babushka/sources` for all to share, they're user-specific now, and live in `~/.babushka/sources`.
-- Now that babushka knows where to look for namespaced deps, sources are only loaded when a dep inside them is required. The old design loaded all known sources all the time.
-
-
-
+- **But, there is one caveat:** babushka assumes that it has control of any git repos within `~/.babushka/sources`, so don't leave uncommitted changes in any of those repos because babushka won't hesitate to blow them away.
 
 
 - Defining meta deps used to add a top-level method, like `pkg` or `tmbundle`, and since those can't be namespaced, they had to go.

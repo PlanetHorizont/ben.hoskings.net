@@ -15,7 +15,7 @@ _Each source maintains its own pool of deps now, so there are no naming conflict
 
 Previous versions of babushka loaded deps and templates from all sources into a single 'pool'. Deps were looked up from the pool by name at runtime when they were run, or were required by another dep. Now each source has a `DepPool` of its own, which stores just the deps defined in that source.
 
-This allows deps in different sources to have the same name without conflicting with each other. The core deps that are bundled with babushka also have their own source, and if you define deps in an interactive session like `irb`, they're stored in an implicit source.
+This allows deps in different sources to have the same name without conflicting with each other. The [core deps][core-deps] that are bundled with babushka also have their own source, and if you define deps in an interactive session like `irb`, they're stored in an implicit source.
 
 In some situations, this means you have to include a dep's source in its name, so babushka knows where to look for it.
 
@@ -65,15 +65,19 @@ _Everything is just a dep (and always was, but now it's obvious)._
 
 Everything that you can declare with babushka's DSL is either a dep or a template. A dep at its lowest level is defined by the three statements `requires`, `met?` and `meet`, and all deps are based on those three, whether they explicitly define them or not.
 
-You can't achieve a truly concise DSL without wrapping up common patterns as they emerge, though, and so you can define deps against templates, like `tmbundle`, `vim-plugin` or whatever you like. Because some things are universal, a few of these templates are bundled along with babushka itself---like `pkg` for writing deps that work with the system's package manager, or `gem` for rubygems.
+You can't achieve a truly concise DSL without wrapping up common patterns as they emerge, though, and so you can define deps against templates, like `tmbundle`, `vim-plugin` or whatever you like. Because some things are worth making universal, a few of these templates are bundled along with babushka itself---like `app` for OS X applications, or `gem` for rubygems.
 
-These were defined in an outdated way that predated templates, but in essence they were the same thing. But because those top-level methods like `pkg` were there in babushka core, they appeared to be special, and their relation to a standard `dep` wasn't clear.
+Confusion arose around these universal templates, though. Their top-level methods like `pkg` were defined in babushka core, which meant that they appeared to be special, and that their relation to a standard `dep` wasn't clear.
 
-That's all cleaned up now. Just as sources have been unified, all deps are defined with the `dep` top-level method now, whether they use a template or not. Instead of saying `gem 'hpricot'`, you say either `dep 'hpricot', :template => 'gem'`, or `dep 'hpricot.gem'`. These two styles would produce the same dep---the choice is there to allow you to include the template type in the dep's name.
+That's all cleaned up now. Just as sources have been unified, deps are always defined with the `dep` top-level method now, whether they use a template or not. Instead of saying `gem 'hpricot'`, you say either `dep 'hpricot', :template => 'gem'`, or `dep 'hpricot.gem'`. These two styles produce the same dep---the choice is there to allow you to include the template type in the dep's name.
 
 In a lot of situations, this is just what you want---for example, `TextMate.app`, `Cucumber.tmbundle` and `sinatra.gem` are all concise names that are defined against templates, and describe exactly what they install. But, there are other situations where it gets messy, and the hash syntax is clearer---for example, `dep 'rubygems source present', :template => 'gem_source'`.
+
+All the [core deps][core-deps] have been updated, along with the ones in [my dep source][benhoskings-deps]. You'll need to update your deps before they work with the new version of babushka. The best way to do this is to just try running one of your deps; as babushka tries to load your source it will complain about each piece of the old syntax it doesn't understand, and explain how you should update it.
 
 
 [getting-started]: /2010/07/24/getting-started-with-babushka
 [master]: http://github.com/benhoskings/babushka
 [mailing-list]: http://groups.google.com/group/babushka_app
+[core-deps]: http://github.com/benhoskings/babushka/tree/master/deps
+[benhoskings-deps]: http://github.com/benhoskings/babushka-deps

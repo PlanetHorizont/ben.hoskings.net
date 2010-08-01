@@ -21,7 +21,7 @@ ul.years li { list-style-type: none; }
 article p, article ul, article ol, article header, article pre { margin-bottom: 1.5em; }
 article p, article ul li { color: #333333; }
 article header h1 { font-size: 2em; }
-article header h1 a { display: block; }
+article header h1 a { display: block; padding-left: 0.05em; padding-right: 0.05em; }
 article header time { color: #777777; float: right; padding-top: 1em; }
 
 ul.years li { display: block; overflow: hidden; margin-top: -1px; border-top: #777777 1px dotted; border-top-color: #777777; }

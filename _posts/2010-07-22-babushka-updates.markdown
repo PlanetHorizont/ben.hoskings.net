@@ -61,33 +61,18 @@ All together, this means that the source system has been unified, so that it no 
 - **But, there is one caveat:** babushka assumes that it has control of any git repos within `~/.babushka/sources`, so don't leave uncommitted changes in any of those repos because babushka won't hesitate to blow them away. This might change in future; get in touch on the [mailing list][mailing-list] to share ideas on this.
 
 
-## But,
+_Everything is just a dep (and always was, but now it's obvious)._
 
-The changes to the DSL in 0.6 are backwards-incompatible. They're find-and-replaceable changes that only consist of method name changes, but they're top-level changes that will cause breakage in most dep sources until that source is updated, so I wanted to make sure I only caused one single instance of breakage. Better to get the DSL updates right the first time, and get the transition over with in one go.
+Everything that you can declare with babushka's DSL is either a dep or a template. A dep at its lowest level is defined by the three statements `requires`, `met?` and `meet`, and all deps are based on those three, whether they explicitly define them or not.
 
-When the new babushka finds a dep using the old, incompatible syntax, it prints an example showing how it should be upgraded.
+You can't achieve a truly concise DSL without wrapping up common patterns as they emerge, though, and so you can define deps against templates, like `tmbundle`, `vim-plugin` or whatever you like. Because some things are universal, a few of these templates are bundled along with babushka itself---like `pkg` for writing deps that work with the system's package manager, or `gem` for rubygems.
 
-## Rationale
+These were defined in an outdated way that predated templates, but in essence they were the same thing. But because those top-level methods like `pkg` were there in babushka core, they appeared to be special, and their relation to a standard `dep` wasn't clear.
 
-So, why? Well, babushka started as a proof-of-concept in a single `babushka.rb` file, and all the deps were hardcoded into babushka itself. Obviously that wasn't going to scale, or even last once I got my first user, but to just show the idea worked and was worth pursuing, it was the right choice.
+That's all cleaned up now. Just as sources have been unified, all deps are defined with the `dep` top-level method now, whether they use a template or not. Instead of saying `gem 'hpricot'`, you say either `dep 'hpricot', :template => 'gem'`, or `dep 'hpricot.gem'`. These two styles would produce the same dep---the choice is there to allow you to include the template type in the dep's name.
 
-The next step was to separate the deps from the engine by adding dep sources. But the more you lower the barrier to entry, the more things get used, so autosources were introduced—just specify a qualified name like `benhoskings:textmate`, and the `textmate` dep is run from my dep source, which is pulled from github.
+In a lot of situations, this is just what you want---for example, `TextMate.app`, `Cucumber.tmbundle` and `sinatra.gem` are all concise names that are defined against templates, and describe exactly what they install. But, there are other situations where it gets messy, and the hash syntax is clearer---for example, `dep 'rubygems source present', :template => 'gem_source'`.
 
-The next problem was scaling. Things worked alright when it was just a few dudes writing deps, but very quickly, dep names started to conflict, and it was clear that the dep source idea wouldn't scale as it was without people constantly treading on others' toes.
-
-## Everything is just a dep (and always was)
-
-The changes have made both writing and running deps a lot more intuitive, and removed a couple of elements of the original design that tended to confuse.
-
-Everything that you can declare with babushka's DSL is a dep or a template. A dep at its lowest level is defined by the three declarations `requires`, `met?` and `meet`, and all deps are based on those three, whether they explicitly define them or not.
-
-You can't get true conciseness without wrapping up common patterns, though, and so you can use templates, like `tmbundle`, `vim-plugin` or whatever you like. Because some things are universal, though, a few of these were bundled along with babushka itself---like `pkg` for writing deps that work with the system's package manager, or `gem` for rubygems.
-
-These special templates were defined in an outdated way that predated templates, but in essence they were the same thing. But because those top-level methods like `pkg` were there in babushka core, they appeared to be special, and their relation to a standard `dep` wasn't clear.
-
-That's all cleaned up now as well. Just as manual and auto sources have been unified, all deps are defined with the `dep` top-level method now, whether they use a template or not.
-
-Instead of saying `pkg 'mongo'`, you say either `dep 'mongo', :template => 'managed'`, or `dep 'mongo.managed'` - whichever suits the situation better.
 
 [getting-started]: /2010/07/24/getting-started-with-babushka
 [master]: http://github.com/benhoskings/babushka

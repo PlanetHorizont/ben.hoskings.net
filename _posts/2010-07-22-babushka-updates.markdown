@@ -7,9 +7,21 @@ I've been chipping away at the latest round of babushka updates over the last si
 
 If you haven't used babushka before, [here's a quick tutorial and introduction][getting-started].
 
+For the impatient, here's the short version.
+
+- Sources have been unified into `~/.babushka/sources`, and `sources.yml` is gone;
+- Namespace deps with `sourcename:depname` to jump sources, or to run from a non-default source;
+- Instead of `app Chromium.app`, use `dep Chromium.app`;
+- Instead of `gem_source 'rubygems source present'`, use `dep 'rubygems source present', :template => 'gem_source'`;
+- The `pkg` template was renamed to `managed` because it looked like it handled OS X installer packages.
+
+---
+
 The latest round of updates involved redesigning the way deps and dep sources work, in order to make collaboration easier, encourage trust-based source sharing, and address what were obvious scaling barriers. A lot of the plumbing has been redesigned and reconnected. A couple of changes to the DSL were required, but it's remained largely the same.
 
 A lot of the internal changes aren't directly visible; together, they mean that dep sources are a lot smoother and more automatic now. The visible changes arose from the fact that the more people start writing deps, the more everyone treads on each others' toes with naming collisions. As such, dep sources had to be made completely independent of each other. This involved a few separate changes to the way sources work.
+
+---
 
 _Each source maintains its own pool of deps now, so there are no naming conflicts across sources._
 
@@ -19,14 +31,12 @@ This allows deps in different sources to have the same name without conflicting 
 
 In some situations, this means you have to include a dep's source in its name, so babushka knows where to look for it.
 
-_To run a dep that isn't in a default source, its name has to be namespaced._
+---
 
-There are three default sources whose deps can be referred to without the source name:
+_To run a dep that isn't in a default source, its name has to be namespaced._ There are three default sources whose deps can be referred to without the source name:
 
 - The core source, usually `/usr/local/babushka/deps`, which contains the deps babushka needs to install itself---things like ruby, git, and the standard package managers;
-
 - The current project's deps, found in the current working directory at `./babushka-deps`;
-
 - Your personal dep source, at `~/.babushka/deps`. In future, babushka will automatically set this directory up as a git repo pointing at `http://github.com/you/babushka-deps`.
 
 To reference a dep that isn't in one of these three core sources, you just prepend the source name to it. So instead of running `babushka TextMate.app`, you should instead run `babushka benhoskings:TextMate.app` now, and so on.
@@ -37,6 +47,8 @@ Specifying dep names with `requires` statements follows the same pattern. To req
       requires 'benhoskings:TextMate.app'
       …
     end
+
+---
 
 _The source system has been totally redesigned, so that it no longer requires a config file, is much more hackable, and can be completely automatic._
 
@@ -60,6 +72,7 @@ All together, this means that the source system has been unified, so that it no 
 
 - **But, there is one caveat:** babushka assumes that it has control of any git repos within `~/.babushka/sources`, so don't leave uncommitted changes in any of those repos because babushka won't hesitate to blow them away. This might change in future; get in touch on the [mailing list][mailing-list] to share ideas on this.
 
+---
 
 _Everything is just a dep (and always was, but now it's obvious)._
 
@@ -75,9 +88,17 @@ In a lot of situations, this is just what you want---for example, `TextMate.app`
 
 All the [core deps][core-deps] have been updated, along with the ones in [my dep source][benhoskings-deps]. You'll need to update your deps before they work with the new version of babushka. The best way to do this is to just try running one of your deps; as babushka tries to load your source it will complain about each piece of the old syntax it doesn't understand, and explain how you should update it.
 
+---
+
+_So, that's where things sit at the moment._ I think with this latest round of changes, babushka's design is solidifying. But having said that, I'm still very open to change, and I'm not afraid of making invasive changes if the case for them is strong enough. I'm really open to new ideas large and small, so if you have ideas, comments or feedback, I'd love to hear about them.
+
+The best place for ideas and discussion is the [mailing list][mailing-list]. You should follow [@babushka_app][twitter] for updates and announcements, and [get in touch][tweet] whenever you like. Non-reply tweets are fairly sparse, so following won't clog up your timeline.
+
 
 [getting-started]: /2010/07/24/getting-started-with-babushka
 [master]: http://github.com/benhoskings/babushka
 [mailing-list]: http://groups.google.com/group/babushka_app
+[twitter]: http://twitter.com/babushka_app
+[tweet]: http://twitter.com/?status=%40babushka_app%20
 [core-deps]: http://github.com/benhoskings/babushka/tree/master/deps
 [benhoskings-deps]: http://github.com/benhoskings/babushka-deps

@@ -3,7 +3,7 @@ layout: post
 title: "design and DSL changes in babushka-0.6"
 ---
 
-I've been chipping away at the latest round of babushka updates over the last six weeks or so. They involved changes to existing babushka components, and several new ones. Once things were specced and working, I let the updates cool in a topic branch while I turned the design over in my hands to see if it felt right. After some tweaks I've decided it does, and so last week I merged the changes to [master][master]. If you update or install today you'll have the latest and greatest---as I write, at v0.6.1.
+I've been chipping away at the latest round of babushka updates over the last six weeks or so. They involved changes to existing babushka components, and several new ones. Once things were specced and working, I let the updates cool in a topic branch while I turned the design over in my hands to see if it felt right. After some tweaks I've decided it does, and so last week I merged the changes to [master][master]. If you update or install today you'll have the latest and greatest---as I write, at v0.6.2.
 
 If you haven't used babushka before, [here's a quick tutorial and introduction][getting-started].
 

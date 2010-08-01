@@ -3,6 +3,8 @@ $leading: 1.5
 $margin: 1.5em
 $col: 4em
 $padding: 0.1em
+$heading_scale: 2
+$heading_size: #{$heading_scale}em
 $border-color: #777
 $border: $border-color 1px dotted
 $color: #333
@@ -79,9 +81,11 @@ article
     color: $color
   header
     h1
-      font-size: 2em
+      font-size: $heading_size
       a
         display: block
+        padding-left: $padding / $heading_scale
+        padding-right: $padding / $heading_scale
     time
       color: $date-color
       float: right

@@ -20,8 +20,9 @@ ul.years li { list-style-type: none; }
 
 article p, article ul, article ol, article header, article pre { margin-bottom: 1.5em; }
 article p, article ul li { color: #333333; }
+article header h1 { font-size: 2em; }
 article header h1 a { display: block; }
-article header time { color: #777777; float: right; }
+article header time { color: #777777; float: right; padding-top: 1em; }
 
 ul.years li { display: block; overflow: hidden; margin-top: -1px; border-top: #777777 1px dotted; border-top-color: #777777; }
 ul.years li:first-child, ul.years li li { border-top: none; margin-top: 0; }
@@ -46,7 +47,9 @@ code pre { background-color: rgba(255, 255, 255, 0.12); }
 
 pre, input[type=text], textarea { background-color: transparent; }
 
-body > header, nav, article, footer, #home { margin-top: -1px; border-top: #777777 1px dotted; border-top-color: #777777; }
+hr { border: none; }
+
+body > header, nav, article, footer, #home, hr { margin-top: -1px; border-top: #777777 1px dotted; border-top-color: #777777; }
 
 body { padding-top: 1.5em; }
 

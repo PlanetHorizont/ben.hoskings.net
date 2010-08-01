@@ -4,12 +4,141 @@
   <title>benhoskin.gs</title>
   <link href="http://benhoskin.gs" rel="alternate"/>
   <link href="http://benhoskin.gs/index.atom" rel="self"/>
-  <updated>2010-08-01T22:42:06+10:00</updated>
+  <updated>2010-08-01T22:43:41+10:00</updated>
   <author>
     <name>Ben Hoskings</name>
     <email>ben@hoskings.net</email>
     <uri>http://benhoskin.gs</uri>
   </author>
+
+  <entry>
+    <title>getting started with babushka</title>
+    <link href="http://benhoskin.gs/2010/08/01/getting-started-with-babushka"/>
+    <updated>2010-08-01T00:00:00+10:00</updated>
+    <id>http://benhoskin.gs/2010/08/01/getting-started-with-babushka</id>
+    <content type="html">&lt;p&gt;&lt;em&gt;To install for the first time, or update an existing system&lt;/em&gt;, just run&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;bash -c &amp;quot;`curl babushka.me/up`&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;#8217;s for a box with &lt;code&gt;curl&lt;/code&gt;, like a Mac. Most Linux boxes have &lt;code&gt;wget&lt;/code&gt; instead, so for those, run&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;bash -c &amp;quot;`wget -O - babushka.me/up`&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The script at &lt;code&gt;babushka.me/up&lt;/code&gt; downloads a temporary copy of babushka in a tarball, which is used to run &lt;code&gt;babushka babushka&lt;/code&gt;, which in turn installs babushka for real. So if you already have babushka installed, you can just run&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;`babushka babushka`&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The only difference is that the bootstrap command runs from a fresh copy of babushka that it downloads, and &lt;code&gt;babushka babushka&lt;/code&gt; runs from the version that&amp;#8217;s currently on your system.&lt;/p&gt;</content>
+  </entry>
+
+  <entry>
+    <title>design and DSL changes in babushka-0.6</title>
+    <link href="http://benhoskin.gs/2010/08/01/design-and-dsl-changes-in-babushka-v0.6"/>
+    <updated>2010-08-01T00:00:00+10:00</updated>
+    <id>http://benhoskin.gs/2010/08/01/design-and-dsl-changes-in-babushka-v0.6</id>
+    <content type="html">&lt;p&gt;I&amp;#8217;ve been chipping away at the latest round of babushka updates over the last six weeks or so. They involved changes to existing babushka components, and several new ones. Once things were specced and working, I let the updates cool in a topic branch while I turned the design over in my hands to see if it felt right. After some tweaks I&amp;#8217;ve decided it does, and so last week I merged the changes to &lt;a href='http://github.com/benhoskings/babushka'&gt;master&lt;/a&gt;. If you update or install today you&amp;#8217;ll have the latest and greatest&amp;#8212;as I write, at v0.6.1.&lt;/p&gt;
+
+&lt;p&gt;If you haven&amp;#8217;t used babushka before, &lt;a href='/2010/07/24/getting-started-with-babushka'&gt;here&amp;#8217;s a quick tutorial and introduction&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For the impatient, here&amp;#8217;s the short version.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Sources have been unified into &lt;code&gt;~/.babushka/sources&lt;/code&gt;, and &lt;code&gt;sources.yml&lt;/code&gt; is gone;&lt;/li&gt;
+
+&lt;li&gt;Namespace deps with &lt;code&gt;sourcename:depname&lt;/code&gt; to jump sources, or to run from a non-default source;&lt;/li&gt;
+
+&lt;li&gt;Instead of &lt;code&gt;app Chromium.app&lt;/code&gt;, use &lt;code&gt;dep Chromium.app&lt;/code&gt;;&lt;/li&gt;
+
+&lt;li&gt;Instead of &lt;code&gt;gem_source &amp;#39;rubygems source present&amp;#39;&lt;/code&gt;, use &lt;code&gt;dep &amp;#39;rubygems source present&amp;#39;, :template =&amp;gt; &amp;#39;gem_source&amp;#39;&lt;/code&gt;;&lt;/li&gt;
+
+&lt;li&gt;The &lt;code&gt;pkg&lt;/code&gt; template was renamed to &lt;code&gt;managed&lt;/code&gt; because it looked like it handled OS X installer packages.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;p&gt;The latest round of updates involved redesigning the way deps and dep sources work, in order to make collaboration easier, encourage trust-based source sharing, and address what were obvious scaling barriers. A lot of the plumbing has been redesigned and reconnected. A couple of changes to the DSL were required, but it&amp;#8217;s remained largely the same.&lt;/p&gt;
+
+&lt;p&gt;A lot of the internal changes aren&amp;#8217;t directly visible; together, they mean that dep sources are a lot smoother and more automatic now. The visible changes arose from the fact that the more people start writing deps, the more everyone treads on each others&amp;#8217; toes with naming collisions. As such, dep sources had to be made completely independent of each other. This involved a few separate changes to the way sources work.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Each source maintains its own pool of deps now, so there are no naming conflicts across sources.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Previous versions of babushka loaded deps and templates from all sources into a single &amp;#8216;pool&amp;#8217;. Deps were looked up from the pool by name at runtime when they were run, or were required by another dep. Now each source has a &lt;code&gt;DepPool&lt;/code&gt; of its own, which stores just the deps defined in that source.&lt;/p&gt;
+
+&lt;p&gt;This allows deps in different sources to have the same name without conflicting with each other. The &lt;a href='http://github.com/benhoskings/babushka/tree/master/deps'&gt;core deps&lt;/a&gt; that are bundled with babushka also have their own source, and if you define deps in an interactive session like &lt;code&gt;irb&lt;/code&gt;, they&amp;#8217;re stored in an implicit source.&lt;/p&gt;
+
+&lt;p&gt;In some situations, this means you have to include a dep&amp;#8217;s source in its name, so babushka knows where to look for it.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;To run a dep that isn&amp;#8217;t in a default source, its name has to be namespaced.&lt;/em&gt; There are three default sources whose deps can be referred to without the source name:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The core source, usually &lt;code&gt;/usr/local/babushka/deps&lt;/code&gt;, which contains the deps babushka needs to install itself&amp;#8212;things like ruby, git, and the standard package managers;&lt;/li&gt;
+
+&lt;li&gt;The current project&amp;#8217;s deps, found in the current working directory at &lt;code&gt;./babushka-deps&lt;/code&gt;;&lt;/li&gt;
+
+&lt;li&gt;Your personal dep source, at &lt;code&gt;~/.babushka/deps&lt;/code&gt;. In future, babushka will automatically set this directory up as a git repo pointing at &lt;code&gt;http://github.com/you/babushka-deps&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To reference a dep that isn&amp;#8217;t in one of these three core sources, you just prepend the source name to it. So instead of running &lt;code&gt;babushka TextMate.app&lt;/code&gt;, you should instead run &lt;code&gt;babushka benhoskings:TextMate.app&lt;/code&gt; now, and so on.&lt;/p&gt;
+
+&lt;p&gt;Specifying dep names with &lt;code&gt;requires&lt;/code&gt; statements follows the same pattern. To require a dep in one of the three core sources, or one that&amp;#8217;s in the same source as the requiring dep, there&amp;#8217;s no need to specify the source name. To require a non-core dep from a different source, just specify its source name as above.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;dep &amp;#39;some TextMate plugin&amp;#39; do
+  requires &amp;#39;benhoskings:TextMate.app&amp;#39;
+  …
+end&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;The source system has been totally redesigned, so that it no longer requires a config file, is much more hackable, and can be completely automatic.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Firstly, sources are user-specific now, and stored in &lt;code&gt;~/.babushka/sources&lt;/code&gt; instead of within the babushka installation for all to share (by default, &lt;code&gt;/usr/local/babushka/sources&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;Secondly, now that babushka knows where to look for namespaced deps, sources are lazily loaded when a dep they contain is required; the old design eagerly loaded all sources. This saves on startup time once you have more than a few sources present, and means babushka can handle dozens of sources without slowdown.&lt;/p&gt;
+
+&lt;p&gt;Thirdly, since deps can&amp;#8217;t conflict with each other anymore, there&amp;#8217;s no need to set source load order, and so &lt;code&gt;sources.yml&lt;/code&gt; is gone. This makes the source system much simpler: a source&amp;#8217;s name is defined by the name of the directory it&amp;#8217;s in. This allows the source system to be used in a few different ways.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;If you run a dep like &lt;code&gt;benhoskings:Chromium.app&lt;/code&gt;, the source at &lt;code&gt;~/.babushka/sources/benhoskings&lt;/code&gt; will be loaded, no matter how it got there. So adding sources with custom names, or overriding someone else&amp;#8217;s source with one of your own, is simple&amp;#8212;just name its directory accordingly.&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;But, if &lt;code&gt;~/.babushka/sources/benhoskings&lt;/code&gt; doesn&amp;#8217;t exist, it will be cloned from &lt;code&gt;http://github.com/benhoskings/babushka-deps.git&lt;/code&gt;. This is probably what you&amp;#8217;ll want in most cases.&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;You can still use &lt;code&gt;babushka sources -a &amp;lt;name&amp;gt; &amp;lt;uri&amp;gt;&lt;/code&gt; to add a source with a custom name; that will clone &lt;code&gt;&amp;lt;uri&amp;gt;&lt;/code&gt; into &lt;code&gt;~/.babushka/sources/&amp;lt;name&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;You can inspect all the present sources with &lt;code&gt;babushka sources -l&lt;/code&gt;, which shows some info on each source that babushka knows about, including the path from which babushka will try to update it when it&amp;#8217;s used.&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;Since &lt;code&gt;sources.yml&lt;/code&gt; is gone, the only stored state is in the names of the source directories. So, it&amp;#8217;s completely safe to manually add, move, rename or delete directories within &lt;code&gt;~/.babushka/sources&lt;/code&gt; .&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;All together, this means that the source system has been unified, so that it no longer distinguishes between sources that were added manually, and sources that were auto-added when a namespaced dep was run. They&amp;#8217;re all one and the same now, in &lt;code&gt;~/.babushka/sources&lt;/code&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;But, there is one caveat:&lt;/strong&gt; babushka assumes that it has control of any git repos within &lt;code&gt;~/.babushka/sources&lt;/code&gt;, so don&amp;#8217;t leave uncommitted changes in any of those repos because babushka won&amp;#8217;t hesitate to blow them away. This might change in future; get in touch on the &lt;a href='http://groups.google.com/group/babushka_app'&gt;mailing list&lt;/a&gt; to share ideas on this.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Everything is just a dep (and always was, but now it&amp;#8217;s obvious).&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Everything that you can declare with babushka&amp;#8217;s DSL is either a dep or a template. A dep at its lowest level is defined by the three statements &lt;code&gt;requires&lt;/code&gt;, &lt;code&gt;met?&lt;/code&gt; and &lt;code&gt;meet&lt;/code&gt;, and all deps are based on those three, whether they explicitly define them or not.&lt;/p&gt;
+
+&lt;p&gt;You can&amp;#8217;t achieve a truly concise DSL without wrapping up common patterns as they emerge, though, and so you can define deps against templates, like &lt;code&gt;tmbundle&lt;/code&gt;, &lt;code&gt;vim-plugin&lt;/code&gt; or whatever you like. Because some things are worth making universal, a few of these templates are bundled along with babushka itself&amp;#8212;like &lt;code&gt;app&lt;/code&gt; for OS X applications, or &lt;code&gt;gem&lt;/code&gt; for rubygems.&lt;/p&gt;
+
+&lt;p&gt;Confusion arose around these universal templates, though. Their top-level methods like &lt;code&gt;pkg&lt;/code&gt; were defined in babushka core, which meant that they appeared to be special, and that their relation to a standard &lt;code&gt;dep&lt;/code&gt; wasn&amp;#8217;t clear.&lt;/p&gt;
+
+&lt;p&gt;That&amp;#8217;s all cleaned up now. Just as sources have been unified, deps are always defined with the &lt;code&gt;dep&lt;/code&gt; top-level method now, whether they use a template or not. Instead of saying &lt;code&gt;gem &amp;#39;hpricot&amp;#39;&lt;/code&gt;, you say either &lt;code&gt;dep &amp;#39;hpricot&amp;#39;, :template =&amp;gt; &amp;#39;gem&amp;#39;&lt;/code&gt;, or &lt;code&gt;dep &amp;#39;hpricot.gem&amp;#39;&lt;/code&gt;. These two styles produce the same dep&amp;#8212;the choice is there to allow you to include the template type in the dep&amp;#8217;s name.&lt;/p&gt;
+
+&lt;p&gt;In a lot of situations, this is just what you want&amp;#8212;for example, &lt;code&gt;TextMate.app&lt;/code&gt;, &lt;code&gt;Cucumber.tmbundle&lt;/code&gt; and &lt;code&gt;sinatra.gem&lt;/code&gt; are all concise names that are defined against templates, and describe exactly what they install. But, there are other situations where it gets messy, and the hash syntax is clearer&amp;#8212;for example, &lt;code&gt;dep &amp;#39;rubygems source present&amp;#39;, :template =&amp;gt; &amp;#39;gem_source&amp;#39;&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;All the &lt;a href='http://github.com/benhoskings/babushka/tree/master/deps'&gt;core deps&lt;/a&gt; have been updated, along with the ones in &lt;a href='http://github.com/benhoskings/babushka-deps'&gt;my dep source&lt;/a&gt;. You&amp;#8217;ll need to update your deps before they work with the new version of babushka. The best way to do this is to just try running one of your deps; as babushka tries to load your source it will complain about each piece of the old syntax it doesn&amp;#8217;t understand, and explain how you should update it.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;So, that&amp;#8217;s where things sit at the moment.&lt;/em&gt; I think with this latest round of changes, babushka&amp;#8217;s design is solidifying. But having said that, I&amp;#8217;m still very open to change, and I&amp;#8217;m not afraid of making invasive changes if the case for them is strong enough. I&amp;#8217;m really open to new ideas large and small, so if you have ideas, comments or feedback, I&amp;#8217;d love to hear about them.&lt;/p&gt;
+
+&lt;p&gt;The best place for ideas and discussion is the &lt;a href='http://groups.google.com/group/babushka_app'&gt;mailing list&lt;/a&gt;. You should follow &lt;a href='http://twitter.com/babushka_app'&gt;@babushka_app&lt;/a&gt; for updates and announcements, and &lt;a href='http://twitter.com/?status=%40babushka_app%20'&gt;get in touch&lt;/a&gt; whenever you like. Non-reply tweets are fairly sparse, so following won&amp;#8217;t clog up your timeline.&lt;/p&gt;</content>
+  </entry>
 
   <entry>
     <title>Open Letter to Senator the Hon Stephen Conroy, Australian Minister for Broadband, Communications and the Digital Economy</title>
@@ -294,6 +423,26 @@ end&lt;/code&gt;&lt;/pre&gt;
   </entry>
 
   <entry>
+    <title>spork + no db prep: four-fold speedup</title>
+    <link href="http://benhoskin.gs/2009/07/16/spork-no-db-prep-four-fold-speedup"/>
+    <updated>2009-07-16T00:00:00+10:00</updated>
+    <id>http://benhoskin.gs/2009/07/16/spork-no-db-prep-four-fold-speedup</id>
+    <content type="html">&lt;p&gt;Here are some numbers for the rails rspeccing changes I &lt;a href='http://ben.hoskings.net/2009/07/16/speedy-rspec-with-rails'&gt;wrote about earlier today&lt;/a&gt;:&lt;/p&gt;
+
+&lt;p&gt;before&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; time rake spec
+13.27 real         9.93 user         2.18 sys&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;after&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; time rake spec
+3.35 real         0.88 user         0.25 sys&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Nice.&lt;/p&gt;</content>
+  </entry>
+
+  <entry>
     <title>speedy rspec with rails</title>
     <link href="http://benhoskin.gs/2009/07/16/speedy-rspec-with-rails"/>
     <updated>2009-07-16T00:00:00+10:00</updated>
@@ -327,26 +476,6 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Next, to make ⌘R spec runs in TextMate spork-aware, head to the TextMate preferences and add &lt;code&gt;--drb&lt;/code&gt; to the &lt;code&gt;TM_RSPEC_OPTS&lt;/code&gt; variable (creating it if required). I also had to patch the &lt;code&gt;spec_mate&lt;/code&gt; helper &lt;a href='http://github.com/benhoskings/ruby-rspec.tmbundle/commit/c70b16106cd5ba74e97cc967d0e8f307850cbd28'&gt;like so&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Running through spork causes a bit of a performance hit, too&amp;#8212;it eliminates the startup delay, but the specs run slower, since there&amp;#8217;s a DRb back and forth involved for each one. Spork is for running a few tests at a time, or for running through autotest, while you&amp;#8217;re developing. When you run your full suite, you should stop the spork listener and run them locally at full speed.&lt;/p&gt;</content>
-  </entry>
-
-  <entry>
-    <title>spork + no db prep: four-fold speedup</title>
-    <link href="http://benhoskin.gs/2009/07/16/spork-no-db-prep-four-fold-speedup"/>
-    <updated>2009-07-16T00:00:00+10:00</updated>
-    <id>http://benhoskin.gs/2009/07/16/spork-no-db-prep-four-fold-speedup</id>
-    <content type="html">&lt;p&gt;Here are some numbers for the rails rspeccing changes I &lt;a href='http://ben.hoskings.net/2009/07/16/speedy-rspec-with-rails'&gt;wrote about earlier today&lt;/a&gt;:&lt;/p&gt;
-
-&lt;p&gt;before&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; time rake spec
-13.27 real         9.93 user         2.18 sys&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;after&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt; time rake spec
-3.35 real         0.88 user         0.25 sys&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Nice.&lt;/p&gt;</content>
   </entry>
 
   <entry>

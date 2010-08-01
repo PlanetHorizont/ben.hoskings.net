@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>ben hoskings</title>
+    <link href="/stylesheets/styles.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/index.atom" rel="alternate" title="Atom feed" type="application/atom+xml" />
+    <!--[if IE]>
+      <script type="text/javascript">
+        //<![CDATA[
+          // For discussion and comments, see: http://remysharp.com/2009/01/07/html5-enabling-script/
+          (function(){if(!/*@cc_on!@*/0)return;var e = "abbr,article,aside,audio,bb,canvas,datagrid,datalist,details,dialog,eventsource,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');for(var i=0;i<e.length;i++){document.createElement(e[i])}})();
+        //]]>
+      </script>
+    <![endif]-->
+  </head>
+  <body>
+    <header>
+      <h1>
+        <a href="/">ben hoskings</a>
+      </h1>
+    </header>
+    <nav>
+      <a href="http://twitter.com/ben_h" rel="me">twitter</a>
+      <a href="http://github.com/benhoskings" rel="me">github</a>
+    </nav>
+    <article>
+      <header>
+        <time pubdate="pubdate">2010 August  1</time>
+        <h1>
+          <a href="/">getting started with babushka</a>
+        </h1>
+      </header>
+      <p><em>To install for the first time, or update an existing system</em>, just run</p>
+      
+      <pre><code>bash -c &quot;`curl babushka.me/up`&quot;</code></pre>
+      
+      <p>That&#8217;s for a box with <code>curl</code>, like a Mac. Most Linux boxes have <code>wget</code> instead, so for those, run</p>
+      
+      <pre><code>bash -c &quot;`wget -O - babushka.me/up`&quot;</code></pre>
+      
+      <p>The script at <code>babushka.me/up</code> downloads a temporary copy of babushka in a tarball, which is used to run <code>babushka babushka</code>, which in turn installs babushka for real. So if you already have babushka installed, you can just run</p>
+      
+      <pre><code>`babushka babushka`</code></pre>
+      
+      <p>The only difference is that the bootstrap command runs from a fresh copy of babushka that it downloads, and <code>babushka babushka</code> runs from the version that&#8217;s currently on your system.</p>
+    </article>
+    <footer>
+      <span>
+        Powered by
+        <a href="http://github.com/mojombo/jekyll">Jekyll</a>
+        Content &amp; layout &copy; Ben Hoskings.
+      </span>
+    </footer>
+    <script type="text/javascript">
+      //<![CDATA[
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        try {
+          var pageTracker = _gat._getTracker("UA-9740324-2");
+          pageTracker._trackPageview();
+        } catch(err) {}
+      //]]>
+    </script>
+  </body>
+</html>

@@ -3,7 +3,7 @@ layout: post
 title: "design and DSL changes in babushka-0.6"
 ---
 
-I've been chipping away at the latest round of babushka updates over the last six weeks or so. They involved changes to existing babushka components, and several new ones. Once things were specced and working, I let the updates cool in a topic branch while I turned the design over in my hands to see if it felt right. After some tweaks I've decided it does, and so last week I merged the changes to [master][master]. If you update or install today you'll have the latest and greatest---as I write, at v0.6.1.
+I've been chipping away at the latest round of babushka updates over the last six weeks or so. They involved changes to existing babushka components, and several new ones. Once things were specced and working, I let the updates cool in a topic branch while I turned the design over in my hands to see if it felt right. After some tweaks I've decided it does, and so last week I merged the changes to [master][master]. If you update or install today you'll have the latest and greatest---as I write, at v0.6.2.
 
 If you haven't used babushka before, [here's a quick tutorial and introduction][getting-started].
 
@@ -17,7 +17,7 @@ For the impatient, here's the short version.
 
 ---
 
-The latest round of updates involved redesigning the way deps and dep sources work, in order to make collaboration easier, encourage trust-based source sharing, and address what were obvious scaling barriers. A lot of the plumbing has been redesigned and reconnected. A couple of changes to the DSL were required, but it's remained largely the same.
+The latest round of updates involved redesigning the way deps and dep sources work, in order to make collaboration easier, encourage trust-based source sharing, and address what were obvious scaling barriers. A lot of the plumbing has been redesigned and reconnected. A couple of changes to the DSL were required, but the syntax has remained largely the same.
 
 A lot of the internal changes aren't directly visible; together, they mean that dep sources are a lot smoother and more automatic now. The visible changes arose from the fact that the more people start writing deps, the more everyone treads on each others' toes with naming collisions. As such, dep sources had to be made completely independent of each other. This involved a few separate changes to the way sources work.
 

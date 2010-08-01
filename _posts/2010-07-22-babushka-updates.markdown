@@ -42,7 +42,7 @@ _The source system has been totally redesigned, so that it no longer requires a 
 
 Firstly, sources are user-specific now, and stored in `~/.babushka/sources` instead of within the babushka installation for all to share (by default, `/usr/local/babushka/sources`).
 
-Secondly, now that babushka knows where to look for namespaced deps, sources are only loaded when a dep they contain is required. The old design loaded all known sources all the time.
+Secondly, now that babushka knows where to look for namespaced deps, sources are lazily loaded when a dep they contain is required; the old design eagerly loaded all sources. This saves on startup time once you have more than a few sources present, and means babushka can handle dozens of sources without slowdown.
 
 Thirdly, since deps can't conflict with each other anymore, there's no need to set source load order, and so `sources.yml` is gone. This makes the source system much simpler: a source's name is defined by the name of the directory it's in. This allows the source system to be used in a few different ways.
 
@@ -52,19 +52,13 @@ Thirdly, since deps can't conflict with each other anymore, there's no need to s
 
 - You can still use `babushka sources -a <name> <uri>` to add a source with a custom name; that will clone `<uri>` into `~/.babushka/sources/<name>`.
 
-- You can inspect all the present sources with `babushka sources -l`, which shows some info on each source that babushka can see, including the path from which babushka will try to update it when it's used.
+- You can inspect all the present sources with `babushka sources -l`, which shows some info on each source that babushka knows about, including the path from which babushka will try to update it when it's used.
 
-- Since `sources.yml` is gone, the only stored state is in the names of the source directories. So it's completely safe to manually add, move, rename or delete directories within `~/.babushka/sources`.
+- Since `sources.yml` is gone, the only stored state is in the names of the source directories. So, it's completely safe to manually add, move, rename or delete directories within `~/.babushka/sources` .
 
 All together, this means that the source system has been unified, so that it no longer distinguishes between sources that were added manually, and sources that were auto-added when a namespaced dep was run. They're all one and the same now, in `~/.babushka/sources`.
 
-- **But, there is one caveat:** babushka assumes that it has control of any git repos within `~/.babushka/sources`, so don't leave uncommitted changes in any of those repos because babushka won't hesitate to blow them away.
-
-
-- Defining meta deps used to add a top-level method, like `pkg` or `tmbundle`, and since those can't be namespaced, they had to go.
-
-
-
+- **But, there is one caveat:** babushka assumes that it has control of any git repos within `~/.babushka/sources`, so don't leave uncommitted changes in any of those repos because babushka won't hesitate to blow them away. This might change in future; get in touch on the [mailing list][mailing-list] to share ideas on this.
 
 
 ## But,
@@ -97,3 +91,4 @@ Instead of saying `pkg 'mongo'`, you say either `dep 'mongo', :template => 'mana
 
 [getting-started]: /2010/07/24/getting-started-with-babushka
 [master]: http://github.com/benhoskings/babushka
+[mailing-list]: http://groups.google.com/group/babushka_app

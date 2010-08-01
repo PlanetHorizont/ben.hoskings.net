@@ -3,19 +3,55 @@ layout: post
 title: "babushka v0.6"
 ---
 
-I've been chipping away at the latest round of babushka updates over the last six weeks or so. They involved changes to several babushka components, and several new ones. I let the updates cool in a topic branch while I turned the design over in my hands to see if it felt right. After some tweaks I've decided it does, and so earlier this week I merged the changes to [master][master]. If you update or install today you'll have the latest updates---as I write, at v0.6.1.
+I've been chipping away at the latest round of babushka updates over the last six weeks or so. They involved changes to existing babushka components, and several new ones. Once things were specced and working, I let the updates cool in a topic branch while I turned the design over in my hands to see if it felt right. After some tweaks I've decided it does, and so last week I merged the changes to [master][master]. If you update or install today you'll have the latest updates---as I write, at v0.6.1.
 
-If you haven't used babushka before, [here's a quick getting started guide][getting-started].
+If you haven't used babushka before, [here's a quick tutorial and introduction][getting-started].
 
-The latest round of updates involved a redesign of the way deps and dep sources work, in order to make collaboration easier, nudge usage in the direction of decentralised collaboration, and address what were obvious scaling barriers. The syntax has largely remained the same, but a lot of the plumbing has been redesigned and reconnected, and a couple of changes to the DSL were required.
+The latest round of updates involved redesigning the way deps and dep sources work, in order to make collaboration easier, encourage trust-based source sharing, and address what were obvious scaling barriers. A lot of the plumbing has been redesigned and reconnected. A couple of changes to the DSL were required, but it's remained largely the same.
 
-A lot of the internal changes aren't directly visible; they just mean that dep sources are a lot smoother and more automatic now. The visible changes arose from the fact that the more people start writing deps, the more people tread on each others' toes with naming collisions. As such, dep sources had to be made completely independent of each other. This involved a few separate changes to the way sources work. I'm sure there's a good foot-related pun there that explains 
+A lot of the internal changes aren't directly visible; together, they mean that dep sources are a lot smoother and more automatic now. The visible changes arose from the fact that the more people start writing deps, the more everyone treads on each others' toes with naming collisions. As such, dep sources had to be made completely independent of each other. This involved a few separate changes to the way sources work.
 
+_Each source maintains its own pool of deps now, so there are no naming conflicts across sources._
 
+Previous versions of babushka loaded deps and templates from all sources into a single 'pool'. Deps were looked up from the pool by name at runtime when they were run, or were required by another dep. Now each source has a `DepPool` of its own, which stores just the deps defined in that source.
 
-- Instead of loading deps from all sources into a single pool, each source has its own pool now, so there are no naming conflicts across sources.
+This allows deps in different sources to have the same name without conflicting with each other. The core deps that are bundled with babushka also have their own source, and if you define deps in an interactive session like `irb`, they're stored in an implicit source.
 
-- To reference a dep that isn't in the same source or one of the core sources, its name has to be namespaced---like `benhoskings:textmate` above.
+In some situations, this means you have to include a dep's source in its name, so babushka knows where to look for it.
+
+_To run a dep that isn't in a default source, its name has to be namespaced._
+
+There are three default sources whose deps can be referred to without the source name:
+
+- The core source, usually `/usr/local/babushka/deps`, which contains the deps babushka needs to install itself---things like ruby, git, and the standard package managers;
+
+- The current project's deps, found in the current working directory at `./babushka-deps`;
+
+- Your personal dep source, at `~/.babushka/deps`. In future, babushka will automatically set this directory up as a git repo pointing at `http://github.com/you/babushka-deps`.
+
+To reference a dep that isn't in one of these three core sources, you just prepend the source name to it. So instead of running `babushka TextMate.app`, you should instead run `babushka benhoskings:TextMate.app` now, and so on.
+
+Specifying dep names with `requires` statements follows the same pattern. To require a dep in one of the three core sources, or one that's in the same source as the requiring dep, there's no need to specify the source name. To require a non-core dep from a different source, just specify its source name as above.
+
+    dep 'some TextMate plugin' do
+      requires 'benhoskings:TextMate.app'
+      …
+    end
+
+_The source system has been totally redesigned, so that it no longer requires a config file, is much more hackable, and can be completely automatic._
+
+Firstly, sources are stored in `~/.babushka/sources` now, instead of within the babushka installation like before (by default, `/usr/local/babushka/sources`).
+
+Secondly, since deps can't conflict with each other anymore, there's no need to set source load order, and so `sources.yml` is gone. This makes the source system much simpler: a source's name is defined by the name of the directory it's in. This allows the source system to be used in a few different ways.
+
+- If you run a dep like `benhoskings:Chromium.app`, the source at `~/.babushka/sources/benhoskings` will be loaded, no matter how it got there. So adding sources with custom names, or overriding someone else's source with one of your own, is simple---just name its directory accordingly.
+
+- But, if `~/.babushka/sources/benhoskings` doesn't exist, it will be cloned from `http://github.com/benhoskings/babushka-deps.git`. This is probably what you'll want in most cases.
+
+- Since `sources.yml` is gone, the only stored state is in the names of the source directories. So it's completely safe to manually add, move, rename or delete directories within `~/.babushka/sources`.
+
+- **But, there is one caveat:** babushka assumes that it has control of any 
+
 - The source system was redesigned so that it no longer distinguishes between sources that were added manually, and sources that were auto-added by a namespaced dep. Everything is automatic now, and the sources.yml config file has been eliminated. The only use of sources.yml was specifying load order, and now that sources are independent, load order doesn't really mean anything.
 - Instead of storing sources in `/usr/local/babushka/sources` for all to share, they're user-specific now, and live in `~/.babushka/sources`.
 - Now that babushka knows where to look for namespaced deps, sources are only loaded when a dep inside them is required. The old design loaded all known sources all the time.

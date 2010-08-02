@@ -4,7 +4,7 @@
   <title>benhoskin.gs</title>
   <link href="http://benhoskin.gs" rel="alternate"/>
   <link href="http://benhoskin.gs/index.atom" rel="self"/>
-  <updated>2010-08-02T01:23:47+10:00</updated>
+  <updated>2010-08-02T23:54:05+10:00</updated>
   <author>
     <name>Ben Hoskings</name>
     <email>ben@hoskings.net</email>
@@ -38,7 +38,7 @@
     <id>http://benhoskin.gs/2010/08/01/design-and-dsl-changes-in-babushka-v0.6</id>
     <content type="html">&lt;p&gt;I&amp;#8217;ve been chipping away at the latest round of babushka updates over the last six weeks or so. They involved changes to existing babushka components, and several new ones. Once things were specced and working, I let the updates cool in a topic branch while I turned the design over in my hands to see if it felt right. After some tweaks I&amp;#8217;ve decided it does, and so last week I merged the changes to &lt;a href='http://github.com/benhoskings/babushka'&gt;master&lt;/a&gt;. If you update or install today you&amp;#8217;ll have the latest and greatest&amp;#8212;as I write, at v0.6.2.&lt;/p&gt;
 
-&lt;p&gt;If you haven&amp;#8217;t used babushka before, &lt;a href='/2010/07/24/getting-started-with-babushka'&gt;here&amp;#8217;s a quick tutorial and introduction&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you haven&amp;#8217;t used babushka before, &lt;a href='/2010/08/01/getting-started-with-babushka'&gt;here&amp;#8217;s a quick tutorial and introduction&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;For the impatient, here&amp;#8217;s the short version.&lt;/p&gt;
 

@@ -95,7 +95,7 @@ _So, that's where things sit at the moment._ I think with this latest round of c
 The best place for ideas and discussion is the [mailing list][mailing-list]. You should follow [@babushka_app][twitter] for updates and announcements, and [get in touch][tweet] whenever you like. Non-reply tweets are fairly sparse, so following won't clog up your timeline.
 
 
-[getting-started]: /2010/07/24/getting-started-with-babushka
+[getting-started]: /2010/08/01/getting-started-with-babushka
 [master]: http://github.com/benhoskings/babushka
 [mailing-list]: http://groups.google.com/group/babushka_app
 [twitter]: http://twitter.com/babushka_app

@@ -1,8 +1,8 @@
-$width: 40em
+$width: 640px
 $leading: 1.5
 $margin: 1.5em
-$col: 4em
-$padding: 0.1em
+$col: ($width / 10)
+$padding: 1px
 $heading_scale: 2
 $heading_size: #{$heading_scale}em
 $border-color: #777
@@ -84,8 +84,8 @@ article
       font-size: $heading_size
       a
         display: block
-        padding-left: $padding / $heading_scale
-        padding-right: $padding / $heading_scale
+        padding-left: $padding
+        padding-right: $padding
     time
       color: $date-color
       float: right
@@ -171,8 +171,8 @@ body > footer
   color: #555
   span
     font-size: 0.7em
-    padding-left: $padding / 0.7
-    padding-right: $padding / 0.7
+    padding-left: $padding
+    padding-right: $padding
 
 header h1 a,
 article p,
@@ -186,9 +186,9 @@ nav
   a
     display: block
     float: left
-    width: ($col - $padding) / 0.8
+    width: ($col - $padding)
     font-size: 0.8em
-    padding-left: $padding / 0.8
+    padding-left: $padding
     line-height: $leading / 0.8
     color: #666
     font-weight: bold

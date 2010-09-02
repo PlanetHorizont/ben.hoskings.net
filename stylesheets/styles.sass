@@ -59,7 +59,11 @@ h1, h2, h3, h4, h5
 img
   display: block
   border: solid 1px #777
-  max-width: $width - 2
+  margin: -1px
+  article &
+    max-width: $width
+    &:hover
+      cursor: pointer
 
 header,
 nav,
@@ -202,3 +206,5 @@ nav
   bottom: 0
   right: 0
   background-color: #000
+  img
+    position: absolute

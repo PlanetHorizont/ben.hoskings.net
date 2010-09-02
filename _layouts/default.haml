@@ -29,6 +29,22 @@
         %a{:href => 'http://github.com/mojombo/jekyll'} Jekyll
         Content &amp; layout &copy; Ben Hoskings.
 
+    %script{:src => "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js", :type => "text/javascript"}
+
+    :javascript
+      var showFullSizeImage = function(uri) {
+        $('.lightbox').remove();
+        $('<div />').addClass('lightbox').append(
+          $('<img />').addClass('original').attr('src', uri)
+        ).appendTo('body');
+      };
+      
+      $(function() {
+        $('img').click(function() {
+          showFullSizeImage($(this).attr('src').replace(/b.jpg$/, 'o.jpg'));
+        });
+      });
+    
     :javascript
       var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
       document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));

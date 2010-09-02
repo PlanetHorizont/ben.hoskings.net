@@ -36,7 +36,9 @@
         $('.lightbox').remove();
         $('<div />').addClass('lightbox').append(
           $('<img />').addClass('original').attr('src', uri)
-        ).appendTo('body');
+        ).appendTo('body').click(function() {
+          $(this).remove();
+        });
       };
       
       $(function() {

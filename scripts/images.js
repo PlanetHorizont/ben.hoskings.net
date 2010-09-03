@@ -40,6 +40,7 @@ var showFullSizeImage = function(uri) {
   });
   positionLightbox();
 };
+
 $(function() {
   $('img').click(function() {
     showFullSizeImage($(this).attr('src'));

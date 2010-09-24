@@ -4,12 +4,81 @@
   <title>benhoskin.gs</title>
   <link href="http://benhoskin.gs" rel="alternate"/>
   <link href="http://benhoskin.gs/index.atom" rel="self"/>
-  <updated>2010-08-14T21:46:36+10:00</updated>
+  <updated>2010-09-24T19:06:18+10:00</updated>
   <author>
     <name>Ben Hoskings</name>
     <email>ben@hoskings.net</email>
     <uri>http://benhoskin.gs</uri>
   </author>
+
+  <entry>
+    <title>babushka community stats</title>
+    <link href="http://benhoskin.gs/2010/09/24/babushka-community-stats"/>
+    <updated>2010-09-24T00:00:00+10:00</updated>
+    <id>http://benhoskin.gs/2010/09/24/babushka-community-stats</id>
+    <content type="html">&lt;p&gt;I&amp;#8217;ve merged a new feature into babushka&amp;#8217;s &lt;code&gt;next&lt;/code&gt; branch that adds functionality in a new direction. The changes teach babushka to collectively build a database of the deps that are being run, their success rates, and where to find them. Babushka can query this database over HTTP, so everyone can discover new deps from babushka itself.&lt;/p&gt;
+
+&lt;p&gt;Firstly, while I&amp;#8217;m pretty excited about this, it&amp;#8217;s definitely not a finalised design. Your feedback will shape its future.&lt;/p&gt;
+
+&lt;p&gt;Secondly, any tool that sends data to a server immediately raises privacy questions, so I&amp;#8217;d like to describe the design, and show that it&amp;#8217;s truly a community database: open, transparent and anonymous.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;So, what is it?&lt;/em&gt; Well, there&amp;#8217;s a new command, &lt;code&gt;babushka search&lt;/code&gt;, which queries this database, like so. You can try it out yourself if you switch to the &lt;code&gt;next&lt;/code&gt; branch:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;babushka &amp;#39;babushka next&amp;#39;
+babushka search tmbundle&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img alt='babushka search example' src='/images/babushka-search-example.png' /&gt;&lt;/p&gt;
+
+&lt;p&gt;The results show matching deps that others have used, and for each, the number of runs this week, and the proportion of those runs that succeeded. This should give you a feel for what&amp;#8217;s popular and what&amp;#8217;s reliable at the moment. For the deps that are in a source on GitHub following the &lt;code&gt;username/babushka-deps&lt;/code&gt; convention, the command to instantly run that dep is shown too.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;This data is collected by babushka itself.&lt;/em&gt; Whenever babushka finishes running a dep from a public source, it writes some info about the run to a file. Then, whenever babushka is invoked, it asynchronously submits that info to the babushka web service. It&amp;#8217;s done in the background like this for three reasons:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;If it were synchronous, every babushka run would pause for a second or two while babushka contacted the web service, which would suck.&lt;/li&gt;
+
+&lt;li&gt;It means the files can accumulate when your machine is offline, and be flushed to the web service whenever babushka is next run online.&lt;/li&gt;
+
+&lt;li&gt;You can inspect the files, and see exactly what babushka is sending over the wire.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;em&gt;If this system weren&amp;#8217;t carefully implemented, it would be a privacy problem.&lt;/em&gt; I&amp;#8217;ve designed the system in a way that I believe is completely transparent. You don&amp;#8217;t have to trust me in order to use babushka.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Firstly (and obviously), babushka is open source.&lt;/em&gt; The calls it makes to the web service are cleanly defined in the code&amp;#8212;just grep for &lt;code&gt;Net::HTTP&lt;/code&gt;.&lt;/li&gt;
+
+&lt;li&gt;&lt;em&gt;Secondly, the web service is also open source&lt;/em&gt;&amp;#8212;the code that runs &lt;code&gt;babushka.me&lt;/code&gt; (a rails 3 app) is &lt;a href='http://github.com/benhoskings/babushka.me'&gt;on github&lt;/a&gt; for all to see.&lt;/li&gt;
+
+&lt;li&gt;&lt;em&gt;The unsent run info is stored on your machine as an HTTP param string&lt;/em&gt;, so you can see the exact data that will be sent before the fact. They&amp;#8217;re in &lt;code&gt;~/.babushka/runs/&lt;/code&gt;. (The info for a given run is sent the next time babushka is run.)&lt;/li&gt;
+
+&lt;li&gt;&lt;em&gt;Only deps from public sources are reported&lt;/em&gt;&amp;#8212;that is, sources whose URIs start with &lt;code&gt;git://&lt;/code&gt;, like read-only GitHub URIs. So if you have private deps that are stored locally on your machine, or in a private source with a &lt;code&gt;user@host&lt;/code&gt;-style URI, or anything else, babushka will never submit those to the web service. Only sources pointing to &lt;code&gt;git://&lt;/code&gt; remotes are considered.&lt;/li&gt;
+
+&lt;li&gt;&lt;em&gt;The web service API is public&lt;/em&gt;&amp;#8212;babushka uses it when it submits runs and queries the database. The web service happily serves up JSON or YAML to anybody.&lt;/li&gt;
+
+&lt;li&gt;&lt;em&gt;The database itself is public&lt;/em&gt;, for anyone to download &lt;a href='http://babushka.me/db/babushka.me.psql'&gt;as a postgres dump&lt;/a&gt;. It&amp;#8217;s freshly exported by the web service whenever required via &lt;code&gt;babushka &amp;#39;benhoskings:babushka.me db dump&amp;#39;&lt;/code&gt;. (It&amp;#8217;s going to get pretty big pretty quickly, but that&amp;#8217;s a problem for later.)&lt;/li&gt;
+
+&lt;li&gt;&lt;em&gt;Finally, the data is totally anonymous anyway&lt;/em&gt;, so avenues for me to appropriate the data for evil purposes are quite limited.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Here&amp;#8217;s an example. After running &lt;code&gt;babushka benhoskings:Cucumber.tmbundle&lt;/code&gt;, here is the info written to &lt;code&gt;~/.babushka/runs&lt;/code&gt;, which is the exact data that will be submitted as HTTP params to &lt;code&gt;http://babushka.me/runs.json&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;⚡ cat ~/.babushka/runs/1285303540.794963
+version=0.6.2&amp;amp;run_at=2010-09-24%2014:45:40%20+1000&amp;amp;system_info=Mac%20OS%20X
+%2010.6.4%20(Snow%20Leopard)&amp;amp;dep_name=Cucumber.tmbundle&amp;amp;source_uri=git://gi
+thub.com/benhoskings/babushka-deps.git&amp;amp;result=ok&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Cleaning that up a bit, we can see that all it knows about me is that I&amp;#8217;m a Mac user and I&amp;#8217;m in GMT+10.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;version=0.6.2
+run_at=2010-09-24 14:45:40 +1000
+system_info=Mac OS X 10.6.4 (Snow Leopard)
+dep_name=Cucumber.tmbundle
+source_uri=git://github.com/benhoskings/babushka-deps.git
+result=ok&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Since that endpoint is public, the database is obviously gameable. But, you know, don&amp;#8217;t do that please.&lt;/p&gt;
+
+&lt;p&gt;So, that&amp;#8217;s my idea. It&amp;#8217;s in &lt;code&gt;next&lt;/code&gt;, it&amp;#8217;s working, and the database is growing as of now. I&amp;#8217;m keen to hear your feedback, and for that to influence how babushka develops. Sharing is awesome.&lt;/p&gt;</content>
+  </entry>
 
   <entry>
     <title>getting started with babushka</title>
@@ -143,7 +212,7 @@ end&lt;/code&gt;&lt;/pre&gt;
   <entry>
     <title>Open Letter to Senator the Hon Stephen Conroy, Australian Minister for Broadband, Communications and the Digital Economy</title>
     <link href="http://benhoskin.gs/2009/12/15/open-letter-to-senator-the-hon-stephen-conroy"/>
-    <updated>2009-12-15T00:00:00+10:00</updated>
+    <updated>2009-12-15T00:00:00+11:00</updated>
     <id>http://benhoskin.gs/2009/12/15/open-letter-to-senator-the-hon-stephen-conroy</id>
     <content type="html">&lt;p&gt;Dear Minister,&lt;/p&gt;
 
@@ -199,17 +268,17 @@ end&lt;/code&gt;&lt;/pre&gt;
   <entry>
     <title>minimal menu bar</title>
     <link href="http://benhoskin.gs/2009/12/04/minimal-menu-bar"/>
-    <updated>2009-12-04T00:00:00+10:00</updated>
+    <updated>2009-12-04T00:00:00+11:00</updated>
     <id>http://benhoskin.gs/2009/12/04/minimal-menu-bar</id>
     <content type="html">&lt;p&gt;After reading &lt;a href='http://www.rosshill.com.au/article/minimal-mac-menubar/'&gt;Ross Hill&amp;#8217;s post&lt;/a&gt; about his minimal OS X menubar, I decided I&amp;#8217;d try it on mine. I&amp;#8217;m picky about these things, so I think my menu bar looked pretty good to start with, but it was busy.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src='/images/minimal-menubar-before.png' alt='menubar, before' /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt='menubar, before' src='/images/minimal-menubar-before.png' /&gt;&lt;/p&gt;
 
 &lt;p&gt;So I started looking, and thought, well there are a couple of things I can remove, but no, I use almost all of that stuff!&lt;/p&gt;
 
 &lt;p&gt;With Ross&amp;#8217; help though (i.e. him telling me I was wrong), I pared it down to something that I think is looking pretty good.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src='/images/minimal-menubar-after.png' alt='menubar, after' /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt='menubar, after' src='/images/minimal-menubar-after.png' /&gt;&lt;/p&gt;
 
 &lt;p&gt;All the stuff left I actually really do use a lot. In particular, the CPU/memory/network meters are really useful to tell what&amp;#8217;s going on with the system, when I&amp;#8217;m writing code and running specs etc, I use them constantly.&lt;/p&gt;
 
@@ -221,7 +290,7 @@ end&lt;/code&gt;&lt;/pre&gt;
   <entry>
     <title>command duration with fish</title>
     <link href="http://benhoskin.gs/2009/11/26/command-duration-with-fish"/>
-    <updated>2009-11-26T00:00:00+10:00</updated>
+    <updated>2009-11-26T00:00:00+11:00</updated>
     <id>http://benhoskin.gs/2009/11/26/command-duration-with-fish</id>
     <content type="html">&lt;p&gt;It&amp;#8217;s often useful to see how long a command took to run. I used to have the date and time in my prompt for that reason&amp;#8211;I could do some mental arithmetic to find out how long a command took.&lt;/p&gt;
 
@@ -251,13 +320,13 @@ end&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Which produces output like this, running a &lt;code&gt;rake spec&lt;/code&gt;:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src='/images/fish-cmd-duration.png' alt='fish CMD_DURATION example' /&gt;&lt;/p&gt;</content>
+&lt;p&gt;&lt;img alt='fish CMD_DURATION example' src='/images/fish-cmd-duration.png' /&gt;&lt;/p&gt;</content>
   </entry>
 
   <entry>
     <title>multi-line prompts in fish</title>
     <link href="http://benhoskin.gs/2009/11/25/multi-line-prompts-in-fish"/>
-    <updated>2009-11-25T00:00:00+10:00</updated>
+    <updated>2009-11-25T00:00:00+11:00</updated>
     <id>http://benhoskin.gs/2009/11/25/multi-line-prompts-in-fish</id>
     <content type="html">&lt;p&gt;One thing I&amp;#8217;ve missed since switching to fish is a multi-line prompt. If your prompt has newlines in it, they&amp;#8217;re stripped out when the prompt is rendered on-screen.&lt;/p&gt;
 
@@ -536,7 +605,7 @@ bind \er &amp;#39;restart_rails_app &amp;gt;/dev/null&amp;#39;&lt;/code&gt;&lt;/
   <entry>
     <title>DRM</title>
     <link href="http://benhoskin.gs/2009/01/08/drm"/>
-    <updated>2009-01-08T00:00:00+10:00</updated>
+    <updated>2009-01-08T00:00:00+11:00</updated>
     <id>http://benhoskin.gs/2009/01/08/drm</id>
     <content type="html">&lt;p&gt;I think the biggest news out of the Macworld keynote today was the announcement that the iTunes Store is now largely DRM-free, and completely so by March.&lt;/p&gt;
 
@@ -562,7 +631,7 @@ bind \er &amp;#39;restart_rails_app &amp;gt;/dev/null&amp;#39;&lt;/code&gt;&lt;/
   <entry>
     <title>pull, inspect, update -- and then push.</title>
     <link href="http://benhoskin.gs/2008/12/02/pull-inspect-update-and-then-push"/>
-    <updated>2008-12-02T00:00:00+10:00</updated>
+    <updated>2008-12-02T00:00:00+11:00</updated>
     <id>http://benhoskin.gs/2008/12/02/pull-inspect-update-and-then-push</id>
     <content type="html">&lt;p&gt;A common thing I do with git is push my changes to a remote repo, after first updating my project locally with all the changes others have pushed. But I always forget to update first, so the process usually goes&amp;#8211;&lt;/p&gt;
 
@@ -604,7 +673,7 @@ bind \er &amp;#39;restart_rails_app &amp;gt;/dev/null&amp;#39;&lt;/code&gt;&lt;/
   <entry>
     <title>a concise git logging format</title>
     <link href="http://benhoskin.gs/2008/12/02/a-concise-git-logging-format"/>
-    <updated>2008-12-02T00:00:00+10:00</updated>
+    <updated>2008-12-02T00:00:00+11:00</updated>
     <id>http://benhoskin.gs/2008/12/02/a-concise-git-logging-format</id>
     <content type="html">&lt;p&gt;A &lt;code&gt;git merge&lt;/code&gt;, and hence also the merging stage of a &lt;code&gt;git pull&lt;/code&gt;, sets &lt;code&gt;ORIG_HEAD&lt;/code&gt; to the commit that &lt;code&gt;HEAD&lt;/code&gt; pointed to before the merge. So the commits between these two points are the ones the most recent merge introduced.&lt;/p&gt;
 

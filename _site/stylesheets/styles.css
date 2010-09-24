@@ -1,6 +1,6 @@
 * { margin: 0; padding: 0; }
 
-body { color: black; background-color: #bbbbbb; font: 16px/1.5 "Helvetica Neue", arial, sans-serif; font-weight: 200; padding: 0 0.75em; }
+body { color: black; background-color: #bbbbbb; font: 16px/1.5 "Helvetica Neue", arial, sans-serif; font-weight: 200; padding: 0 12px; }
 
 header, nav, article, footer { display: block; }
 
@@ -10,7 +10,9 @@ pre { white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap;
 
 h1, h2, h3, h4, h5 { color: #333333; font-size: 1em; }
 
-img { border: solid 1px #777777; }
+img { display: block; border: solid 1px #777777; margin: -1px; }
+article img { max-width: 640px; }
+article img:hover { cursor: pointer; }
 
 header, nav, article, footer, #home { width: 640px; margin: 0 auto; }
 
@@ -64,3 +66,6 @@ header h1 a, article p, article li, code pre { padding-left: 1px; padding-right:
 
 nav { overflow: hidden; }
 nav a { display: block; float: left; width: 63px; font-size: 0.8em; padding-left: 1px; line-height: 1.875; color: #666666; font-weight: bold; }
+
+.lightbox { position: fixed; top: 0; left: 0; bottom: 0; right: 0; background-color: rgba(0, 0, 0, 0.7); }
+.lightbox img { position: absolute; }

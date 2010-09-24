@@ -31,10 +31,10 @@ _Obviously, if this were done wrong, it would be a privacy problem._ I've design
 - _The run info is stored on your machine as an HTTP param string_, so you can see the exact data that will be sent before the fact. They're in `~/.babushka/runs/`. (The info for a given run is sent the next time babushka is run.)
 - _Only deps from public sources are reported_---that is, sources whose URIs are `git://`-style public URIs, like the read-only URIs GitHub provides. So if you have private deps that are stored locally on your machine, or in a git repo behind ssh or similar, babushka will never submit those to the web service.
 - _The web has a public API---the one babushka uses_ when it queries the database. It happily serves up JSON or YAML to anybody.
-- _The database itself is public_, for anyone to download as a postgres dump. It's freshly exported by the web service every hour or so.
+- _The database itself is public_, for anyone to download [as a postgres dump](http://babushka.me/db/babushka.me.psql). It's freshly exported by the web service whenever required via `babushka 'benhoskings:babushka.me db dump'`, so it's no older than 5 minutes. (It's going to get pretty big pretty quickly, but that's a problem for later.)
 - _Finally, the data is totally anonymous anyway_, so avenues for me to appropriate the data for evil purposes are quite limited.
 
-Here's an example. After running `babushka benhoskings:Cucumber.tmbundle`, here is the info written to `~/.babushka/runs`, which is the exact data that will be submitted as an HTTP param string:
+Here's an example. After running `babushka benhoskings:Cucumber.tmbundle`, here is the info written to `~/.babushka/runs`, which is the exact data that will be submitted as an HTTP param string to `http://babushka.me/runs.json`:
 
     ⚡ cat ~/.babushka/runs/1285303540.794963
     version=0.6.2&run_at=2010-09-24%2014:45:40%20+1000&system_info=Mac%20OS%20X
@@ -49,3 +49,7 @@ Cleaning that up a bit, we can see that all it knows about me is that I'm a Mac 
     dep_name=Cucumber.tmbundle
     source_uri=git://github.com/benhoskings/babushka-deps.git
     result=ok
+
+Since that endpoint is public, the database is obviously gameable. But, you know, don't do that please.
+
+So, that's my idea. It's in `next`, it's working, and the database is growing as of now. I'm keen to hear your feedback, and for that to influence how babushka develops. Sharing is awesome.

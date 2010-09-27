@@ -9,6 +9,8 @@ Firstly, while I'm pretty excited about this, it's definitely not a finalised de
 
 Secondly, any tool that sends data to a server immediately raises privacy questions, so I'd like to describe the design, and show that it's truly a community database: open, transparent and anonymous.
 
+---
+
 _So, what is it?_ Well, there's a new command, `babushka search`, which queries this database, like so. You can try it out yourself if you switch to the `next` branch:
 
     babushka 'babushka next'
@@ -23,6 +25,8 @@ _This data is collected by babushka itself._ Whenever babushka finishes running 
 - If it were synchronous, every babushka run would pause for a second or two while babushka contacted the web service, which would suck.
 - It means the files can accumulate when your machine is offline, and be flushed to the web service whenever babushka is next run online.
 - You can inspect the files, and see exactly what babushka is sending over the wire.
+
+---
 
 _If this system weren't carefully implemented, it would be a privacy problem._ I've designed the system in a way that I believe is completely transparent. You don't have to trust me in order to use babushka.
 
@@ -51,6 +55,8 @@ Cleaning that up a bit, we can see that all it knows about me is that I'm a Mac 
     result=ok
 
 Since that endpoint is public, the database is obviously gameable. But, you know, don't do that please.
+
+---
 
 _So, that's my idea_. It's in `next`, it's working, and the database is growing as of now.
 

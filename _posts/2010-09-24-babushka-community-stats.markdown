@@ -52,4 +52,6 @@ Cleaning that up a bit, we can see that all it knows about me is that I'm a Mac 
 
 Since that endpoint is public, the database is obviously gameable. But, you know, don't do that please.
 
-So, that's my idea. It's in `next`, it's working, and the database is growing as of now. I'm keen to hear your feedback, and for that to influence how babushka develops. Sharing is awesome.
+_So, that's my idea_. It's in `next`, it's working, and the database is growing as of now.
+
+I'd love to hear your thoughts on this new feature, and your experience using it. The best ways to get in touch are to tweet at [@babushka_app](http://twitter.com/babushka_app), or send a message to the [mailing list](http://groups.google.com/group/babushka_app/). I'm keen for your feedback to influence how babushka develops. Sharing is awesome.

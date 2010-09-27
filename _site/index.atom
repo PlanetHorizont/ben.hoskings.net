@@ -4,7 +4,7 @@
   <title>benhoskin.gs</title>
   <link href="http://benhoskin.gs" rel="alternate"/>
   <link href="http://benhoskin.gs/index.atom" rel="self"/>
-  <updated>2010-09-24T19:06:18+10:00</updated>
+  <updated>2010-09-27T12:49:33+10:00</updated>
   <author>
     <name>Ben Hoskings</name>
     <email>ben@hoskings.net</email>
@@ -21,7 +21,7 @@
 &lt;p&gt;Firstly, while I&amp;#8217;m pretty excited about this, it&amp;#8217;s definitely not a finalised design. Your feedback will shape its future.&lt;/p&gt;
 
 &lt;p&gt;Secondly, any tool that sends data to a server immediately raises privacy questions, so I&amp;#8217;d like to describe the design, and show that it&amp;#8217;s truly a community database: open, transparent and anonymous.&lt;/p&gt;
-
+&lt;hr /&gt;
 &lt;p&gt;&lt;em&gt;So, what is it?&lt;/em&gt; Well, there&amp;#8217;s a new command, &lt;code&gt;babushka search&lt;/code&gt;, which queries this database, like so. You can try it out yourself if you switch to the &lt;code&gt;next&lt;/code&gt; branch:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;babushka &amp;#39;babushka next&amp;#39;
@@ -40,23 +40,23 @@ babushka search tmbundle&lt;/code&gt;&lt;/pre&gt;
 
 &lt;li&gt;You can inspect the files, and see exactly what babushka is sending over the wire.&lt;/li&gt;
 &lt;/ul&gt;
-
+&lt;hr /&gt;
 &lt;p&gt;&lt;em&gt;If this system weren&amp;#8217;t carefully implemented, it would be a privacy problem.&lt;/em&gt; I&amp;#8217;ve designed the system in a way that I believe is completely transparent. You don&amp;#8217;t have to trust me in order to use babushka.&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;em&gt;Firstly (and obviously), babushka is open source.&lt;/em&gt; The calls it makes to the web service are cleanly defined in the code&amp;#8212;just grep for &lt;code&gt;Net::HTTP&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Firstly (and obviously), &lt;strong&gt;babushka is open source&lt;/strong&gt;. The calls it makes to the web service are cleanly defined in the code&amp;#8212;just grep for &lt;code&gt;Net::HTTP&lt;/code&gt;.&lt;/li&gt;
 
-&lt;li&gt;&lt;em&gt;Secondly, the web service is also open source&lt;/em&gt;&amp;#8212;the code that runs &lt;code&gt;babushka.me&lt;/code&gt; (a rails 3 app) is &lt;a href='http://github.com/benhoskings/babushka.me'&gt;on github&lt;/a&gt; for all to see.&lt;/li&gt;
+&lt;li&gt;Secondly, &lt;strong&gt;the web service is also open source&lt;/strong&gt;&amp;#8212;the code that runs &lt;code&gt;babushka.me&lt;/code&gt; (a rails 3 app) is &lt;a href='http://github.com/benhoskings/babushka.me'&gt;on github&lt;/a&gt; for all to see.&lt;/li&gt;
 
-&lt;li&gt;&lt;em&gt;The unsent run info is stored on your machine as an HTTP param string&lt;/em&gt;, so you can see the exact data that will be sent before the fact. They&amp;#8217;re in &lt;code&gt;~/.babushka/runs/&lt;/code&gt;. (The info for a given run is sent the next time babushka is run.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The unsent run info is stored on your machine as an HTTP param string&lt;/strong&gt;, so you can see the exact data that will be sent before the fact. They&amp;#8217;re in &lt;code&gt;~/.babushka/runs/&lt;/code&gt;. (The info for a given run is sent the next time babushka is run.)&lt;/li&gt;
 
-&lt;li&gt;&lt;em&gt;Only deps from public sources are reported&lt;/em&gt;&amp;#8212;that is, sources whose URIs start with &lt;code&gt;git://&lt;/code&gt;, like read-only GitHub URIs. So if you have private deps that are stored locally on your machine, or in a private source with a &lt;code&gt;user@host&lt;/code&gt;-style URI, or anything else, babushka will never submit those to the web service. Only sources pointing to &lt;code&gt;git://&lt;/code&gt; remotes are considered.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Only deps from public sources are reported&lt;/strong&gt;&amp;#8212;that is, sources whose URIs start with &lt;code&gt;git://&lt;/code&gt;, like read-only GitHub URIs. So if you have private deps that are stored locally on your machine, or in a private source with a &lt;code&gt;user@host&lt;/code&gt;-style URI, or anything else, babushka will never submit those to the web service. Only sources pointing to &lt;code&gt;git://&lt;/code&gt; remotes are considered.&lt;/li&gt;
 
-&lt;li&gt;&lt;em&gt;The web service API is public&lt;/em&gt;&amp;#8212;babushka uses it when it submits runs and queries the database. The web service happily serves up JSON or YAML to anybody.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The web service API is public&lt;/strong&gt;&amp;#8212;babushka uses it when it submits runs and queries the database. The web service happily serves up JSON or YAML to anybody.&lt;/li&gt;
 
-&lt;li&gt;&lt;em&gt;The database itself is public&lt;/em&gt;, for anyone to download &lt;a href='http://babushka.me/db/babushka.me.psql'&gt;as a postgres dump&lt;/a&gt;. It&amp;#8217;s freshly exported by the web service whenever required via &lt;code&gt;babushka &amp;#39;benhoskings:babushka.me db dump&amp;#39;&lt;/code&gt;. (It&amp;#8217;s going to get pretty big pretty quickly, but that&amp;#8217;s a problem for later.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The database itself is public&lt;/strong&gt;, for anyone to download &lt;a href='http://babushka.me/db/babushka.me.psql'&gt;as a postgres dump&lt;/a&gt;. It&amp;#8217;s freshly exported by the web service whenever required via &lt;code&gt;babushka &amp;#39;benhoskings:babushka.me db dump&amp;#39;&lt;/code&gt;. (It&amp;#8217;s going to get pretty big pretty quickly, but that&amp;#8217;s a problem for later.)&lt;/li&gt;
 
-&lt;li&gt;&lt;em&gt;Finally, the data is totally anonymous anyway&lt;/em&gt;, so avenues for me to appropriate the data for evil purposes are quite limited.&lt;/li&gt;
+&lt;li&gt;Finally, &lt;strong&gt;the data is totally anonymous anyway&lt;/strong&gt;, so avenues via which I can appropriate the data for evil purposes are quite limited.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Here&amp;#8217;s an example. After running &lt;code&gt;babushka benhoskings:Cucumber.tmbundle&lt;/code&gt;, here is the info written to &lt;code&gt;~/.babushka/runs&lt;/code&gt;, which is the exact data that will be submitted as HTTP params to &lt;code&gt;http://babushka.me/runs.json&lt;/code&gt;:&lt;/p&gt;
@@ -76,8 +76,10 @@ source_uri=git://github.com/benhoskings/babushka-deps.git
 result=ok&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Since that endpoint is public, the database is obviously gameable. But, you know, don&amp;#8217;t do that please.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;So, that&amp;#8217;s my idea&lt;/em&gt;. It&amp;#8217;s in &lt;code&gt;next&lt;/code&gt;, it&amp;#8217;s working, and the database is growing as of now.&lt;/p&gt;
 
-&lt;p&gt;So, that&amp;#8217;s my idea. It&amp;#8217;s in &lt;code&gt;next&lt;/code&gt;, it&amp;#8217;s working, and the database is growing as of now. I&amp;#8217;m keen to hear your feedback, and for that to influence how babushka develops. Sharing is awesome.&lt;/p&gt;</content>
+&lt;p&gt;I&amp;#8217;d love to hear your thoughts on this new feature, and your experience using it. The best ways to get in touch are to tweet at &lt;a href='http://twitter.com/babushka_app'&gt;@babushka_app&lt;/a&gt;, or send a message to the &lt;a href='http://groups.google.com/group/babushka_app/'&gt;mailing list&lt;/a&gt;. I&amp;#8217;m keen for your feedback to influence how babushka develops. Sharing is awesome.&lt;/p&gt;</content>
   </entry>
 
   <entry>

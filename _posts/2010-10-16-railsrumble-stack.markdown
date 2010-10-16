@@ -25,10 +25,10 @@ First, the tl;dr version, to host an app on `example.org`. The commands are for 
 
     # (within your local repo)
     git remote add production example.org@<linode IP>:~/current
-    git push production master                     # do a deploy
+    git push production master                     # initial deploy
 
     # as example.org
-    babushka 'benhoskings:rails app'               # The big one
+    babushka 'benhoskings:rails app'               # host the app
 
 To deploy, just push to the production remote. The deploy repo will accept any branch, and handles creating or switching to it as required, so you can just push any old crap and it will be live.
 
@@ -37,7 +37,7 @@ I recommend creating a branch named `deploy` for this purpose, and merging into 
 ---
 _Those instructions again, with some commentary_
 
-First, log into your instance as root and install babushka.
+First, log into a fresh instance as root and install babushka. I test babushka against ubuntu and recommend 10.10. Other apt-based distributions should be fine; babushka also supports yum, and my deps could support it with a couple of trivial tweaks to add package names.
 
     bash -c "`wget -O - babushka.me/up`"
 
@@ -79,8 +79,7 @@ To deploy your app, just push to the `production` branch. If you want to add cus
 If it fails because you forgot something, remember babushka can run from any start state. So once you've corrected the problem, just run babushka again, and it'll skip everything that's already complete from previous runs. If you're having trouble, or babushka is complaining and you don't think it's your fault, ping [@babushka_app](http://twitter.com/babushka_app) and I'll do my best to help out.
 
 ---
-_There are some things you'll have to do manually_, like scheduling background tasks.
+There are some things you'll have to do manually, like scheduling background tasks.
 
 ---
-_Once the 'rails app' dep has run_, you'll have to add a DNS entry for your domain. If you just browse to your linode IP, the virtualhost won't match and you'll see 'Welcome to nginx!'. Which is lovely, but won't win you any rails rumbles.
-
+Once the 'rails app' dep has run, you'll have to add a DNS entry for your domain. If you just browse to your linode IP, the virtualhost won't match and you'll see 'Welcome to nginx!'. Which is lovely, but won't win you any rails rumbles.

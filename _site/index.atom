@@ -4,12 +4,94 @@
   <title>benhoskin.gs</title>
   <link href="http://benhoskin.gs" rel="alternate"/>
   <link href="http://benhoskin.gs/index.atom" rel="self"/>
-  <updated>2010-09-27T12:49:33+10:00</updated>
+  <updated>2010-10-17T03:55:40+11:00</updated>
   <author>
     <name>Ben Hoskings</name>
     <email>ben@hoskings.net</email>
     <uri>http://benhoskin.gs</uri>
   </author>
+
+  <entry>
+    <title>railsrumble stack</title>
+    <link href="http://benhoskin.gs/2010/10/16/railsrumble-stack"/>
+    <updated>2010-10-16T00:00:00+11:00</updated>
+    <id>http://benhoskin.gs/2010/10/16/railsrumble-stack</id>
+    <content type="html">&lt;p&gt;Here&amp;#8217;s how I set up a rails stack. If you&amp;#8217;re railsrumbling this weekend, I hope babushka can save you some time. I&amp;#8217;ll be loitering around the nearest twitter, so please direct any questions towards &lt;a href='http://twitter.com/babushka_app'&gt;@babushka_app&lt;/a&gt; and I&amp;#8217;ll do my best to help out.&lt;/p&gt;
+
+&lt;p&gt;My deps will roll a bundler/passenger3/nginx/postgres stack. If you&amp;#8217;re using apache or mysql, there might be other deps out there. Or you might be out of luck. I recommend using nginx and/or postgres instead. :)&lt;/p&gt;
+
+&lt;p&gt;First, the tl;dr version, to host an app on &lt;code&gt;example.org&lt;/code&gt;. The commands are for the server except where it says otherwise.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# as root, on a fresh instance
+bash -c &amp;quot;`wget -O - babushka.me/up/hard`&amp;quot;      # install babushka
+
+# then, also as root
+babushka &amp;#39;benhoskings:passwordless ssh logins&amp;#39;
+babushka benhoskings:system                    # publickey-only sshd, etc
+babushka &amp;#39;benhoskings:user exists&amp;#39;             # create the app&amp;#39;s account
+passwd example.org                             # for sudoing later
+su - example.org
+
+# as example.org
+babushka &amp;#39;benhoskings:passwordless ssh logins&amp;#39;
+babushka &amp;#39;benhoskings:passenger deploy repo&amp;#39;   # ~/current deploy target
+
+# (within your local repo)
+git remote add production example.org@&amp;lt;linode IP&amp;gt;:~/current
+git push production master                     # initial deploy
+
+# as example.org
+babushka &amp;#39;benhoskings:rails app&amp;#39;               # host the app&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To deploy, just push to the production remote. The deploy repo will accept any branch, and handles creating or switching to it as required, so you can just push any old crap and it will be live.&lt;/p&gt;
+
+&lt;p&gt;I recommend creating a branch named &lt;code&gt;deploy&lt;/code&gt; for this purpose, and merging into it locally before pushing.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Those instructions again, with some commentary&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;First, log into a fresh instance as root and install babushka. I test babushka against ubuntu and recommend 10.10. Other apt-based distributions should be fine; babushka also supports yum, and my deps could support it with a couple of trivial tweaks to add package names.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;bash -c &amp;quot;`wget -O - babushka.me/up`&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Right, that&amp;#8217;s ruby, git and babushka all installed. Next, ssh public key. (If you&amp;#8217;re on a Mac, throw it on your clipboard by running &lt;code&gt;cat ~/.ssh/id_dsa.pub | pbcopy&lt;/code&gt; locally.)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;babushka &amp;#39;benhoskings:passwordless ssh logins&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Next, configure some basic system stuff - &lt;code&gt;sshd&lt;/code&gt; with publickey-only logins for security, a few tools like &lt;code&gt;screen&lt;/code&gt; &amp;amp; &lt;code&gt;nmap&lt;/code&gt;, and a &lt;code&gt;sudo&lt;/code&gt;ing admin group. Since this turns off password logins, if you didn&amp;#8217;t add your publickey in the previous step, this will lock you out of the server.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;babushka benhoskings:system&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Right, that&amp;#8217;s the system done. Next, you want a user account for your webapp to run as. (Of course, it&amp;#8217;s easy to configure a user account, but this is nice and consistent and gets the groups right every time.) A good convention is to name the user account after your app&amp;#8217;s domain, say &lt;code&gt;example.org&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;babushka &amp;#39;benhoskings:user exists&amp;#39;
+passwd example.org
+su - example.org&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Next we set up ssh logins for the app user. Everyone who wants to be able to deploy should run this step. (Remember, &lt;code&gt;cat ~/.ssh/id_dsa.pub | pbcopy&lt;/code&gt;.)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;babushka &amp;#39;benhoskings:passwordless ssh logins&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And then create the production git repo that we push to in order to deploy. (It has a &lt;code&gt;post-receive&lt;/code&gt; hook that handles the changeover.)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;babushka &amp;#39;benhoskings:passenger deploy repo&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, on your local machine (for each teammate), add the deploy repo as a remote and push your app to it. You&amp;#8217;ll see some extra output during the push as the production repo does its thing.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git remote add production example.org@&amp;lt;linode IP&amp;gt;:~/current
+git push production master&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now you can babushka up a rails stack against your app. As the &lt;code&gt;example.org&lt;/code&gt; user again:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;babushka &amp;#39;benhoskings:rails app&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;p&gt;To deploy your app, just push to the &lt;code&gt;production&lt;/code&gt; branch. If you want to add custom deploy-time tasks, you could add them to &lt;code&gt;~/current/.git/hooks/post-receive&lt;/code&gt;. Or if you like, use capistrano or a similar tool; anything that results in the app being deployed to &lt;code&gt;~/current&lt;/code&gt; (or whatever path you chose) will work fine.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;If it fails because you forgot something, remember babushka can run from any start state. So once you&amp;#8217;ve corrected the problem, just run babushka again, and it&amp;#8217;ll skip everything that&amp;#8217;s already complete from previous runs. If you&amp;#8217;re having trouble, or babushka is complaining and you don&amp;#8217;t think it&amp;#8217;s your fault, ping &lt;a href='http://twitter.com/babushka_app'&gt;@babushka_app&lt;/a&gt; and I&amp;#8217;ll do my best to help out.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;There are some things you&amp;#8217;ll have to do manually, like scheduling background tasks.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;Once the &amp;#8216;rails app&amp;#8217; dep has run, you&amp;#8217;ll have to add a DNS entry for your domain. If you just browse to your linode IP, the virtualhost won&amp;#8217;t match and you&amp;#8217;ll see &amp;#8216;Welcome to nginx!&amp;#8217;. Which is lovely, but won&amp;#8217;t win you any rails rumbles.&lt;/p&gt;</content>
+  </entry>
 
   <entry>
     <title>babushka community stats</title>

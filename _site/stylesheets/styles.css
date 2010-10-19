@@ -6,7 +6,7 @@ strong { font-weight: bold; }
 
 header, nav, article, footer { display: block; }
 
-input, textarea, pre, code { font-family: Menlo, Monaco, Consolas, monospace; }
+input, textarea, pre, code { font-family: Menlo, Monaco, Consolas, Courier, monospace; }
 
 pre { white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word; }
 

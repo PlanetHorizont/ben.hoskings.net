@@ -34,6 +34,8 @@ Later that week, I had a new iPad.
 I believe that the best way to react to something so disproportionately nice is to pay it forward, and so, I'd like to give someone an iPad too. That is, an iPad's worth of cash. But I think it'd be nicer if you decide the cause.
 
 <div id="vote">
+  <ul class="results">
+  </ul>
 </div>
 
 <style type="text/css" media="screen">
@@ -57,39 +59,52 @@ I believe that the best way to react to something so disproportionately nice is 
     };
     get_results(function(data) {
       $(data).each(function(i, result) {
-        $('#vote').append(
-          $('<form />')
-            .addClass(result.choice)
-            .attr('method', 'post')
-            .attr('action', 'http://localhost:3000/vote.jsonp/' + result.choice)
-            .append(
-              $('<input />').attr('type', 'submit').attr('value', result.choice)
-            ).submit(function() {
-              $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                dataType: 'jsonp',
-                complete: function() {
-                  get_results(function(data) {
-                    $(data).each(function(i, result) {
-                      console.log(result);
-                      var elem = $('<div />')
-                        .addClass('result').addClass(result.choice)
-                        .data('count', result.count)
-                        .html(result.choice + ": " + result.count);
-                      if ($('#vote form.' + result.choice).length == 0) {
-                        console.log('new result: ' + result.choice);
-                        $('#vote').append(elem);
-                      } else {
-                        console.log('exisitng result: ' + result.choice);
-                        $('#vote form.' + result.choice).replaceWith(elem);
-                      }
+        $('ul.results').append(
+          $('<li />').addClass(result.choice).append(
+            $('<form />')
+              .attr('method', 'post')
+              .attr('action', 'http://localhost:3000/vote.jsonp/' + result.choice)
+              .append(
+                $('<input />').attr('type', 'submit').attr('value', result.choice)
+              ).submit(function() {
+                var form = $(this);
+                $.ajax({
+                  url: form.attr('action'),
+                  type: 'POST',
+                  dataType: 'jsonp',
+                  complete: function() {
+                    get_results(function(data) {
+                      $(data).each(function(i, result) {
+                        var appender = function(elem) {
+                          return elem.append(
+                            $('<p />').html(result.choice),
+                            $('<div />')
+                              .addClass('result').addClass(result.choice)
+                              .data('count', result.count)
+                              .append(
+                                $('<span />').html(result.count),
+                                $('<div />')
+                                  .addClass('count')
+                                  .css({width: result.count + 'px'})
+                              )
+                          );
+                        };
+                        if (form.parent().siblings().filter('.' + result.choice).length == 0) {
+                          console.log('new result: ' + result.choice);
+                          $('ul.results').append(
+                            appender($('<li />').addClass(result.choice))
+                          );
+                        } else {
+                          console.log('exisitng result: ' + result.choice);
+                          appender($('ul.results li.' + result.choice));
+                        }
+                      });
                     });
-                  });
-                }
-              });
-              return false;
-            })
+                  }
+                });
+                return false;
+              })
+          )
         );
       });
     });

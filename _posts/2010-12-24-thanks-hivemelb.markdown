@@ -139,7 +139,7 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
     };
     var get_results = function(callback) {
       $.ajax({
-        url: 'http://localhost:3000/results.jsonp',
+        url: 'http://ipad.benhoskin.gs/results.jsonp',
         dataType: 'jsonp',
         success: callback
       });
@@ -148,7 +148,7 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
       var form = $(this);
       var action = form.attr('action');
       if (form.find('input[type=text]').length > 0) {
-        action = "http://localhost:3000/vote.jsonp/" + form.find('input[type=text]').val();
+        action = "http://ipad.benhoskin.gs/vote.jsonp/" + form.find('input[type=text]').val();
       }
       $('ul.results li input[type=submit]').attr('disabled', 'disabled');
       $.ajax({
@@ -198,7 +198,7 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
     var choice_form_for = function(result, callback) {
       return $('<form />')
         .attr('method', 'post')
-        .attr('action', 'http://localhost:3000/vote.jsonp/' + result.choice)
+        .attr('action', 'http://ipad.benhoskin.gs/vote.jsonp/' + result.choice)
         .append(
           $('<input />').attr('type', 'submit').attr('value', result.choice)
         ).submit(callback);

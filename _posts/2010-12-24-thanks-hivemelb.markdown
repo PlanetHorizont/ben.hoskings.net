@@ -99,7 +99,7 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
     background-color: #aaa;
     border: #777777 1px solid;
     padding: 0.2em 0;
-    margin-right: 0.2em;
+    margin-bottom: 0.2em;
     width: 6em;
   }
   ul.results li.custom input[type=submit] {

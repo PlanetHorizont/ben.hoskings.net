@@ -138,7 +138,8 @@ I believe that the best way to react to something so disproportionately nice is 
                                 $('<span />').html(result.count),
                                 $('<div />')
                                   .addClass('count')
-                                  .css({width: (300 * result.count / total_count) + 'px'})
+                                  .css({width: '0'})
+                                  .animate({width: (300 * result.count / total_count) + 'px'}, 1000)
                               )
                           );
                         };

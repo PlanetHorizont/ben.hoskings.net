@@ -84,11 +84,26 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
     border-radius: 3px;
     background-color: #197a9f;
   }
-  ul.results li form {
+  ul.results li form,
+  div.not-a-form {
     width: 6em;
     text-align: right;
     padding-right: 0.2em;
     border-right: #777 1px solid;
+  }
+  ul.results li.custom input[type=text] {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+    background-color: #aaa;
+    border: #777777 1px solid;
+    padding: 0.2em 0;
+    margin-right: 0.2em;
+    width: 6em;
+  }
+  ul.results li.custom input[type=submit] {
+    display: none;
   }
   input[type=submit], .button {
     color: #333;

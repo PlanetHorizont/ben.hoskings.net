@@ -80,8 +80,14 @@ I believe that the best way to react to something so disproportionately nice is 
     border-radius: 3px;
     background-color: #197a9f;
   }
+  ul.results li form {
+    width: 6em;
+    text-align: right;
+    padding-right: 0.2em;
+    border-right: #777 1px solid;
+  }
   input[type=submit], .button {
-    width: 8em;
+    color: #333;
     margin-bottom: 0.4em;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -89,9 +95,9 @@ I believe that the best way to react to something so disproportionately nice is 
     border-radius: 3px;
     background-color: #999;
     border: #777777 1px solid;
-    background: -webkit-gradient(linear, left top, left bottom, from(#aaa), to(#666), color-stop(0.6, #777), color-stop(0.6, #707070), color-stop(0.85, #606060)); }
+    background: -webkit-gradient(linear, left top, left bottom, from(#ccc), to(#888), color-stop(0.6, #999), color-stop(0.6, #909090), color-stop(0.85, #808080)); }
     input[type=submit][type=submit], .button[type=submit] {
-      padding: 0.4em 1em; }
+      padding: 0.2em 0.2em; }
     input[type=submit]:hover, .button:hover {
       cursor: pointer;
       background: -webkit-gradient(linear, left top, left bottom, from(#989898), to(#606060), color-stop(0.6, #707070), color-stop(0.6, #666), color-stop(0.85, #585858)); }

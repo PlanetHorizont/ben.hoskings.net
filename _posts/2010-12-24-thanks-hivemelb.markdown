@@ -50,6 +50,9 @@ I believe that the best way to react to something so disproportionately nice is 
 
 <script type="text/javascript" charset="utf-8">
   head.ready(function() {
+    String.prototype.slugify = function() {
+      return this.toLowerCase().replace(' ', '-').replace(/[^a-z0-9-]/i, '')
+    };
     var get_results = function(callback) {
       $.ajax({
         url: 'http://localhost:3000/results.jsonp',
@@ -60,7 +63,7 @@ I believe that the best way to react to something so disproportionately nice is 
     get_results(function(data) {
       $(data).each(function(i, result) {
         $('ul.results').append(
-          $('<li />').addClass(result.choice).append(
+          $('<li />').addClass(result.choice.slugify()).append(
             $('<form />')
               .attr('method', 'post')
               .attr('action', 'http://localhost:3000/vote.jsonp/' + result.choice)
@@ -75,11 +78,11 @@ I believe that the best way to react to something so disproportionately nice is 
                   complete: function() {
                     get_results(function(data) {
                       $(data).each(function(i, result) {
-                        var appender = function(elem) {
+                        var add_result_to = function(elem) {
                           return elem.append(
                             $('<p />').html(result.choice),
                             $('<div />')
-                              .addClass('result').addClass(result.choice)
+                              .addClass('result')
                               .data('count', result.count)
                               .append(
                                 $('<span />').html(result.count),
@@ -89,14 +92,14 @@ I believe that the best way to react to something so disproportionately nice is 
                               )
                           );
                         };
-                        if (form.parent().siblings().filter('.' + result.choice).length == 0) {
+                        if (form.parents('ul').children('li').filter('.' + result.choice.slugify()).length == 0) {
                           console.log('new result: ' + result.choice);
                           $('ul.results').append(
-                            appender($('<li />').addClass(result.choice))
+                            add_result_to($('<li />').addClass(result.choice.slugify()))
                           );
                         } else {
                           console.log('exisitng result: ' + result.choice);
-                          appender($('ul.results li.' + result.choice));
+                          add_result_to($('ul.results li.' + result.choice.slugify()));
                         }
                       });
                     });

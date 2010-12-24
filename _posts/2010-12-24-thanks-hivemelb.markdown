@@ -127,7 +127,6 @@ I believe that the best way to react to something so disproportionately nice is 
                       $(data).each(function(i, result) {
                         total_count += parseInt(result.count);
                       });
-                      console.log(total_count);
                       $(data).each(function(i, result) {
                         var add_result_to = function(elem) {
                           elem.find('div.result').remove();
@@ -144,12 +143,10 @@ I believe that the best way to react to something so disproportionately nice is 
                           );
                         };
                         if (form.parents('ul').children('li').filter('.' + result.choice.slugify()).length == 0) {
-                          console.log('new result: ' + result.choice);
                           $('ul.results').append(
                             add_result_to($('<li />').addClass(result.choice.slugify()))
                           );
                         } else {
-                          console.log('exisitng result: ' + result.choice);
                           add_result_to($('ul.results li.' + result.choice.slugify()));
                         }
                       });

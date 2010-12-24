@@ -42,7 +42,7 @@ var showFullSizeImage = function(uri) {
 };
 
 head.ready(function() {
-  $('img').click(function() {
+  $('img.lightboxable').click(function() {
     showFullSizeImage($(this).attr('src'));
   });
   $(window).resize(positionLightbox);

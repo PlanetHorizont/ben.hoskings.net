@@ -123,6 +123,11 @@ I believe that the best way to react to something so disproportionately nice is 
                   dataType: 'jsonp',
                   complete: function() {
                     get_results(function(data) {
+                      var total_count = 0;
+                      $(data).each(function(i, result) {
+                        total_count += parseInt(result.count);
+                      });
+                      console.log(total_count);
                       $(data).each(function(i, result) {
                         var add_result_to = function(elem) {
                           elem.find('div.result').remove();
@@ -134,7 +139,7 @@ I believe that the best way to react to something so disproportionately nice is 
                                 $('<span />').html(result.count),
                                 $('<div />')
                                   .addClass('count')
-                                  .css({width: result.count + 'px'})
+                                  .css({width: (300 * result.count / total_count) + 'px'})
                               )
                           );
                         };

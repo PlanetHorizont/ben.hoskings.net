@@ -93,9 +93,8 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
     border-radius: 3px;
     background-color: #197a9f;
   }
-  ul.results li form,
-  div.not-a-form {
-    width: 6em;
+  ul.results li form {
+    width: 7em;
     text-align: right;
     padding-right: 0.2em;
     border-right: #777 1px solid;

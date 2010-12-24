@@ -123,9 +123,13 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
     };
     var on_choice_submit = function() {
       var form = $(this);
+      var action = form.attr('action');
+      if (form.find('input[type=text]').length > 0) {
+        action = "http://localhost:3000/vote.jsonp/" + form.find('input[type=text]').val();
+      }
       $('ul.results li input[type=submit]').attr('disabled', 'disabled');
       $.ajax({
-        url: form.attr('action'),
+        url: action,
         type: 'POST',
         dataType: 'jsonp',
         complete: function() {
@@ -152,7 +156,10 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
               };
               if (form.parents('ul').children('li').filter('.' + result.choice.slugify()).length == 0) {
                 $('ul.results').append(
-                  add_result_to($('<li />').addClass(result.choice.slugify()))
+                  add_result_to($('<li />')
+                    .addClass(result.choice.slugify())
+                    .append(choice_form_for(result, function() {}))
+                  )
                 );
               } else {
                 add_result_to($('ul.results li.' + result.choice.slugify()));
@@ -163,13 +170,13 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
       });
       return false;
     };
-    var choice_form_for = function(result) {
+    var choice_form_for = function(result, callback) {
       return $('<form />')
         .attr('method', 'post')
         .attr('action', 'http://localhost:3000/vote.jsonp/' + result.choice)
         .append(
           $('<input />').attr('type', 'submit').attr('value', result.choice)
-        ).submit(on_choice_submit);
+        ).submit(callback);
     };
     get_results(function(data) {
       $(data).each(function(i, result) {
@@ -177,13 +184,16 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
           $('<li />').addClass(
             result.choice.slugify()
           ).append(
-            choice_form_for(result)
+            choice_form_for(result, on_choice_submit)
           )
         );
       });
       $('ul.results').append(
         $('<li />').addClass('custom').append(function() {
-          var form = choice_form_for({});
+          var form = choice_form_for({choice: ''}, on_choice_submit);
+          form.prepend(
+            $('<input />').attr('type', 'text').attr('name', 'choice')
+          );
           return form;
         }())
       );

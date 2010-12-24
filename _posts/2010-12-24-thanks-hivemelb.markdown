@@ -13,7 +13,7 @@ I darted down to the street, but couldn't see them there either. So I ran back u
 
 In my naïveté I thought it might be a good idea to send a message to the iPad. (You can do that with Find My iPad). So I said to the thief that if they reconsidered and brought it back, I'd really appreciate it, along with my phone number and email.
 
-<img src="/images/thanks-hivemelb/map.jpg" alt="Map around The Order of Melbourne and Melbourne CBD" class="map" />
+<img src="/images/thanks-hivemelb/map.png" alt="Map around The Order of Melbourne and Melbourne CBD" class="map" />
 
 By this point [@kealey](http://twitter.com/kealey) had joined the hunt and started [tweeting](http://twitter.com/kealey/status/4475673116672000) [like](http://twitter.com/kealey/status/4475681270403072) [a](http://twitter.com/kealey/status/4476389864505344) [champ](http://twitter.com/kealey/status/4477571194421248). I loaded up Find My iPad on my iPhone and headed down to the street while Kealey and Nathan tracked the iPad's progress on Pat's laptop. We saw it head north from The Order of Melbourne along Elizabeth and onto Royal Parade, along the 19 tram route. Soon it began to move at a tram-like speed. Unbeknownst to me, Hive founder [@lukemccormack](http://twitter.com/lukemccormack) had jumped in a cab and was following the tram up the road. I was on the phone to the police, saying "I can literally pinpoint them on a map".
 

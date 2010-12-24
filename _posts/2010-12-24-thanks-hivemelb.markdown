@@ -169,6 +169,7 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
                     )
                 );
               };
+              $('ul.results li.custom').hide();
               if (form.parents('ul').children('li').filter('.' + result.choice.slugify()).length == 0) {
                 $('ul.results').append(
                   add_result_to($('<li />')
@@ -176,7 +177,6 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
                     .append(choice_form_for(result, function() {}))
                   )
                 );
-                $('ul.results li.custom').hide();
                 $('ul.results li input[type=submit]').attr('disabled', 'disabled');
               } else {
                 add_result_to($('ul.results li.' + result.choice.slugify()));

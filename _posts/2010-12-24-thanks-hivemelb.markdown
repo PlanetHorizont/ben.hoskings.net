@@ -27,9 +27,9 @@ But the next bit was the best bit. The next morning I was chatting to Nathan and
 
 Luke and The Hive organised [a pledgie](http://pledgie.com/campaigns/13960) via twitter. Over the following couple of days The Hive community were generous enough to donate me practically enough for a new iPad, which really humbled me. I don't feel like I deserved such amazing generosity.
 
-<img src="/images/thanks-hivemelb/new-ipad.jpg" alt="My new iPad" class="lightboxable" />
+Later that week, I had a new iPad.
 
-Later that week, I had a new iPad. Unbelieveable.
+<img src="/images/thanks-hivemelb/new-ipad.jpg" alt="My new iPad" class="lightboxable" />
 
 I believe that the best way to react to something so disproportionately nice is to pay it forward, and so, I'd like to give someone an iPad too. That is, an iPad's worth of cash. But I think it'd be nicer if you decide the cause.
 

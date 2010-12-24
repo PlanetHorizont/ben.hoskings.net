@@ -104,7 +104,7 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
     -moz-border-radius: 3px;
     -o-border-radius: 3px;
     border-radius: 3px;
-    background-color: #aaa;
+    background-color: #ccc;
     border: #777777 1px solid;
     padding: 0.2em 0;
     margin-bottom: 0.2em;

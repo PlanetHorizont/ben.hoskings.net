@@ -55,9 +55,43 @@ I believe that the best way to react to something so disproportionately nice is 
   ul.results li div.result {
     float: left;
   }
+  ul.results li div.result {
+    padding-top: 1px;
+  }
+  ul.results li div.result span {
+    padding: 0 0.4em;
+  }
   ul.results li p {
     margin: 0;
   }
+  ul.results li div.count {
+    float: left;
+    line-height: 1;
+    height: 1.2em;
+    margin: 0.2em 0 0 0.4em;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+    background-color: #197a9f;
+  }
+  input[type=submit], .button {
+    width: 8em;
+    margin-bottom: 0.4em;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+    background-color: #999;
+    border: #777777 1px solid;
+    background: -webkit-gradient(linear, left top, left bottom, from(#aaa), to(#666), color-stop(0.6, #777), color-stop(0.6, #707070), color-stop(0.85, #606060)); }
+    input[type=submit][type=submit], .button[type=submit] {
+      padding: 0.4em 1em; }
+    input[type=submit]:hover, .button:hover {
+      cursor: pointer;
+      background: -webkit-gradient(linear, left top, left bottom, from(#989898), to(#606060), color-stop(0.6, #707070), color-stop(0.6, #666), color-stop(0.85, #585858)); }
+    input[type=submit]:active, .button:active {
+      background: -webkit-gradient(linear, left top, left bottom, from(#aaa), to(#666), color-stop(0.6, #777), color-stop(0.6, #707070), color-stop(0.85, #606060)); }
 </style>
 
 <script type="text/javascript" charset="utf-8">

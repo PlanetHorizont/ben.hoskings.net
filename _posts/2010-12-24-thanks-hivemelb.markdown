@@ -125,9 +125,8 @@ I believe that the best way to react to something so disproportionately nice is 
                     get_results(function(data) {
                       $(data).each(function(i, result) {
                         var add_result_to = function(elem) {
-                          elem.find('p, div.result').remove();
+                          elem.find('div.result').remove();
                           return elem.append(
-                            $('<p />').html(result.choice),
                             $('<div />')
                               .addClass('result')
                               .data('count', result.count)

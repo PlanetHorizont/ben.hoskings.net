@@ -38,6 +38,10 @@ I believe that the best way to react to something so disproportionately nice is 
   </ul>
 </div>
 
+I'll leave this up over Christmas and New Year's, and then make a donation early in the new year. If there's a clear favourite I'll send all the cash their way; if it's too close to call I'll split it between the leaders. So, vote and share :)
+
+Lastly, thanks once again to all you lovely people from The Hive who generously donated part of my new iPad. I'm 
+
 <style type="text/css" media="screen">
   img {
     float: right;
@@ -117,60 +121,72 @@ I believe that the best way to react to something so disproportionately nice is 
         success: callback
       });
     };
+    var on_choice_submit = function() {
+      var form = $(this);
+      $('ul.results li input[type=submit]').attr('disabled', 'disabled');
+      $.ajax({
+        url: form.attr('action'),
+        type: 'POST',
+        dataType: 'jsonp',
+        complete: function() {
+          get_results(function(data) {
+            var total_count = 0;
+            $(data).each(function(i, result) {
+              total_count += parseInt(result.count);
+            });
+            $(data).each(function(i, result) {
+              var add_result_to = function(elem) {
+                elem.find('div.result').remove();
+                return elem.append(
+                  $('<div />')
+                    .addClass('result')
+                    .data('count', result.count)
+                    .append(
+                      $('<span />').html(result.count),
+                      $('<div />')
+                        .addClass('count')
+                        .css({width: '0'})
+                        .animate({width: (300 * result.count / total_count) + 'px'}, 1000)
+                    )
+                );
+              };
+              if (form.parents('ul').children('li').filter('.' + result.choice.slugify()).length == 0) {
+                $('ul.results').append(
+                  add_result_to($('<li />').addClass(result.choice.slugify()))
+                );
+              } else {
+                add_result_to($('ul.results li.' + result.choice.slugify()));
+              }
+            });
+          });
+        }
+      });
+      return false;
+    };
+    var choice_form_for = function(result) {
+      return $('<form />')
+        .attr('method', 'post')
+        .attr('action', 'http://localhost:3000/vote.jsonp/' + result.choice)
+        .append(
+          $('<input />').attr('type', 'submit').attr('value', result.choice)
+        ).submit(on_choice_submit);
+    };
     get_results(function(data) {
       $(data).each(function(i, result) {
         $('ul.results').append(
-          $('<li />').addClass(result.choice.slugify()).append(
-            $('<form />')
-              .attr('method', 'post')
-              .attr('action', 'http://localhost:3000/vote.jsonp/' + result.choice)
-              .append(
-                $('<input />').attr('type', 'submit').attr('value', result.choice)
-              ).submit(function() {
-                var form = $(this);
-                $('ul.results li input[type=submit]').attr('disabled', 'disabled');
-                $.ajax({
-                  url: form.attr('action'),
-                  type: 'POST',
-                  dataType: 'jsonp',
-                  complete: function() {
-                    get_results(function(data) {
-                      var total_count = 0;
-                      $(data).each(function(i, result) {
-                        total_count += parseInt(result.count);
-                      });
-                      $(data).each(function(i, result) {
-                        var add_result_to = function(elem) {
-                          elem.find('div.result').remove();
-                          return elem.append(
-                            $('<div />')
-                              .addClass('result')
-                              .data('count', result.count)
-                              .append(
-                                $('<span />').html(result.count),
-                                $('<div />')
-                                  .addClass('count')
-                                  .css({width: '0'})
-                                  .animate({width: (300 * result.count / total_count) + 'px'}, 1000)
-                              )
-                          );
-                        };
-                        if (form.parents('ul').children('li').filter('.' + result.choice.slugify()).length == 0) {
-                          $('ul.results').append(
-                            add_result_to($('<li />').addClass(result.choice.slugify()))
-                          );
-                        } else {
-                          add_result_to($('ul.results li.' + result.choice.slugify()));
-                        }
-                      });
-                    });
-                  }
-                });
-                return false;
-              })
+          $('<li />').addClass(
+            result.choice.slugify()
+          ).append(
+            choice_form_for(result)
           )
         );
       });
+      $('ul.results').append(
+        $('<li />').addClass('custom').append(function() {
+          var form = choice_form_for({});
+          return form;
+        }())
+      );
     });
   });
 </script>

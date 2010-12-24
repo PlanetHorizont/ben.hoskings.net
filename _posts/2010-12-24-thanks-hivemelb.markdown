@@ -45,3 +45,28 @@ I believe that the best way to react to something so disproportionately nice is 
     width: 38%;
   }
 </style>
+
+<script type="text/javascript" charset="utf-8">
+  head.ready(function() {
+    $.ajax({
+      url: 'http://localhost:3000/results.jsonp',
+      dataType: 'jsonp',
+      success: function(data) {
+        $(data.results).each(function(i, result) {
+          $('#vote').append(
+            $('<form />')
+              .attr('method', 'post')
+              .attr('action', 'http://localhost:3000/vote/' + result.choice)
+              .append(
+                $('<input />').attr('type', 'hidden').attr('name', "utf8").attr('value', "&#x2713;"),
+                $('<input />').attr('type', 'hidden').attr('name', "authenticity_token").attr('value', data.auth_token),
+                $('<input />')
+                  .attr('type', 'submit')
+                  .attr('value', result.choice)
+              )
+          );
+        });
+      }
+    });
+  });
+</script>

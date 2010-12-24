@@ -13,7 +13,7 @@ I darted down to the street, but couldn't see them there either. So I ran back u
 
 In my naïveté I thought it might be a good idea to send a message to the iPad. (You can do that with Find My iPad). So I said to the thief that if they reconsidered and brought it back, I'd really appreciate it, along with my phone number and email.
 
-<img src="/images/thanks-hivemelb/map.png" alt="Map around The Order of Melbourne and Melbourne CBD" class="map" />
+<img src="/images/thanks-hivemelb/map.png" alt="Map around The Order of Melbourne and Melbourne CBD" class="lightboxable" />
 
 By this point [@kealey](http://twitter.com/kealey) had joined the hunt and started [tweeting](http://twitter.com/kealey/status/4475673116672000) [like](http://twitter.com/kealey/status/4475681270403072) [a](http://twitter.com/kealey/status/4476389864505344) [champ](http://twitter.com/kealey/status/4477571194421248). I loaded up Find My iPad on my iPhone and headed down to the street while Kealey and Nathan tracked the iPad's progress on Pat's laptop. We saw it head north from The Order of Melbourne along Elizabeth and onto Royal Parade, along the 19 tram route. Soon it began to move at a tram-like speed. Unbeknownst to me, Hive founder [@lukemccormack](http://twitter.com/lukemccormack) had jumped in a cab and was following the tram up the road. I was on the phone to the police, saying "I can literally pinpoint them on a map".
 
@@ -21,13 +21,13 @@ Our pursuit of the thief was looking promising, with tracking HQ at the order, m
 
 Luke was really apologetic that something like that would happen at his event. But I doubt anyone would think badly of The Hive because of something like this---I know I certainly don't. At a public event, you get the public, not all of whom are nice like you and I :)
 
-<img src="/images/thanks-hivemelb/chat-with-nathan.png" alt="Chat with Nathan" class="chat" />
+<img src="/images/thanks-hivemelb/chat-with-nathan.png" alt="Chat with Nathan" />
 
 But the next bit was the best bit. The next morning I was chatting to Nathan and he nonchalantly asked me a couple of questions.
 
 Luke and The Hive organised [a pledgie](http://pledgie.com/campaigns/13960) via twitter. Over the following couple of days The Hive community were generous enough to donate me practically enough for a new iPad, which really humbled me. I don't feel like I deserved such amazing generosity.
 
-<img src="/images/thanks-hivemelb/new-ipad.jpg" alt="My new iPad" class="photo" />
+<img src="/images/thanks-hivemelb/new-ipad.jpg" alt="My new iPad" class="lightboxable" />
 
 Later that week, I had a new iPad. Unbelieveable.
 
@@ -41,7 +41,7 @@ I believe that the best way to react to something so disproportionately nice is 
     float: right;
     margin-left: 10px;
   }
-  img.map, img.photo {
+  img.lightboxable {
     width: 38%;
   }
 </style>

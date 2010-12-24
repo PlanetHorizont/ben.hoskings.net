@@ -46,6 +46,18 @@ I believe that the best way to react to something so disproportionately nice is 
   img.lightboxable {
     width: 38%;
   }
+  ul.results li {
+    list-style-type: none;
+    overflow: hidden;
+  }
+  ul.results li form,
+  ul.results li p,
+  ul.results li div.result {
+    float: left;
+  }
+  ul.results li p {
+    margin: 0;
+  }
 </style>
 
 <script type="text/javascript" charset="utf-8">

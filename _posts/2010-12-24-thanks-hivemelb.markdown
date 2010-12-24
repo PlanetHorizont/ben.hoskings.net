@@ -48,25 +48,50 @@ I believe that the best way to react to something so disproportionately nice is 
 
 <script type="text/javascript" charset="utf-8">
   head.ready(function() {
-    $.ajax({
-      url: 'http://localhost:3000/results.jsonp',
-      dataType: 'jsonp',
-      success: function(data) {
-        $(data.results).each(function(i, result) {
-          $('#vote').append(
-            $('<form />')
-              .attr('method', 'post')
-              .attr('action', 'http://localhost:3000/vote/' + result.choice)
-              .append(
-                $('<input />').attr('type', 'hidden').attr('name', "utf8").attr('value', "&#x2713;"),
-                $('<input />').attr('type', 'hidden').attr('name', "authenticity_token").attr('value', data.auth_token),
-                $('<input />')
-                  .attr('type', 'submit')
-                  .attr('value', result.choice)
-              )
-          );
-        });
-      }
+    var get_results = function(callback) {
+      $.ajax({
+        url: 'http://localhost:3000/results.jsonp',
+        dataType: 'jsonp',
+        success: callback
+      });
+    };
+    get_results(function(data) {
+      $(data).each(function(i, result) {
+        $('#vote').append(
+          $('<form />')
+            .addClass(result.choice)
+            .attr('method', 'post')
+            .attr('action', 'http://localhost:3000/vote.jsonp/' + result.choice)
+            .append(
+              $('<input />').attr('type', 'submit').attr('value', result.choice)
+            ).submit(function() {
+              $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                dataType: 'jsonp',
+                complete: function() {
+                  get_results(function(data) {
+                    $(data).each(function(i, result) {
+                      console.log(result);
+                      var elem = $('<div />')
+                        .addClass('result').addClass(result.choice)
+                        .data('count', result.count)
+                        .html(result.choice + ": " + result.count);
+                      if ($('#vote form.' + result.choice).length == 0) {
+                        console.log('new result: ' + result.choice);
+                        $('#vote').append(elem);
+                      } else {
+                        console.log('exisitng result: ' + result.choice);
+                        $('#vote form.' + result.choice).replaceWith(elem);
+                      }
+                    });
+                  });
+                }
+              });
+              return false;
+            })
+        );
+      });
     });
   });
 </script>

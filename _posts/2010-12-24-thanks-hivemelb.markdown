@@ -33,7 +33,8 @@ Later that week, I had a new iPad. Unbelieveable.
 
 I believe that the best way to react to something so disproportionately nice is to pay it forward, and so, I'd like to give someone an iPad too. That is, an iPad's worth of cash. But I think it'd be nicer if you decide the cause.
 
-<div id="vote"></div>
+<div id="vote">
+</div>
 
 <style type="text/css" media="screen">
   img {

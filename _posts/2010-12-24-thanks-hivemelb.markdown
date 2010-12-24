@@ -50,6 +50,11 @@ I believe that the best way to react to something so disproportionately nice is 
     list-style-type: none;
     overflow: hidden;
   }
+  ul.results li input[type=submit]:disabled {
+    color: #333;
+    background: transparent;
+    border: #bbb 1px solid;
+  }
   ul.results li form,
   ul.results li p,
   ul.results li div.result {
@@ -117,6 +122,7 @@ I believe that the best way to react to something so disproportionately nice is 
                 $('<input />').attr('type', 'submit').attr('value', result.choice)
               ).submit(function() {
                 var form = $(this);
+                $('ul.results li input[type=submit]').attr('disabled', 'disabled');
                 $.ajax({
                   url: form.attr('action'),
                   type: 'POST',

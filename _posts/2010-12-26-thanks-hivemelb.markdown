@@ -84,7 +84,7 @@ Lastly, thanks once again to all you lovely people from The Hive who donated a p
     background-color: #197a9f;
   }
   ul.results li form {
-    width: 7em;
+    width: 13em;
     text-align: right;
     padding-right: 0.2em;
     border-right: #777 1px solid;
@@ -98,7 +98,7 @@ Lastly, thanks once again to all you lovely people from The Hive who donated a p
     border: #777777 1px solid;
     padding: 0.2em 0;
     margin-bottom: 0.2em;
-    width: 6em;
+    width: 12em;
   }
   ul.results li.custom input[type=submit] {
     display: none;
@@ -162,7 +162,7 @@ Lastly, thanks once again to all you lovely people from The Hive who donated a p
                     $('<div />')
                       .addClass('count')
                       .css({width: '0'})
-                      .animate({width: (400 * result.count / total_count) + 'px'}, 1000)
+                      .animate({width: (350 * result.count / total_count) + 'px'}, 1000)
                   )
               );
             };

@@ -25,7 +25,7 @@ Luke and The Hive organised [a pledgie](http://pledgie.com/campaigns/13960) via 
 
 <img src="/images/thanks-hivemelb/new-ipad.jpg" alt="My new iPad" class="lightboxable" />
 
-I believe that the best way to react to something so disproportionately nice is to pay it forward. And so, in the spirit of generosity that replaced my iPad, I'd like to send an iPad's worth of cash somewhere it will be used well. There are a few worthy causes I can think of, but I think it'd be nicer if you guys decide.
+I believe that the best way to react to something so disproportionately nice is to pay it forward, so I'd like to send an iPad's worth of cash somewhere it will be used well. There are a few worthy causes I can think of, but I think it'd be awesome if you guys decide.
 
 You can vote for the cause of your choice by clicking its name. Or if there's one in particular that you think others would like to vote for too, you can type its name and hit enter (but keep it short, my little voting app will reject names that don't fit). If there's a clear favourite I'll send all the cash their way; if it's too close to call I'll split it between the leaders. I'm sure between all of us we can come up with lots of worthwhile causes. So, vote well!
 
@@ -36,7 +36,7 @@ You can vote for the cause of your choice by clicking its name. Or if there's on
 
 *Fine print: Voting is totally anonymous and so it's pretty gameable, but, you know, don't do that please. :)*
 
-Lastly, thanks once again to all you lovely people from The Hive who generously donated a piece of my new iPad. I'm really grateful for it.
+Lastly, thanks once again to all you lovely people from The Hive who donated a piece of my new iPad. I'm really grateful for it.
 
 <style type="text/css" media="screen">
   img {

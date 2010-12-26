@@ -47,7 +47,11 @@ header, nav, article, footer
   display: block
 
 input, textarea, pre, code
-  font-family: Menlo, Monaco, Consolas, Courier, monospace
+  font-family: Inconsolata, Menlo, Monaco, Consolas, Courier, monospace
+input, textarea
+  font-size: 14px
+input[type=submit]
+  font-family: 'Helvetica Neue', arial, sans-serif
 
 pre
   white-space: pre-wrap
@@ -66,7 +70,7 @@ img
   margin: -1px
   article &
     max-width: $width
-    &:hover
+    &.lightboxable:hover
       cursor: pointer
 
 header,

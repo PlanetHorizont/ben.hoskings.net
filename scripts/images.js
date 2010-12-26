@@ -41,8 +41,8 @@ var showFullSizeImage = function(uri) {
   positionLightbox();
 };
 
-$(function() {
-  $('img').click(function() {
+head.ready(function() {
+  $('img.lightboxable').click(function() {
     showFullSizeImage($(this).attr('src'));
   });
   $(window).resize(positionLightbox);

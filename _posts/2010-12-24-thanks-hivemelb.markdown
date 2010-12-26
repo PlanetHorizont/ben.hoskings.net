@@ -5,7 +5,7 @@ title: "thanks, hivemelb"
 
 Back in mid-November, my mate [Nathan](http://twitter.com/nathan_scott) spoke [at The Hive](http://thehive.org.au/nathan-sampimon-from-inspire9/) about his experiences founding [Inspire9](http://twitter.com/inspire9) as a freelance web developer. Nath's talk was great, and the discussion that followed it was too. Amidst all of this, someone took it upon themselves to pinch my iPad. But through the generosity of the Hive attendees, I have a new one. So this post is definitely overdue, but better late than never, right?
 
-The iPad was sitting more or less in front of me on the stage. When it was taken I was deep in conversation with Mikala of [MiFA](http://twitter.com/MiFAgallery), but I happened to notice someone stand up and walk away from just next to where it was sitting, and something about it made me check my iPad was still there---which it wasn't. I glanced about to see if anyone had moved it, and by the time I turned around to spot the potential thief, they were gone.
+That evening, the iPad was sitting more or less in front of me on the stage. When it was taken I was deep in conversation with Mikala of [MiFA](http://twitter.com/MiFAgallery), but I happened to notice someone stand up and walk away from just next to where it was sitting, and something about it made me check my iPad was still there---which it wasn't. I glanced about to see if anyone had moved it, and by the time I turned around to spot the potential thief, they were gone.
 
 I darted down to the street, but couldn't see them there either. So I ran back upstairs and told [Pat](http://twitter.com/pat); we grabbed his laptop and fired up [Find My iPad](http://www.apple.com/mobileme/features/find-my-iphone.html), and there it was, moving along the street about a block away.
 
@@ -13,25 +13,19 @@ In my naïveté I thought it might be a good idea to send a message to the iPad.
 
 <img src="/images/thanks-hivemelb/map.png" alt="Map of the approximate route the stolen iPad took" class="lightboxable" />
 
-By this time [Kealey](http://twitter.com/kealey) had joined in and was [tweeting](http://twitter.com/kealey/status/4475673116672000) [like](http://twitter.com/kealey/status/4475681270403072) [a](http://twitter.com/kealey/status/4476389864505344) [champ](http://twitter.com/kealey/status/4477571194421248). I loaded up the GPS tracking on my iPhone and headed down to the street while Kealey and Nathan tracked the iPad's progress on Pat's laptop. We saw it head north from The Order of Melbourne along Elizabeth and onto Royal Parade, along the 19 tram route. Soon it began to move at a tram-ish speed. Unbeknownst to me, Hive founder [@lukemccormack](http://twitter.com/lukemccormack) had jumped in a cab and was following the tram up the road. I was on the phone with the police, saying "I can see exactly where they are on a map! Send backup!" (or something like that).
+By this time [Kealey](http://twitter.com/kealey) had joined in and was [tweeting](http://twitter.com/kealey/status/4475673116672000) [like](http://twitter.com/kealey/status/4475681270403072) [a](http://twitter.com/kealey/status/4476389864505344) [champ](http://twitter.com/kealey/status/4477571194421248). I loaded up the GPS tracking on my iPhone and headed down to the street while Kealey and Nathan tracked the iPad's progress on Pat's laptop. We saw it head north from The Order of Melbourne along Elizabeth and onto Royal Parade, along the 19 tram route. Soon it began to move at a tram-ish speed. Unbeknownst to me, Hive founder [Luke](http://twitter.com/lukemccormack) had jumped in a cab and was following the tram up Royal Parade. I was on the phone with the police, saying "I can see exactly where they are on a map! Send backup!" (or something like that).
 
 Our pursuit of the thief was looking promising, with surveillance HQ at The Order, me on foot, and Luke in a taxi in hot pursuit. But then suddenly, the iPad disappeared from my MobileMe account. (That's what happens if you delete the account from the iPad, or wipe it.) And that was it; there was nothing more we could do. I headed back to the order and changed my passwords. (I made a proper police report later that evening too, but haven't heard anything.)
 
 <img src="/images/thanks-hivemelb/chat-with-nathan.png" alt="Chat with Nathan" class="chat" />
 
-The next bit was unexpected and awesome. The next morning, I was chatting with Nath and he nonchalantly dropped a question or two.
+The next morning, I was chatting with Nath and he nonchalantly dropped a question or two.
 
 Luke and The Hive organised [a pledgie](http://pledgie.com/campaigns/13960) via twitter. Donations started coming in from lots of lovely Hive attendees and twitterers. All told, you guys donated practically enough to buy me a new iPad, which really humbled me. I don't feel like I deserved such generosity.
 
-<a href="http://twitter.com/ben_h/status/4711934360293376">
-  <img src="/images/thanks-hivemelb/my-tweet.png" alt="My tweet" />
-</a>
-
 <img src="/images/thanks-hivemelb/new-ipad.jpg" alt="My new iPad" class="lightboxable" />
 
-I believe that the best way to react to something so disproportionately nice is to pay it forward.
-
-And so, in the spirit of generosity that replaced my iPad, I'd like to send an iPad's worth of cash somewhere it will be used well. There are a few worthy causes I can think of, but I think it'd be nicer if you guys decide.
+I believe that the best way to react to something so disproportionately nice is to pay it forward. And so, in the spirit of generosity that replaced my iPad, I'd like to send an iPad's worth of cash somewhere it will be used well. There are a few worthy causes I can think of, but I think it'd be nicer if you guys decide.
 
 You can vote for the cause of your choice by clicking its name. Or if there's one in particular that you think others would like to vote for too, you can type its name and hit enter (but keep it short, my little voting app will reject names that don't fit). If there's a clear favourite I'll send all the cash their way; if it's too close to call I'll split it between the leaders. I'm sure between all of us we can come up with lots of worthwhile causes. So, vote well!
 
@@ -40,9 +34,9 @@ You can vote for the cause of your choice by clicking its name. Or if there's on
   </ul>
 </div>
 
-*Fine print: Voting is totally anonymous and so it's pretty gameable, but, you know, don't do that please. Also, If the winning cause is horrible or frivolous then I'm going to ignore it. I never said this was a democracy. :)*
+*Fine print: Voting is totally anonymous and so it's pretty gameable, but, you know, don't do that please. :)*
 
-Lastly, thanks once again to all you lovely people from The Hive who generously donated a piece of my new iPad. I'm really grateful for it. Like I said, I don't feel like I deserved it, but I really do appreciate it massively, and I think paying it forward is the best response.
+Lastly, thanks once again to all you lovely people from The Hive who generously donated a piece of my new iPad. I'm really grateful for it.
 
 <style type="text/css" media="screen">
   img {

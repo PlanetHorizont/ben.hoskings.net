@@ -135,7 +135,7 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
 <script type="text/javascript" charset="utf-8">
   head.ready(function() {
     String.prototype.slugify = function() {
-      return this.toLowerCase().replace(' ', '-').replace(/[^a-z0-9-]/i, '')
+      return this.toLowerCase().replace(' ', '-').replace(/[^a-z0-9-]/i, '');
     };
     var get_results = function(callback) {
       $.ajax({

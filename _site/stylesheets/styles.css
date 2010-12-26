@@ -6,7 +6,11 @@ strong { font-weight: bold; }
 
 header, nav, article, footer { display: block; }
 
-input, textarea, pre, code { font-family: Menlo, Monaco, Consolas, Courier, monospace; }
+input, textarea, pre, code { font-family: Inconsolata, Menlo, Monaco, Consolas, Courier, monospace; }
+
+input, textarea { font-size: 14px; }
+
+input[type=submit] { font-family: "Helvetica Neue", arial, sans-serif; }
 
 pre { white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word; }
 
@@ -14,7 +18,7 @@ h1, h2, h3, h4, h5 { color: #333333; font-size: 1em; }
 
 img { display: block; border: solid 1px #777777; margin: -1px; }
 article img { max-width: 640px; }
-article img:hover { cursor: pointer; }
+article img.lightboxable:hover { cursor: pointer; }
 
 header, nav, article, footer, #home { width: 640px; margin: 0 auto; }
 

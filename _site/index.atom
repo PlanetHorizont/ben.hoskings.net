@@ -4,7 +4,7 @@
   <title>benhoskin.gs</title>
   <link href="http://benhoskin.gs" rel="alternate"/>
   <link href="http://benhoskin.gs/index.atom" rel="self"/>
-  <updated>2010-12-27T02:17:44+11:00</updated>
+  <updated>2010-12-27T02:28:52+11:00</updated>
   <author>
     <name>Ben Hoskings</name>
     <email>ben@hoskings.net</email>
@@ -148,9 +148,12 @@
         type: 'POST',
         dataType: 'jsonp',
         success: function(data) {
-          var total_count = 0;
+          var max_count = 0, this_count;
           $(data).each(function(i, result) {
-            total_count += parseInt(result.count);
+            this_count = parseInt(result.count);
+            if (this_count &gt; max_count) {
+              max_count = this_count;
+            }
           });
           $(data).each(function(i, result) {
             var add_result_to = function(elem) {
@@ -164,7 +167,7 @@
                     $('&lt;div /&gt;')
                       .addClass('count')
                       .css({width: '0'})
-                      .animate({width: (350 * result.count / total_count) + 'px'}, 1000)
+                      .animate({width: (350 * result.count / max_count) + 'px'}, 1000)
                   )
               );
             };

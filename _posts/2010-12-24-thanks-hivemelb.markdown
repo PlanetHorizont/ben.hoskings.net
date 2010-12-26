@@ -172,7 +172,7 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
                     $('<div />')
                       .addClass('count')
                       .css({width: '0'})
-                      .animate({width: (250 * result.count / total_count) + 'px'}, 1000)
+                      .animate({width: (400 * result.count / total_count) + 'px'}, 1000)
                   )
               );
             };

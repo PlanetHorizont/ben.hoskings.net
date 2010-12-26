@@ -155,41 +155,39 @@ Lastly, thanks once again to all you lovely people from The Hive who generously 
         url: action,
         type: 'POST',
         dataType: 'jsonp',
-        complete: function() {
-          get_results(function(data) {
-            var total_count = 0;
-            $(data).each(function(i, result) {
-              total_count += parseInt(result.count);
-            });
-            $(data).each(function(i, result) {
-              var add_result_to = function(elem) {
-                elem.find('div.result').remove();
-                return elem.append(
-                  $('<div />')
-                    .addClass('result')
-                    .data('count', result.count)
-                    .append(
-                      $('<span />').html(result.count),
-                      $('<div />')
-                        .addClass('count')
-                        .css({width: '0'})
-                        .animate({width: (250 * result.count / total_count) + 'px'}, 1000)
-                    )
-                );
-              };
-              $('ul.results li.custom').hide();
-              if (form.parents('ul').children('li').filter('.' + result.choice.slugify()).length == 0) {
-                $('ul.results').append(
-                  add_result_to($('<li />')
-                    .addClass(result.choice.slugify())
-                    .append(choice_form_for(result, function() {}))
+        success: function(data) {
+          var total_count = 0;
+          $(data).each(function(i, result) {
+            total_count += parseInt(result.count);
+          });
+          $(data).each(function(i, result) {
+            var add_result_to = function(elem) {
+              elem.find('div.result').remove();
+              return elem.append(
+                $('<div />')
+                  .addClass('result')
+                  .data('count', result.count)
+                  .append(
+                    $('<span />').html(result.count),
+                    $('<div />')
+                      .addClass('count')
+                      .css({width: '0'})
+                      .animate({width: (250 * result.count / total_count) + 'px'}, 1000)
                   )
-                );
-                $('ul.results li input[type=submit]').attr('disabled', 'disabled');
-              } else {
-                add_result_to($('ul.results li.' + result.choice.slugify()));
-              }
-            });
+              );
+            };
+            $('ul.results li.custom').hide();
+            if (form.parents('ul').children('li').filter('.' + result.choice.slugify()).length == 0) {
+              $('ul.results').append(
+                add_result_to($('<li />')
+                  .addClass(result.choice.slugify())
+                  .append(choice_form_for(result, function() {}))
+                )
+              );
+              $('ul.results li input[type=submit]').attr('disabled', 'disabled');
+            } else {
+              add_result_to($('ul.results li.' + result.choice.slugify()));
+            }
           });
         }
       });

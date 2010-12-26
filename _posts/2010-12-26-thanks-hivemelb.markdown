@@ -36,7 +36,7 @@ You can vote for the cause of your choice by clicking its name. Or if there's on
 
 *Voting is anonymous and so it's pretty gameable, but, you know, don't do that please. :)*
 
-Lastly, thanks once again to all you lovely people from The Hive who donated a piece of my new iPad. I'm really grateful for it.
+Lastly, thanks once again to all you lovely people who donated a piece of my new iPad. I'm really grateful for it.
 
 <style type="text/css" media="screen">
   img {

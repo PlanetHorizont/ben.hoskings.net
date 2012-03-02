@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: "/_post.haml"
 title: "spork + no db prep: four-fold speedup"
 ---
 

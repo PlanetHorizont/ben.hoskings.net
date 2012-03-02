@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: "/_post.haml"
 title: "speedy rspec with rails"
 ---
 

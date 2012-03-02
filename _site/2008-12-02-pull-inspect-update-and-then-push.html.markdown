@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: "/_post.haml"
 title: "pull, inspect, update -- and then push."
 ---
 

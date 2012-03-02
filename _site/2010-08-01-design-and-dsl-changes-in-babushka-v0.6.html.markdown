@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: "/_post.haml"
 title: "design and DSL changes in babushka-0.6"
 ---
 

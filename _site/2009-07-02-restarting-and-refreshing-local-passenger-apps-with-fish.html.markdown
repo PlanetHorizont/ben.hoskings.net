@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: "/_post.haml"
 title: "restarting and refreshing local passenger apps with fish"
 ---
 

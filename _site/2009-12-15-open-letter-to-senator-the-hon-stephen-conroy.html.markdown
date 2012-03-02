@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: "/_post.haml"
 title: "Open Letter to Senator the Hon Stephen Conroy, Australian Minister for Broadband, Communications and the Digital Economy"
 ---
 

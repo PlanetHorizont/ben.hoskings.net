@@ -7,17 +7,17 @@ title: "ben hoskings"
 
 #home
   %ul.years
-    -# - site.posts.group_by {|p| p.date.year }.tap do |years|
-    -#   - years.keys.sort.reverse.each do |year|
-    -#     %li
-    -#       %span.year{:class => ('current' if Time.local(now.year) == Time.local(year))}= year
-    -#       %ul.months
-    -#         - years[year].group_by {|p| p.date.month }.tap do |months|
-    -#           - months.keys.sort.reverse.each do |month|
-    -#             %li
-    -#               %span.month{:class => ('current' if Time.local(now.year, now.month) == Time.local(year, month))}= %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec][month - 1]
-    -#               %ul.posts
-    -#                 - months[month].sort_by(&:date).reverse.each do |post|
-    -#                   %li
-    -#                     %span.day{:class => ('current' if Time.local(now.year, now.month) == Time.local(year, month))}= post.date.day
-    -#                     %a.title{:href => post.url}= post.title
+    - posts.group_by {|p| date_of(p).year }.tap do |years|
+      - years.keys.sort.reverse.each do |year|
+        %li
+          %span.year{:class => ('current' if Time.local(now.year) == Time.local(year))}= year
+          %ul.months
+            - years[year].group_by {|p| date_of(p).month }.tap do |months|
+              - months.keys.sort.reverse.each do |month|
+                %li
+                  %span.month{:class => ('current' if Time.local(now.year, now.month) == Time.local(year, month))}= %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec][month - 1]
+                  %ul.posts
+                    - months[month].sort_by {|p| date_of(p) }.reverse.each do |post|
+                      %li
+                        %span.day{:class => ('current' if Time.local(now.year, now.month) == Time.local(year, month))}= date_of(post).day
+                        %a.title{:href => href(post)}= post.title

@@ -3,7 +3,6 @@ layout: "/_default.haml"
 ---
 %article
   %header
-    %time{:pubdate => 'pubdate'}= page.title #date.strftime "%Y %B %e"
-    %h1
-      %a{href: 'lol'}= page.title
+    %time{:pubdate => 'pubdate'}= date_of(page).strftime "%Y %B %e"
+    %h1= link(page, page.title)
   ~ yield

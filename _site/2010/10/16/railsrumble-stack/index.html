@@ -38,30 +38,64 @@
     </nav>
     <article>
       <header>
-        <time pubdate="pubdate">2009 January  8</time>
+        <time pubdate="pubdate">2010 October 16</time>
         <h1>
-          <a href="/2009/01/08/drm">DRM</a>
+          <a href="/2010/10/16/railsrumble-stack">railsrumble stack</a>
         </h1>
       </header>
-      <p>I think the biggest news out of the Macworld keynote today was the announcement that the iTunes Store is now largely DRM-free, and completely so by March.</p>
+      <p>Here&#8217;s how I set up a rails stack. If you&#8217;re railsrumbling this weekend, I hope babushka can save you some time. I&#8217;ll be loitering around the nearest twitter, so please direct any questions towards <a href='http://twitter.com/babushka_app'>@babushka_app</a> and I&#8217;ll do my best to help out.</p>
       
-      <p>Steve Jobs wrote <a href='http://www.apple.com/hotnews/thoughtsonmusic/'>thoughts on music</a> almost two years ago, which left quite an impression on me. Many were sceptical of Apple&#8217;s intent at the time, but Apple repeatedly put their money where their mouth was—first with EMI, then with several smaller labels, and today, with the lot. Top work, I say.</p>
+      <p>My deps will roll a bundler/passenger3/nginx/postgres stack. If you&#8217;re using apache or mysql, there might be other deps out there. Or you might be out of luck. I recommend using nginx and/or postgres instead. :)</p>
       
-      <p>Conceding tiered pricing to the record companies, which Apple have been holding back on for some time, seems to be a small price to pay—especially since I imagine that the top price bracket will be occupied mostly by new releases and useless pop music.</p>
+      <p>First, the tl;dr version, to host an app on <code>example.org</code>. The commands are for the server except where it says otherwise.</p>
       
-      <p>Secondly, and this is why I think this is so important—we&#8217;re in a situation now where <strong>every major avenue you can purchase music through is DRM-free</strong>. That&#8217;s worth thinking about for a moment! CDs, the iTunes Store, and the Amazon MP3 store are all (or by the end of March, will be) totally DRM-free.</p>
+      <pre><code># as root, on a fresh instance&#x000A;bash -c &quot;`wget -O - babushka.me/up/hard`&quot;      # install babushka&#x000A;&#x000A;# then, also as root&#x000A;babushka &#39;benhoskings:passwordless ssh logins&#39;&#x000A;babushka benhoskings:system                    # publickey-only sshd, etc&#x000A;babushka &#39;benhoskings:user exists&#39;             # create the app&#39;s account&#x000A;passwd example.org                             # for sudoing later&#x000A;su - example.org&#x000A;&#x000A;# as example.org&#x000A;babushka &#39;benhoskings:passwordless ssh logins&#39;&#x000A;babushka &#39;benhoskings:passenger deploy repo&#39;   # ~/current deploy target&#x000A;&#x000A;# (within your local repo)&#x000A;git remote add production example.org@&lt;linode IP&gt;:~/current&#x000A;git push production master                     # initial deploy&#x000A;&#x000A;# as example.org&#x000A;babushka &#39;benhoskings:rails app&#39;               # host the app</code></pre>
       
-      <p>Here&#8217;s a thing: <strong>every major avenue you can purchase video through is DRM-encumbered</strong>. DVDs, Blu-Ray, Netflix, iTunes Store video.</p>
+      <p>To deploy, just push to the production remote. The deploy repo will accept any branch, and handles creating or switching to it as required, so you can just push any old crap and it will be live.</p>
       
-      <p>So, what the hell? Video hasn&#8217;t caught up to audio yet? People think of video differently and will tolerate DRM? The movie industry thinks of it differently? Video is pirated more aggressively? Or maybe the left hand just doesn&#8217;t know what the right hand is doing?</p>
+      <p>I recommend creating a branch named <code>deploy</code> for this purpose, and merging into it locally before pushing.</p>
+      <hr />
+      <p><em>Those instructions again, with some commentary</em></p>
       
-      <p>I think it&#8217;s a couple of things, but I think this is a crucial difference: music has a certain permanence that movies and TV shows do not.</p>
+      <p>First, log into a fresh instance as root and install babushka. I test babushka against ubuntu and recommend 10.10. Other apt-based distributions should be fine; babushka also supports yum, and my deps could support it with a couple of trivial tweaks to add package names.</p>
       
-      <p>When I buy an album, I expect to listen to it lots of times—if I grow to truly love the album, maybe dozens or hundreds of times. But I can&#8217;t imagine watching even life changingly good movies more than a couple of times.</p>
+      <pre><code>bash -c &quot;`wget -O - babushka.me/up`&quot;</code></pre>
       
-      <p>I&#8217;m probably biased because I live and breathe music and don&#8217;t care all that much about movies or TV (<a href='http://www.imdb.com/title/tt1010048/'>with</a> <a href='http://www.imdb.com/title/tt0367279/'>notable</a> <a href='http://www.imdb.com/title/tt0200276/'>exception</a>), but I think that&#8217;s still a fairly major factor in the psychology of both the record companies and the listeners &amp; viewers.</p>
+      <p>Right, that&#8217;s ruby, git and babushka all installed. Next, ssh public key. (If you&#8217;re on a Mac, throw it on your clipboard by running <code>cat ~/.ssh/id_dsa.pub | pbcopy</code> locally.)</p>
       
-      <p>Whatever the reason, this is huge news. Hat tip to Apple for doing it live, hat tip to the record companies for coming to their senses, and genuflection to the artists whose music I love.</p>
+      <pre><code>babushka &#39;benhoskings:passwordless ssh logins&#39;</code></pre>
+      
+      <p>Next, configure some basic system stuff - <code>sshd</code> with publickey-only logins for security, a few tools like <code>screen</code> &amp; <code>nmap</code>, and a <code>sudo</code>ing admin group. Since this turns off password logins, if you didn&#8217;t add your publickey in the previous step, this will lock you out of the server.</p>
+      
+      <pre><code>babushka benhoskings:system</code></pre>
+      
+      <p>Right, that&#8217;s the system done. Next, you want a user account for your webapp to run as. (Of course, it&#8217;s easy to configure a user account, but this is nice and consistent and gets the groups right every time.) A good convention is to name the user account after your app&#8217;s domain, say <code>example.org</code>.</p>
+      
+      <pre><code>babushka &#39;benhoskings:user exists&#39;&#x000A;passwd example.org&#x000A;su - example.org</code></pre>
+      
+      <p>Next we set up ssh logins for the app user. Everyone who wants to be able to deploy should run this step. (Remember, <code>cat ~/.ssh/id_dsa.pub | pbcopy</code>.)</p>
+      
+      <pre><code>babushka &#39;benhoskings:passwordless ssh logins&#39;</code></pre>
+      
+      <p>And then create the production git repo that we push to in order to deploy. (It has a <code>post-receive</code> hook that handles the changeover.)</p>
+      
+      <pre><code>babushka &#39;benhoskings:passenger deploy repo&#39;</code></pre>
+      
+      <p>Now, on your local machine (for each teammate), add the deploy repo as a remote and push your app to it. You&#8217;ll see some extra output during the push as the production repo does its thing.</p>
+      
+      <pre><code>git remote add production example.org@&lt;linode IP&gt;:~/current&#x000A;git push production master</code></pre>
+      
+      <p>Now you can babushka up a rails stack against your app. As the <code>example.org</code> user again:</p>
+      
+      <pre><code>babushka &#39;benhoskings:rails app&#39;</code></pre>
+      <hr />
+      <p>To deploy your app, just push to the <code>production</code> branch. If you want to add custom deploy-time tasks, you could add them to <code>~/current/.git/hooks/post-receive</code>. Or if you like, use capistrano or a similar tool; anything that results in the app being deployed to <code>~/current</code> (or whatever path you chose) will work fine.</p>
+      <hr />
+      <p>If it fails because you forgot something, remember babushka can run from any start state. So once you&#8217;ve corrected the problem, just run babushka again, and it&#8217;ll skip everything that&#8217;s already complete from previous runs. If you&#8217;re having trouble, or babushka is complaining and you don&#8217;t think it&#8217;s your fault, ping <a href='http://twitter.com/babushka_app'>@babushka_app</a> and I&#8217;ll do my best to help out.</p>
+      <hr />
+      <p>There are some things you&#8217;ll have to do manually, like scheduling background tasks.</p>
+      <hr />
+      <p>Once the &#8216;rails app&#8217; dep has run, you&#8217;ll have to add a DNS entry for your domain. If you just browse to your linode IP, the virtualhost won&#8217;t match and you&#8217;ll see &#8216;Welcome to nginx!&#8217;. Which is lovely, but won&#8217;t win you any rails rumbles.</p>
     </article>
     <footer>
       <span>

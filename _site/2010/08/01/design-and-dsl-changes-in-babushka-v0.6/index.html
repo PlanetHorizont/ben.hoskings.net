@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="width = 660" name="viewport" />
+    <title>ben hoskings</title>
+    <link href="/stylesheets/styles.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/index.atom" rel="alternate" title="Atom feed" type="application/atom+xml" />
+    <script type="text/javascript">
+      //<![CDATA[
+        /**
+          head.js    The only script in your <HEAD>
+          Copyright  Tero Piirainen (tipiirai)
+          License    MIT / http://bit.ly/mit-license
+        
+          http://headjs.com
+        */(function(a){var b=a.documentElement,c={screens:[320,480,640,768,1024,1280,1440,1680,1920],section:"-section",page:"-page",head:"head"},d=[];if(window.head_conf)for(var e in head_conf)head_conf[e]&&(c[e]=head_conf[e]);function f(a){d.push(a)}function g(a){var c=new RegExp("\\b"+a+"\\b");b.className=b.className.replace(c,"")}function h(a,b){for(var c=0;c<a.length;c++)b.call(a,a[c],c)}var i=window[c.head]=function(){i.ready.apply(null,arguments)};i.feature=function(a,c,e){if(!a){b.className+=" "+d.join(" ");return d=[]}Object.prototype.toString.call(c)=="[object Function]"&&(c=c.call()),f((c?"":"no-")+a),i[a]=!!c,e||(g("no-"+a),g(a),i.feature());return i};var j=navigator.userAgent.toLowerCase();j=/(webkit)[ \/]([\w.]+)/.exec(j)||/(opera)(?:.*version)?[ \/]([\w.]+)/.exec(j)||/(msie) ([\w.]+)/.exec(j)||!/compatible/.test(j)&&/(mozilla)(?:.*? rv:([\w.]+))?/.exec(j)||[],j[1]=="msie"&&(j[1]="ie"),f(j[1]),i.browser={version:j[2]},i.browser[j[1]]=true;if(i.browser.ie)for(var k=3;k<11;k++)parseFloat(j[2])<k&&f("lt-ie"+k);h("abbr|article|aside|audio|canvas|details|figcaption|figure|footer|header|hgroup|mark|meter|nav|output|progress|section|summary|time|video".split("|"),function(b){a.createElement(b)}),h(location.pathname.split("/"),function(a,d){if(this.length>2&&this[d+1])d&&f(this.slice(1,d+1).join("-")+c.section);else{var e=a||"index",g=e.indexOf(".");g>0&&(e=e.substring(0,g)),b.id=e+c.page,d||f("root"+c.section)}});function l(){var a=window.outerWidth||b.clientWidth;b.className=b.className.replace(/ (w|lt)-\d+/g,""),f("w-"+Math.round(a/100)*100),h(c.screens,function(b){a<=b&&f("lt-"+b)}),i.feature()}l(),window.onresize=l,i.feature("script",true).feature()})(document),function(){var a=document.createElement("i"),b=a.style,c=" -o- -moz- -ms- -webkit- -khtml- ".split(" "),d=window.head_conf&&head_conf.head||"head",e=window[d];function f(a){b.cssText=c.join(a+";");var d=b.cssText;if(d.indexOf("-o")!=-1&&d.indexOf("-ms")!=-1)return false;return!!d}var g={gradient:function(){var a="background-image:",d="gradient(linear,left top,right bottom,from(#9f9),to(#fff));",e="linear-gradient(left top,#eee,#fff);";b.cssText=(a+c.join(d+a)+c.join(e+a)).slice(0,-a.length);return!!b.backgroundImage},rgba:function(){b.cssText="background-color:rgba(0,0,0,0.5)";return!!b.backgroundColor},boxshadow:function(){return f("box-shadow: 0 0 0 red")},textshadow:function(){return b.textShadow===""},multiplebgs:function(){b.cssText="background:url(//:),url(//:),red url(//:)";return(new RegExp("(url\\s*\\(.*?){3}")).test(b.background)},borderimage:function(){return f("border-image: url(m.png) 1 1 stretch")},borderradius:function(){return f("border-radius:0")},opacity:function(){return a.style.opacity===""},reflections:function(){return f("box-reflect:right 0")},transforms:function(){return f("transform:rotate(1deg)")},transitions:function(){return f("transition:all .1s linear")}};for(var h in g)g[h]&&e.feature(h,g[h].call(),true);e.feature()}(),function(a){var b=a.documentElement,c=navigator.userAgent.toLowerCase().indexOf("msie")!=-1,d=false,e=[],f={},g={};var h=window.head_conf&&head_conf.head||"head",i=window[h]=window[h]||function(){i.ready.apply(null,arguments)};i.js=function(){var a=arguments,b=[].slice.call(a,1),c=b[0];if(!d){e.push(function(){i.js.apply(null,a)});return i}c?(l(c)||k(b,function(a){l(a)||n(j(a))}),o(j(a[0]),l(c)?c:function(){i.js.apply(null,b)})):o(j(a[0]));return i},i.ready=function(a,b){var c=g[a];if(c&&c.state=="loaded"){b.call();return i}l(a)&&(b=a,a="ALL");var d=f[a];d?d.push(b):d=f[a]=[b];return i};function j(a){var b=g[a.name||a];if(b)return b;if(typeof a=="object")for(var c in a)a[c]&&(b={name:c,url:a[c]});else{var d=a.split("/"),e=d[d.length-1],f=e.indexOf("?");b={name:f!=-1?e.substring(0,f):e,url:a}}g[b.name]=b;return b}function k(a,b){if(a){typeof a=="object"&&(a=[].slice.call(a));for(var c=0;c<a.length;c++)b.call(a,a[c],c)}}function l(a){return Object.prototype.toString.call(a)=="[object Function]"}function m(a){a.state="preloaded",k(a.onpreload,function(a){a.call()})}function n(c,d){if(!c.state){c.state="preloading",c.onpreload=[];if(/Firefox/.test(navigator.userAgent)){var e=a.createElement("object");e.data=c.url,e.width=0,e.height=0,e.onload=function(){m(c),setTimeout(function(){b.removeChild(e)},1)},b.appendChild(e)}else p({src:c.url,type:"cache"},function(){m(c)})}}function o(a,b){if(a.state=="loaded")return b();if(a.state=="preloading")return a.onpreload.push(function(){o(a,b)});a.state="loading",p(a.url,function(){a.state="loaded",b&&b.call(),k(f[a.name],function(a){a.call()});var c=true;for(var d in g)g[d].state!="loaded"&&(c=false);c&&k(f.ALL,function(a){a.done||a.call(),a.done=true})})}function p(d,e){var f=a.createElement("script");f.type="text/"+(d.type||"javascript"),f.src=d.src||d,f.onreadystatechange=f.onload=function(){var a=f.readyState;!e.done&&(!a||/loaded|complete/.test(a))&&(e.call(),e.done=true),c||b.removeChild(f)},b.appendChild(f)}setTimeout(function(){d=true,k(e,function(a){a.call()})},200)}(document)
+      //]]>
+    </script>
+    <!--[if IE]>
+      <script type="text/javascript">
+        //<![CDATA[
+          // For discussion and comments, see: http://remysharp.com/2009/01/07/html5-enabling-script/
+          (function(){if(!/*@cc_on!@*/0)return;var e = "abbr,article,aside,audio,bb,canvas,datagrid,datalist,details,dialog,eventsource,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');for(var i=0;i<e.length;i++){document.createElement(e[i])}})();
+        //]]>
+      </script>
+    <![endif]-->
+  </head>
+  <body>
+    <header>
+      <h1>
+        <a href="/">ben hoskings</a>
+      </h1>
+    </header>
+    <nav>
+      <a href="http://twitter.com/ben_h" rel="me">twitter</a>
+      <a href="http://github.com/benhoskings" rel="me">github</a>
+    </nav>
+    <article>
+      <header>
+        <time pubdate="pubdate">2010 August  1</time>
+        <h1>
+          <a href="/2010/08/01/design-and-dsl-changes-in-babushka-v0.6">design and DSL changes in babushka-0.6</a>
+        </h1>
+      </header>
+      <p>I&#8217;ve been chipping away at the latest round of babushka updates over the last six weeks or so. They involved changes to existing babushka components, and several new ones. Once things were specced and working, I let the updates cool in a topic branch while I turned the design over in my hands to see if it felt right. After some tweaks I&#8217;ve decided it does, and so last week I merged the changes to <a href='http://github.com/benhoskings/babushka'>master</a>. If you update or install today you&#8217;ll have the latest and greatest&#8212;as I write, at v0.6.2.</p>
+      
+      <p>If you haven&#8217;t used babushka before, <a href='/2010/08/01/getting-started-with-babushka'>here&#8217;s a quick tutorial and introduction</a>.</p>
+      
+      <p>For the impatient, here&#8217;s the short version.</p>
+      
+      <ul>
+      <li>Sources have been unified into <code>~/.babushka/sources</code>, and <code>sources.yml</code> is gone;</li>
+      
+      <li>Namespace deps with <code>sourcename:depname</code> to jump sources, or to run from a non-default source;</li>
+      
+      <li>Instead of <code>app Chromium.app</code>, use <code>dep Chromium.app</code>;</li>
+      
+      <li>Instead of <code>gem_source &#39;rubygems source present&#39;</code>, use <code>dep &#39;rubygems source present&#39;, :template =&gt; &#39;gem_source&#39;</code>;</li>
+      
+      <li>The <code>pkg</code> template was renamed to <code>managed</code> because it looked like it handled OS X installer packages.</li>
+      </ul>
+      <hr />
+      <p>The latest round of updates involved redesigning the way deps and dep sources work, in order to make collaboration easier, encourage trust-based source sharing, and address what were obvious scaling barriers. A lot of the plumbing has been redesigned and reconnected. A couple of changes to the DSL were required, but the syntax has remained largely the same.</p>
+      
+      <p>A lot of the internal changes aren&#8217;t directly visible; together, they mean that dep sources are a lot smoother and more automatic now. The visible changes arose from the fact that the more people start writing deps, the more everyone treads on each others&#8217; toes with naming collisions. As such, dep sources had to be made completely independent of each other. This involved a few separate changes to the way sources work.</p>
+      <hr />
+      <p><em>Each source maintains its own pool of deps now, so there are no naming conflicts across sources.</em></p>
+      
+      <p>Previous versions of babushka loaded deps and templates from all sources into a single &#8216;pool&#8217;. Deps were looked up from the pool by name at runtime when they were run, or were required by another dep. Now each source has a <code>DepPool</code> of its own, which stores just the deps defined in that source.</p>
+      
+      <p>This allows deps in different sources to have the same name without conflicting with each other. The <a href='http://github.com/benhoskings/babushka/tree/master/deps'>core deps</a> that are bundled with babushka also have their own source, and if you define deps in an interactive session like <code>irb</code>, they&#8217;re stored in an implicit source.</p>
+      
+      <p>In some situations, this means you have to include a dep&#8217;s source in its name, so babushka knows where to look for it.</p>
+      <hr />
+      <p><em>To run a dep that isn&#8217;t in a default source, its name has to be namespaced.</em> There are three default sources whose deps can be referred to without the source name:</p>
+      
+      <ul>
+      <li>The core source, usually <code>/usr/local/babushka/deps</code>, which contains the deps babushka needs to install itself&#8212;things like ruby, git, and the standard package managers;</li>
+      
+      <li>The current project&#8217;s deps, found in the current working directory at <code>./babushka-deps</code>;</li>
+      
+      <li>Your personal dep source, at <code>~/.babushka/deps</code>. In future, babushka will automatically set this directory up as a git repo pointing at <code>http://github.com/you/babushka-deps</code>.</li>
+      </ul>
+      
+      <p>To reference a dep that isn&#8217;t in one of these three core sources, you just prepend the source name to it. So instead of running <code>babushka TextMate.app</code>, you should instead run <code>babushka benhoskings:TextMate.app</code> now, and so on.</p>
+      
+      <p>Specifying dep names with <code>requires</code> statements follows the same pattern. To require a dep in one of the three core sources, or one that&#8217;s in the same source as the requiring dep, there&#8217;s no need to specify the source name. To require a non-core dep from a different source, just specify its source name as above.</p>
+      
+      <pre><code>dep &#39;some TextMate plugin&#39; do&#x000A;  requires &#39;benhoskings:TextMate.app&#39;&#x000A;  …&#x000A;end</code></pre>
+      <hr />
+      <p><em>The source system has been totally redesigned, so that it no longer requires a config file, is much more hackable, and can be completely automatic.</em></p>
+      
+      <p>Firstly, sources are user-specific now, and stored in <code>~/.babushka/sources</code> instead of within the babushka installation for all to share (by default, <code>/usr/local/babushka/sources</code>).</p>
+      
+      <p>Secondly, now that babushka knows where to look for namespaced deps, sources are lazily loaded when a dep they contain is required; the old design eagerly loaded all sources. This saves on startup time once you have more than a few sources present, and means babushka can handle dozens of sources without slowdown.</p>
+      
+      <p>Thirdly, since deps can&#8217;t conflict with each other anymore, there&#8217;s no need to set source load order, and so <code>sources.yml</code> is gone. This makes the source system much simpler: a source&#8217;s name is defined by the name of the directory it&#8217;s in. This allows the source system to be used in a few different ways.</p>
+      
+      <ul>
+      <li>
+      <p>If you run a dep like <code>benhoskings:Chromium.app</code>, the source at <code>~/.babushka/sources/benhoskings</code> will be loaded, no matter how it got there. So adding sources with custom names, or overriding someone else&#8217;s source with one of your own, is simple&#8212;just name its directory accordingly.</p>
+      </li>
+      
+      <li>
+      <p>But, if <code>~/.babushka/sources/benhoskings</code> doesn&#8217;t exist, it will be cloned from <code>http://github.com/benhoskings/babushka-deps.git</code>. This is probably what you&#8217;ll want in most cases.</p>
+      </li>
+      
+      <li>
+      <p>You can still use <code>babushka sources -a &lt;name&gt; &lt;uri&gt;</code> to add a source with a custom name; that will clone <code>&lt;uri&gt;</code> into <code>~/.babushka/sources/&lt;name&gt;</code>.</p>
+      </li>
+      
+      <li>
+      <p>You can inspect all the present sources with <code>babushka sources -l</code>, which shows some info on each source that babushka knows about, including the path from which babushka will try to update it when it&#8217;s used.</p>
+      </li>
+      
+      <li>
+      <p>Since <code>sources.yml</code> is gone, the only stored state is in the names of the source directories. So, it&#8217;s completely safe to manually add, move, rename or delete directories within <code>~/.babushka/sources</code> .</p>
+      </li>
+      </ul>
+      
+      <p>All together, this means that the source system has been unified, so that it no longer distinguishes between sources that were added manually, and sources that were auto-added when a namespaced dep was run. They&#8217;re all one and the same now, in <code>~/.babushka/sources</code>.</p>
+      
+      <ul>
+      <li><strong>But, there is one caveat:</strong> babushka assumes that it has control of any git repos within <code>~/.babushka/sources</code>, so don&#8217;t leave uncommitted changes in any of those repos because babushka won&#8217;t hesitate to blow them away. This might change in future; get in touch on the <a href='http://groups.google.com/group/babushka_app'>mailing list</a> to share ideas on this.</li>
+      </ul>
+      <hr />
+      <p><em>Everything is just a dep (and always was, but now it&#8217;s obvious).</em></p>
+      
+      <p>Everything that you can declare with babushka&#8217;s DSL is either a dep or a template. A dep at its lowest level is defined by the three statements <code>requires</code>, <code>met?</code> and <code>meet</code>, and all deps are based on those three, whether they explicitly define them or not.</p>
+      
+      <p>You can&#8217;t achieve a truly concise DSL without wrapping up common patterns as they emerge, though, and so you can define deps against templates, like <code>tmbundle</code>, <code>vim-plugin</code> or whatever you like. Because some things are worth making universal, a few of these templates are bundled along with babushka itself&#8212;like <code>app</code> for OS X applications, or <code>gem</code> for rubygems.</p>
+      
+      <p>Confusion arose around these universal templates, though. Their top-level methods like <code>pkg</code> were defined in babushka core, which meant that they appeared to be special, and that their relation to a standard <code>dep</code> wasn&#8217;t clear.</p>
+      
+      <p>That&#8217;s all cleaned up now. Just as sources have been unified, deps are always defined with the <code>dep</code> top-level method now, whether they use a template or not. Instead of saying <code>gem &#39;hpricot&#39;</code>, you say either <code>dep &#39;hpricot&#39;, :template =&gt; &#39;gem&#39;</code>, or <code>dep &#39;hpricot.gem&#39;</code>. These two styles produce the same dep&#8212;the choice is there to allow you to include the template type in the dep&#8217;s name.</p>
+      
+      <p>In a lot of situations, this is just what you want&#8212;for example, <code>TextMate.app</code>, <code>Cucumber.tmbundle</code> and <code>sinatra.gem</code> are all concise names that are defined against templates, and describe exactly what they install. But, there are other situations where it gets messy, and the hash syntax is clearer&#8212;for example, <code>dep &#39;rubygems source present&#39;, :template =&gt; &#39;gem_source&#39;</code>.</p>
+      
+      <p>All the <a href='http://github.com/benhoskings/babushka/tree/master/deps'>core deps</a> have been updated, along with the ones in <a href='http://github.com/benhoskings/babushka-deps'>my dep source</a>. You&#8217;ll need to update your deps before they work with the new version of babushka. The best way to do this is to just try running one of your deps; as babushka tries to load your source it will complain about each piece of the old syntax it doesn&#8217;t understand, and explain how you should update it.</p>
+      <hr />
+      <p><em>So, that&#8217;s where things sit at the moment.</em> I think with this latest round of changes, babushka&#8217;s design is solidifying. But having said that, I&#8217;m still very open to change, and I&#8217;m not afraid of making invasive changes if the case for them is strong enough. I&#8217;m really open to new ideas large and small, so if you have ideas, comments or feedback, I&#8217;d love to hear about them.</p>
+      
+      <p>The best place for ideas and discussion is the <a href='http://groups.google.com/group/babushka_app'>mailing list</a>. You should follow <a href='http://twitter.com/babushka_app'>@babushka_app</a> for updates and announcements, and <a href='http://twitter.com/?status=%40babushka_app%20'>get in touch</a> whenever you like. Non-reply tweets are fairly sparse, so following won&#8217;t clog up your timeline.</p>
+    </article>
+    <footer>
+      <span>
+        Powered by
+        <a href="http://github.com/mojombo/jekyll">Jekyll</a>
+        Content &amp; layout &copy; Ben Hoskings.
+      </span>
+    </footer>
+    <script type="text/javascript">
+      //<![CDATA[
+        head.js("/scripts/jquery.js");
+        head.js("/scripts/images.js");
+      //]]>
+    </script>
+    <script type="text/javascript">
+      //<![CDATA[
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        try {
+          var pageTracker = _gat._getTracker("UA-9740324-2");
+          pageTracker._trackPageview();
+        } catch(err) {}
+      //]]>
+    </script>
+  </body>
+</html>

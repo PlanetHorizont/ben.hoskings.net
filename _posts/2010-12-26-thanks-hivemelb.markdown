@@ -146,9 +146,12 @@ Lastly, thanks once again to all you lovely people who donated a piece of my new
         type: 'POST',
         dataType: 'jsonp',
         success: function(data) {
-          var total_count = 0;
+          var max_count = 0, this_count;
           $(data).each(function(i, result) {
-            total_count += parseInt(result.count);
+            this_count = parseInt(result.count);
+            if (this_count > max_count) {
+              max_count = this_count;
+            }
           });
           $(data).each(function(i, result) {
             var add_result_to = function(elem) {
@@ -162,7 +165,7 @@ Lastly, thanks once again to all you lovely people who donated a piece of my new
                     $('<div />')
                       .addClass('count')
                       .css({width: '0'})
-                      .animate({width: (350 * result.count / total_count) + 'px'}, 1000)
+                      .animate({width: (350 * result.count / max_count) + 'px'}, 1000)
                   )
               );
             };

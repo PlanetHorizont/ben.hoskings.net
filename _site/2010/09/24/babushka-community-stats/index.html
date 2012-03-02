@@ -38,30 +38,66 @@
     </nav>
     <article>
       <header>
-        <time pubdate="pubdate">2009 January  8</time>
+        <time pubdate="pubdate">2010 September 24</time>
         <h1>
-          <a href="/2009/01/08/drm">DRM</a>
+          <a href="/2010/09/24/babushka-community-stats">babushka community stats</a>
         </h1>
       </header>
-      <p>I think the biggest news out of the Macworld keynote today was the announcement that the iTunes Store is now largely DRM-free, and completely so by March.</p>
+      <p>I&#8217;ve merged a new feature into babushka&#8217;s <code>next</code> branch that adds functionality in a new direction. The changes teach babushka to collectively build a database of the deps that are being run, their success rates, and where to find them. Babushka can query this database over HTTP, so everyone can discover new deps from babushka itself.</p>
       
-      <p>Steve Jobs wrote <a href='http://www.apple.com/hotnews/thoughtsonmusic/'>thoughts on music</a> almost two years ago, which left quite an impression on me. Many were sceptical of Apple&#8217;s intent at the time, but Apple repeatedly put their money where their mouth was—first with EMI, then with several smaller labels, and today, with the lot. Top work, I say.</p>
+      <p>Firstly, while I&#8217;m pretty excited about this, it&#8217;s definitely not a finalised design. Your feedback will shape its future.</p>
       
-      <p>Conceding tiered pricing to the record companies, which Apple have been holding back on for some time, seems to be a small price to pay—especially since I imagine that the top price bracket will be occupied mostly by new releases and useless pop music.</p>
+      <p>Secondly, any tool that sends data to a server immediately raises privacy questions, so I&#8217;d like to describe the design, and show that it&#8217;s truly a community database: open, transparent and anonymous.</p>
+      <hr />
+      <p><em>So, what is it?</em> Well, there&#8217;s a new command, <code>babushka search</code>, which queries this database, like so. You can try it out yourself if you switch to the <code>next</code> branch:</p>
       
-      <p>Secondly, and this is why I think this is so important—we&#8217;re in a situation now where <strong>every major avenue you can purchase music through is DRM-free</strong>. That&#8217;s worth thinking about for a moment! CDs, the iTunes Store, and the Amazon MP3 store are all (or by the end of March, will be) totally DRM-free.</p>
+      <pre><code>babushka &#39;babushka next&#39;&#x000A;babushka search tmbundle</code></pre>
       
-      <p>Here&#8217;s a thing: <strong>every major avenue you can purchase video through is DRM-encumbered</strong>. DVDs, Blu-Ray, Netflix, iTunes Store video.</p>
+      <p><img alt='babushka search example' src='/images/babushka-search-example.png' /></p>
       
-      <p>So, what the hell? Video hasn&#8217;t caught up to audio yet? People think of video differently and will tolerate DRM? The movie industry thinks of it differently? Video is pirated more aggressively? Or maybe the left hand just doesn&#8217;t know what the right hand is doing?</p>
+      <p>The results show matching deps that others have used, and for each, the number of runs this week, and the proportion of those runs that succeeded. This should give you a feel for what&#8217;s popular and what&#8217;s reliable at the moment. For the deps that are in a source on GitHub following the <code>username/babushka-deps</code> convention, the command to instantly run that dep is shown too.</p>
       
-      <p>I think it&#8217;s a couple of things, but I think this is a crucial difference: music has a certain permanence that movies and TV shows do not.</p>
+      <p><em>This data is collected by babushka itself.</em> Whenever babushka finishes running a dep from a public source, it writes some info about the run to a file. Then, whenever babushka is invoked, it asynchronously submits that info to the babushka web service. It&#8217;s done in the background like this for three reasons:</p>
       
-      <p>When I buy an album, I expect to listen to it lots of times—if I grow to truly love the album, maybe dozens or hundreds of times. But I can&#8217;t imagine watching even life changingly good movies more than a couple of times.</p>
+      <ul>
+      <li>If it were synchronous, every babushka run would pause for a second or two while babushka contacted the web service, which would suck.</li>
       
-      <p>I&#8217;m probably biased because I live and breathe music and don&#8217;t care all that much about movies or TV (<a href='http://www.imdb.com/title/tt1010048/'>with</a> <a href='http://www.imdb.com/title/tt0367279/'>notable</a> <a href='http://www.imdb.com/title/tt0200276/'>exception</a>), but I think that&#8217;s still a fairly major factor in the psychology of both the record companies and the listeners &amp; viewers.</p>
+      <li>It means the files can accumulate when your machine is offline, and be flushed to the web service whenever babushka is next run online.</li>
       
-      <p>Whatever the reason, this is huge news. Hat tip to Apple for doing it live, hat tip to the record companies for coming to their senses, and genuflection to the artists whose music I love.</p>
+      <li>You can inspect the files, and see exactly what babushka is sending over the wire.</li>
+      </ul>
+      <hr />
+      <p><em>If this system weren&#8217;t carefully implemented, it would be a privacy problem.</em> I&#8217;ve designed the system in a way that I believe is completely transparent. You don&#8217;t have to trust me in order to use babushka.</p>
+      
+      <ul>
+      <li>Firstly (and obviously), <strong>babushka is open source</strong>. The calls it makes to the web service are cleanly defined in the code&#8212;just grep for <code>Net::HTTP</code>.</li>
+      
+      <li>Secondly, <strong>the web service is also open source</strong>&#8212;the code that runs <code>babushka.me</code> (a rails 3 app) is <a href='http://github.com/benhoskings/babushka.me'>on github</a> for all to see.</li>
+      
+      <li><strong>The unsent run info is stored on your machine as an HTTP param string</strong>, so you can see the exact data that will be sent before the fact. They&#8217;re in <code>~/.babushka/runs/</code>. (The info for a given run is sent the next time babushka is run.)</li>
+      
+      <li><strong>Only deps from public sources are reported</strong>&#8212;that is, sources whose URIs start with <code>git://</code>, like read-only GitHub URIs. So if you have private deps that are stored locally on your machine, or in a private source with a <code>user@host</code>-style URI, or anything else, babushka will never submit those to the web service. Only sources pointing to <code>git://</code> remotes are considered.</li>
+      
+      <li><strong>The web service API is public</strong>&#8212;babushka uses it when it submits runs and queries the database. The web service happily serves up JSON or YAML to anybody.</li>
+      
+      <li><strong>The database itself is public</strong>, for anyone to download <a href='http://babushka.me/db/babushka.me.psql'>as a postgres dump</a>. It&#8217;s freshly exported by the web service whenever required via <code>babushka &#39;benhoskings:babushka.me db dump&#39;</code>. (It&#8217;s going to get pretty big pretty quickly, but that&#8217;s a problem for later.)</li>
+      
+      <li>Finally, <strong>the data is totally anonymous anyway</strong>, so avenues via which I can appropriate the data for evil purposes are quite limited.</li>
+      </ul>
+      
+      <p>Here&#8217;s an example. After running <code>babushka benhoskings:Cucumber.tmbundle</code>, here is the info written to <code>~/.babushka/runs</code>, which is the exact data that will be submitted as HTTP params to <code>http://babushka.me/runs.json</code>:</p>
+      
+      <pre><code>⚡ cat ~/.babushka/runs/1285303540.794963&#x000A;version=0.6.2&amp;run_at=2010-09-24%2014:45:40%20+1000&amp;system_info=Mac%20OS%20X&#x000A;%2010.6.4%20(Snow%20Leopard)&amp;dep_name=Cucumber.tmbundle&amp;source_uri=git://gi&#x000A;thub.com/benhoskings/babushka-deps.git&amp;result=ok</code></pre>
+      
+      <p>Cleaning that up a bit, we can see that all it knows about me is that I&#8217;m a Mac user and I&#8217;m in GMT+10.</p>
+      
+      <pre><code>version=0.6.2&#x000A;run_at=2010-09-24 14:45:40 +1000&#x000A;system_info=Mac OS X 10.6.4 (Snow Leopard)&#x000A;dep_name=Cucumber.tmbundle&#x000A;source_uri=git://github.com/benhoskings/babushka-deps.git&#x000A;result=ok</code></pre>
+      
+      <p>Since that endpoint is public, the database is obviously gameable. But, you know, don&#8217;t do that please.</p>
+      <hr />
+      <p><em>So, that&#8217;s my idea</em>. It&#8217;s in <code>next</code>, it&#8217;s working, and the database is growing as of now.</p>
+      
+      <p>I&#8217;d love to hear your thoughts on this new feature, and your experience using it. The best ways to get in touch are to tweet at <a href='http://twitter.com/babushka_app'>@babushka_app</a>, or send a message to the <a href='http://groups.google.com/group/babushka_app/'>mailing list</a>. I&#8217;m keen for your feedback to influence how babushka develops. Sharing is awesome.</p>
     </article>
     <footer>
       <span>

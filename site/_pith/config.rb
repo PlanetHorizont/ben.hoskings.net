@@ -11,4 +11,8 @@ project.helpers do
   def date_of post
     Time.new *post.path.dirname.to_s.split('/')
   end
+
+  def slug_for page
+    page.title.gsub(/\W+/, '-')
+  end
 end

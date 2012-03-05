@@ -4,13 +4,16 @@ $leading: 1.6
 $margin: 1.6em
 $col: ($width / 10)
 $padding: 1px
-$heading_scale: 2
-$heading_size: #{$heading_scale}em
 $border-color: #777
 $border: $border-color 1px dotted
 $color: #333
 $date-color: #777
-$background: #bbb
+$background: #ccc
+
+@font-face
+  font-family: 'PixChicago'
+  src: url('../fonts/pixChicago.eot')
+  src: local('â˜º'), url('../fonts/pixChicago.woff') format('woff'), url('../fonts/pixChicago.ttf') format('truetype'), url('../fonts/pixChicago.svg#webfontrJSbkYfV') format('svg')
 
 @mixin radius($rad: 3px)
   -webkit-border-radius: $rad
@@ -74,7 +77,6 @@ img
       cursor: pointer
 
 header,
-nav,
 article,
 footer,
 #home
@@ -88,22 +90,26 @@ ul
   &.years li
     list-style-type: none
 
+body >header a
+  font: normal 14px/2 PixChicago
+
 article
-  p, ul, ol, header, pre
+  p, ul, ol, pre
     margin-bottom: $margin
   p, ul li
     color: $color
   header
     h1
-      font-size: $heading_size
+      font: 24px/2 PixChicago
+      line-height: 1.9
+      display: inline
       a
-        display: block
         padding-left: $padding
         padding-right: $padding
     time
+      font: 14px/2 PixChicago
       color: $date-color
-      float: right
-      padding-top: 1em
+      padding-left: 1em
 
 ul.years
   li
@@ -132,17 +138,17 @@ ul.years
 
 article header h1 a, ul.posts li a.title
   color: #197a9f
-  font-weight: bold
 
 a
   color: #E13D87
   text-decoration: none
   &:hover
-    text-shadow: 0px 0px 5px white
+    background-color: #aaa
 
 code
   color: $color - #111
   font-size: 0.8em
+  line-height: $leading
   background-color: #bbb - #111
   @include radius
   padding: 0 0.3em
@@ -161,8 +167,8 @@ hr
   border: none
 
 body > header,
-nav,
 article,
+article header + p,
 footer,
 #home,
 hr
@@ -173,6 +179,7 @@ body
 
 body > header,
 nav,
+article >header,
 article
   margin-bottom: $margin * 2
 
@@ -196,14 +203,11 @@ code pre
   padding-right: $padding
 
 nav
+  float: right
   overflow: hidden
   a
-    display: block
-    float: left
-    width: ($col - $padding)
-    font-size: 0.8em
+    display: inline
     padding-left: $padding
-    line-height: $leading / 0.8
     color: #666
     font-weight: bold
 

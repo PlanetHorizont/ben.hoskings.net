@@ -4,6 +4,6 @@ end
 
 dep 'build with pith.task' do
   run {
-    shell "bundle exec pith -i site/ -o public/ build"
+    shell "bundle exec pith -i site/ -o public/ build", :log => true
   }
 end

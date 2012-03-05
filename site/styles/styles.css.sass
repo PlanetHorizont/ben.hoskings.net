@@ -7,7 +7,8 @@ $padding: 1px
 $border-color: #777
 $border: $border-color 1px dotted
 $color: #333
-$meta-color: #777
+$date-color: #777
+$meta-color: #999
 $background: #ccc
 
 @font-face
@@ -108,7 +109,7 @@ article
         padding-right: $padding
     time
       font: 14px/2 PixChicago
-      color: $meta-color
+      color: $date-color
       padding-left: 1em
 
 ul.years
@@ -132,7 +133,7 @@ ul.years
         margin-left: $col
         padding-left: $padding
   span.year, span.month, span.day
-    color: $meta-color
+    color: $date-color
     width: $col - $padding
     padding-left: $padding
 

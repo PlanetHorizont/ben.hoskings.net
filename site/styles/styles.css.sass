@@ -91,9 +91,6 @@ ul
   &.years li
     list-style-type: none
 
-body >header a
-  font: normal 14px/2 PixChicago
-
 article
   p, ul, ol, pre
     margin-bottom: $margin
@@ -187,6 +184,13 @@ footer,
 #home
   margin-bottom: $margin
 
+body
+  >header
+    h1, nav
+      display: inline
+    a
+      font: normal 14px/2 PixChicago
+
 body > footer
   clear: both
   color: #555
@@ -203,11 +207,8 @@ code pre
   padding-right: $padding
 
 nav
-  float: right
-  overflow: hidden
   a
-    display: inline
-    padding-left: $padding
+    margin-left: $padding * 12
     color: $meta-color
     font-weight: bold
 

@@ -1,4 +1,4 @@
-dep 'on deploy' do
+dep 'on deploy', :old_id, :new_id, :branch, :env do
   requires 'build with pith.task'
 end
 

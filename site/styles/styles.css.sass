@@ -138,11 +138,14 @@ ul.years
 article header h1 a,
 ul.posts li a.title
   color: $title-color
+  &:hover
+    color: darken($title-color, 5%)
 
 a
   color: $link-color
   text-decoration: none
   &:hover
+    color: darken($link-color, 5%)
     background-color: darken($background, 5%)
 
 code
@@ -217,8 +220,10 @@ code pre
 nav
   a
     margin-left: $padding * 12
-    color: $meta-color
     font-weight: bold
+    color: $meta-color
+    &:hover
+      color: darken($meta-color, 5%)
 
 .lightbox
   position: fixed

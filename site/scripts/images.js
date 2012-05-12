@@ -37,7 +37,9 @@ var showFullSizeImage = function(uri) {
     $('<img />').addClass('original').attr('src', uri)
   ).appendTo('body').click(function() {
     $(this).remove();
+    $(window).unbind('resize', positionLightbox);
   });
+  $(window).resize(positionLightbox);
   positionLightbox();
 };
 
@@ -45,5 +47,4 @@ head.ready(function() {
   $('img.lightboxable').click(function() {
     showFullSizeImage($(this).attr('src'));
   });
-  $(window).resize(positionLightbox);
 });

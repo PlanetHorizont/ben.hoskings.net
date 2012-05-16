@@ -5,11 +5,11 @@ title: "better drop-in package support in babushka"
 
 This week, I've started using some new logic around packages in [babushka](http://babushka.me) -- a change in what constitutes an "installed" package.
 
-In the past, the `managed` template was the standard one for packages. It operates the package manager on your system to do its job. It considered a dep met if the appropriate packages were installed and the corresponding binaries were in the path.
+In the past, the `managed` template was the standard one for packages. It operates the package manager on your system to do its job. It considers a dep met if the appropriate packages are installed and the corresponding binaries are in the path.
 
 _Templates are for focusing babushka's DSL, trading generality for concision by wrapping up reuseable `met?` and `meet` logic. There are more details [in the docs](http://babushka.me/how-deps-work)._
 
-It turns out, that check is too strict in practice. What might usually be provided by a package, was built from source that one time. Across different platforms, the same binary often comes from different sources -- for example, `curl` is part of the OS X distribution, but an optional install on most VPSes.
+It turns out, that check is too strict in practice. What might usually be provided by a package, was built from source that one time on that one box. Across different platforms, the same binary often comes from different sources -- for example, `curl` is part of the OS X distribution, but an optional install on most VPSes.
 
 They seemed like the right checks at the time, but over time, proved to incorrectly attempt a package install too often.
 

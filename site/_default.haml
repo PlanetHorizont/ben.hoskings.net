@@ -1,12 +1,12 @@
 !!! 5
 %html{html_attrs('en')}
   %head
-    %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
-    %meta{:content => "width = 660", :name => "viewport"}/
+    %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
+    %meta{content: "width = 660", name: "viewport"}/
     %title ben hoskings
-    %link{:href => href("/styles/styles.css"), :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}
-    %link{:href => href("/index.atom"), :title => "Atom feed", :rel => "alternate", :type => "application/atom+xml"}
-    %link{:href => 'http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic,400,700', :rel => 'stylesheet', :type => 'text/css'}
+    %link{href: href("/styles/styles.css"), media: 'screen', rel: 'stylesheet', type: 'text/css'}
+    %link{href: href("/index.atom"), title: "Atom feed", rel: "alternate", type: "application/atom+xml"}
+    %link{href: 'http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic,400,700', rel: 'stylesheet', type: 'text/css'}
 
     :javascript
       /**
@@ -26,8 +26,8 @@
     %header
       %h1= link('index.html', 'ben hoskings')
       %nav
-        %a{:rel => 'me', :href => 'http://twitter.com/ben_h'} twitter
-        %a{:rel => 'me', :href => 'http://github.com/benhoskings'} github
+        %a{rel: 'me', href: 'http://twitter.com/ben_h'} twitter
+        %a{rel: 'me', href: 'http://github.com/benhoskings'} github
 
     = yield
 

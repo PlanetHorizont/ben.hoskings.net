@@ -206,9 +206,12 @@ body > footer
   clear: both
   color: $color
   span
+    display: block
     font-size: 0.8em
-    padding-left: $padding
-    padding-right: $padding
+    line-height: ($leading / 0.8)
+    padding: 0 $padding
+    &.powered_by
+      float: right
 
 header h1 a,
 article p,

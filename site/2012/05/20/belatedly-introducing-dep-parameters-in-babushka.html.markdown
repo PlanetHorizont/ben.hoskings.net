@@ -62,54 +62,44 @@ At first, this seemed like a great idea, but it turned out to be a flawed design
 
 I experimented with a couple of other designs too. Per-dep instance variables would have looked nice: a little `@` badge against every var. But not so fast...
 
-  - They default to nil. I don't like to use ivars directly because of this -- the prospect of typo-induced nils gives me the screaming heebie-jeebies. And since the nil default is at the language level, it's locked in.
+  - They default to nil. I don't like to use ivars directly because of this; the prospect of typo-induced nils gives me the screaming heebie-jeebies. And since the nil default is at the language level, it's locked in.
   - Addressing each ivar by name in order to outfit it with its value is more metaprogramming than I want to do.
   - Most importantly, supplying a value as an argument, and it appears as an instance var? Surprising.
 
-This wasn't going well.
+This wasn't going well. Talking it through with [@glenmaddern](http://twitter.com/glenmaddern), we realised that the one thing the design would have to do is side-step language-level restrictions like those above. To achieve laziness, defaults, and so on, we want to run arbitrary code, and to get into that code, the argument has to be a method call.
 
-Talking it through with [@glenmaddern](http://twitter.com/glenmaddern), we realised that the one thing the design would have to do is side-step language-level restrictions like those. To achieve laziness, defaults, and so on, we want to run arbitrary code -- a method call.
+Once we realised that, the design fell out nicely. A couple of late nights and a few test-driven classes later, and here we are.
 
 ---
 
-The new design uses The new design does away with block arguments, and uses a different notation to define dep parameters:
+The design uses a new notation to define dep parameters:
 
     dep 'vhost configured', :vhost_type do
       met? { conf_exists?(vhost_type) }
     end
 
-Each parameter listed is defined on the dep as an instance method, accessible anywhere within that dep's context. In order to supply values for the parameters, you can pass arguments along with the dep's name, just like a method call. In order to do so I've monkey-patched a core class. That's right, I went there. The method is `String#with`:
+Each parameter is defined on the dep as an instance method, accessible anywhere within that dep's context. In order to supply values for the parameters, you can pass arguments along with the dep's name, just like a method call. In order to do so I've monkey-patched a core class. The method is `String#with`:
 
     requires 'vhost configured'.with('unicorn') # positional arguments
-
     requires 'vhost configured'.with(vhost_type: 'unicorn') # named arguments
 
 <aside>
-I decided it was worth polluting String in this way because it means that babushka's string-based declarative style of `requires 'more', 'deps'` can continue. It wouldn't look very nice to have to write `requires Dep('vhost configured').with('unicorn')` every time (although you can if you like; that will work).
+I decided it was worth polluting String in this way because it means that babushka's string-based declarative style of `requires 'more', 'deps'` can continue. It wouldn't look very nice to have to write `requires Dep('name').with('args')` every time (although you can if you like; that will work).
 </aside>
 
-So, when you reference the parameter, you're actually calling a method. That method returns a Parameter object which represents the value. This object is fairly transparent -- you can mostly refer to the parameter as though it were a raw value. In particular, all of these do what you'd expect:
+Referencing the parameter (i.e. calling its method) returns a Parameter object representing the value. This object is fairly transparent&mdash;you can mostly refer to it as though it were a raw value. In particular, all of these do what you'd expect:
 
     "A fine steed" if vhost_type == 'unicorn'
-
     "A magical #{vhost_type}"
-
     vhost_type[/corn/]
 
-The idea of the Parameter object is that it provides a lazy wrapper around the value. If you don't pass a value for a given parameter, then its Parameter object will request the value from the prompt as required (i.e. when something like #to_s is called on it). This is nice because values that are never actually used won't be asked for.
+The Parameter object is there to provide laziness. You never have to provide a parameter's value up-front: its Parameter object will prompt for the value as required (i.e. when something like #to_s is called on it). This is nice because values that are never used won't be asked for.
 
-When you pass the arguments positionally, like standard ruby arguments, the arity has to match: requiring the dep will fail otherwise, complaining that you didn't pass enough args. When you pass by name, though, you can include as many or as few of the dep's args as you like - the rest will be lazily requested from the prompt if and when the values they represent are accessed.
+When you pass the arguments positionally, like standard ruby arguments, the arity has to match. When you pass by name, though, you can include as many or as few of the dep's args as you like and have lazy prompting handle the rest.
 
-Unlike old babushka vars, dep parameters are local to each dep -- you have to
-explicitly pass them onwards for them to propagate. This seems like overhead,
-but I'm confident anyone who's written more than a handful of deps will agree
-that the alternative, shared vars, is not manageable over time. (And it turns
-out passing args around really isn't much of an overhead at all; it just
-involves being explicit about data requirements that were already there.)
+Unlike vars, which are shared across all loaded deps, dep parameters are local to each dep&mdash;you have to explicitly pass them onwards for them to propagate. This seems like overhead, but I'm confident anyone who's written more than a handful of deps will agree that shared vars are unmanageable over time. Further, that overhead is small, and arguably more honest: it means being explicit about relationships that were already there.
 
-All the settings for vars are present with parameters, too, like defaults and
-choices. But unlike vars, which accept them as an options hash, parameters
-expose them as chainable methods.
+All the settings for vars are present with parameters, too, like defaults and choices. But unlike vars, which accept them as a hash of options, parameters expose them as chainable methods.
 
     dep 'app bundled', :path, :env do
       path.default('.')
@@ -117,7 +107,7 @@ expose them as chainable methods.
       # ...
     end
 
-I've been using lazy dep parameters for a bit now; they're ready to rock. In particular, they're ready to replace vars (deprecation imminent).
+I've been using dep parameters for a bit now; they're ready to rock. In particular, they're ready to replace vars (deprecation is imminent).
 
 If you find your messiest dep, chances are it's that way because of a var-related workaround you had to make. Firstly, I apologise. Secondly, try converting it to use dep parameters instead, and you'll find that a lot of setup{} blocks, calls to #set & #default, and other similar noise, become unnecessary, because you can just directly pass state around and not worry about unintended interactions between shared state that vars inevitably cause.
 

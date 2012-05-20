@@ -20,4 +20,4 @@ title: "ben hoskings"
                     - months[month].sort_by {|p| date_of(p) }.reverse.each do |post|
                       %li
                         %span.day{:class => ('current' if Time.local(now.year, now.month) == Time.local(year, month))}= date_of(post).day
-                        %a.title{:href => href(post)}= post.title
+                        %a.title{:href => href(post)}= formatted_headline_for(post.title)

@@ -3,6 +3,6 @@ layout: "/_default.haml"
 ---
 %article
   %header
-    %h1= link(page, page.title)
+    %h1= link(page, formatted_headline_for(page.title))
     %time{:pubdate => 'pubdate'}= date_of(page).strftime "%Y/%m/%d"
   ~ yield

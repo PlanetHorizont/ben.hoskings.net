@@ -92,8 +92,23 @@ ol
 ul
   li
     list-style-type: circle
+    font-size: 14s
+    px
   &.years li
     list-style-type: none
+  &.pros, &.cons
+    li
+      list-style-type: none
+      position: relative
+      &:before
+        position: absolute
+        top: 0
+  &.pros li:before
+    content: "✔"
+    left: -20px
+  &.cons li:before
+    content: "✗"
+    left: -16px
 
 article
   p, ul, ol, pre

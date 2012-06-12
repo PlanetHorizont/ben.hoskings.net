@@ -5,19 +5,17 @@ title: "belatedly introducing dep parameters in babushka"
 
 One weakness of babushka's DSL has always been that deps weren't parameterised.
 
-It's nice to think of a dep as vaguely analogous to a plain ruby method, in that they both encode a specific job. A dep has internal structure instead of just code, but you invoke a dep to do a job, just like a method.
+It's nice to think of a dep as something vaguely analogous to a method&mdash;with some internal structure, that side-effects usefully in some way. But method arguments, something quite standard in plain ruby (or any language really), had no analogue in the babushka DSL. Amateur hour!
 
-But method arguments, something quite standard in plain ruby (or any language really), had no analogue in the babushka DSL. Amateur hour!
+**tl;dr&mdash;** The babushka DSL supports parameterised deps now, they're production-ready, and _old-style vars are deprecated_ as of today.
 
-**tl;dr&mdash;** I've added dep parameters to the babushka DSL, and they're working great. Here is the little design story that led me to them, and some details on how they work.
+Here is the little design story behind dep parameters, and some details on how they work.
 
 ---
 
 **Babushka has always had shared vars of some kind.**
 
-Back when I built them, I went to great effort to make them as clever as I could. Now that I have the intervening experience, the word "clever" makes me quite nervous.
-
-Vars are sticky: they remember values as defaults for next time, keyed per dep and referencing other vars as required. In hindsight, a great example of me [building big](/2012/05/20/fast-well-big-small) for an imagined use case.
+Back when I built them, I went to great effort to make vars as clever as I could. Now that I have the intervening experience, the word "clever" makes me quite nervous. They're a great example of past me [building big](/2012/05/20/fast-well-big-small) for an imagined use case. They look like this:
 
     dep 'rack app' do
       set :vhost_type, 'unicorn'
@@ -26,10 +24,12 @@ Vars are sticky: they remember values as defaults for next time, keyed per dep a
 
     dep 'vhost configured' do
       met? { conf_exists?(var(:vhost_type)) }
-      [ ... ]
+      # and so on.
     end
 
-This design is problematic for a more fundamental reason, though: store and call (that is, setting state and then separately making use of that state). It's better to pass state around directly.
+Illustrated above, vars are problematic for a more fundamental reason: _store-and-call_. When you set state (`set :vhost_type` above) and then invoke some other thing that makes use of that state (the second dep, calling `var(:vhost_type)`), that's store-and-call.
+
+To store in this sense is to mutate, and mutability is the root of all evil, or at least, it's shady business. I mean you just don't want to get involved in that kind of behaviour. Passing state around directly is much better, because:
 
 <ul class="pros">
   <li>The data is much more localised: local arguments have a narrow scope; changing something here won't break something over there.</li>
@@ -37,14 +37,14 @@ This design is problematic for a more fundamental reason, though: store and call
   <li>It's the functional way. I'm not working in a pure language, but a man can dream.</li>
 </ul>
 
-So, shared vars had to go, in favour of parameters of some kind. But a dep isn't a method, so plain ruby method parameters aren't an option.
+So vars had to go, in favour of parameters of some kind. But a dep isn't a method, so plain ruby method parameters aren't an option.
 
 
 ---
 
 **I considered a few requirements.**
 
-I wanted my parameters to feel as much like normal ruby method args as possible, while supporting lazy prompting, and some extra niceties like default values and constrained choices.
+I wanted my parameters to feel unsurprising, while supporting lazy prompting, and some extra niceties like default values and constrained choices.
 
 This ruled out a few possibilities immediately, the first of which was block arguments on the outer dep. Had they worked, they would have looked like this:
 
@@ -62,9 +62,9 @@ This ruled out a few possibilities immediately, the first of which was block arg
 At first, this seemed like a great idea, but it turned out to be a flawed design.
 
 <ul class="cons">
-  <li>Helper methods within deps couldn't access the arguments (block arguments are local variables, which are inaccessible from within methods; see `argh!` above).</li>
-  <li>Block arguments are a language-level feature; their names can't be discovered (on ruby 1.8), and there's no control: no default values, no restricted choies.</li>
-  <li>Most problematically, block args can't be lazily evaluated later; their values have to be present when the dep is defined&mdash;but deps have to be callable like methods, with different arguments each time. To support this, the dep would have to be undefined and redefined for every call. Yuck!</li>
+  <li>Helper methods couldn't see the arguments (block arguments are local variables, which are inaccessible from within methods; see <code>argh!</code> above).</li>
+  <li>The arguments' names can't be discovered (on ruby 1.8).</li>
+  <li>Their values have to be present when the block is run&mdash;but that block is run once, to define the dep, after which it can be called like a method: repeatedly, with different arguments.</li>
 </ul>
 
 I experimented with a couple of other designs too. Per-dep instance variables would have looked nice: a little `@` badge against every var. But not so fast...
@@ -120,7 +120,7 @@ I've been using dep parameters for a bit now; they're ready to rock. In particul
 
 If you find your messiest dep, chances are it's that way because of a var-related workaround you had to make. Firstly, I apologise. Secondly, try converting it to use dep parameters instead, and you'll find that a lot of setup{} blocks, calls to #set & #default, and other similar noise, become unnecessary, because you can just directly pass state around and not worry about unintended interactions between shared state that vars inevitably cause.
 
-Vars have long been an issue. In hindsight, they evolved the way they did because I was too short-sighted when I was searching for a concise DSL. In my enthusiasm to remove as much syntax as possible I didn't anticipate the eventual mess that globally accessible vars would cause. Lesson learned!
+Vars have long been an issue. In hindsight, they evolved the way they did because I was too short-sighted when I was searching for a concise DSL. In my enthusiasm to build a DSL that made the first steps easy, I didn't anticipate the chaos that globally accessible vars would incur. Lesson learned!
 
 Feedback is super welcome, as it always is, to @babushka_app or http://babushka.me/mailing_list. Bugreports are much appreciated - http://github.com/benhoskings/babushka/issues.
 

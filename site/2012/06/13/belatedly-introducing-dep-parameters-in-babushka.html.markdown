@@ -106,10 +106,6 @@ Referencing the parameter (i.e. calling its method) returns a Parameter object r
 
 The Parameter object is there to provide laziness. You never have to supply a parameter's value up-front: its Parameter object will prompt for the value as required (i.e. when something like `#to_s` is called on it). This is nice because values that are never used won't be asked for.
 
-Local parameters, passed between every dep, do seem like overhead at first. If you've written more than a handful of deps before, though, you'll agree that shared vars are unmanageable over time.
-
-In fact, parameters dotted across your deps are a good thing: think of them as explicit notation for relationships that were already there.
-
 All the settings for vars are present with parameters, too, like defaults and choices. But unlike vars, which accept them as a hash of options, parameters expose them as chainable methods.
 
     dep 'app bundled', :path, :env do
@@ -117,6 +113,17 @@ All the settings for vars are present with parameters, too, like defaults and ch
       env.ask('Which environment should be bundled?').default('production')
       # ...
     end
+
+
+---
+**But it's more syntax!**
+
+Local parameters, passed between every dep, do seem like overhead at first. If you've written more than a handful of deps before, though, you'll agree that shared vars are unmanageable over time.
+
+In fact, parameters dotted across your deps are a good thing: think of them as explicit notation for relationships that were already there.
+
+It's ultimately about honesty: concision is a laudable goal, but goals need constraints. In this case, the constraint is honestly representing dependencies of state. To hide that may seem concise, but all it really does is mislead.
+
 
 ---
 

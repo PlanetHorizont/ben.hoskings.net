@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'pith'
+gem 'pith', '0.2.2'
 gem 'haml'
 gem 'sass'
 gem 'redcarpet'

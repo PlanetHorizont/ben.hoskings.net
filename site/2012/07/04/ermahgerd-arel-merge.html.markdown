@@ -3,27 +3,26 @@ layout: "/_post.haml"
 title: "Ermahgerd, Arel merge"
 ---
 
-*__tl;dr:__ I don't think `ActiveRecord::Relation#merge` is very widely known; I only just discovered it myself. You should use it all over the place because it is very nice.*
+asdsdfg
 
-Model scopes are a neat way of stacking up querying logic, keeping it composable. One thing I've often wanted for, though, is a way to use those scopes in other contexts.
+<aside>
+For those new to rails, arel is rails' SQL querying engine. Core to arel is per-query / per-clause chainability: "build at your leisure, one scope at a time", it says, "and I'll lazily generate the SQL later, to enumerate the results". Half-assembled scope fragments and queryable result sets can all be passed around, one and the same.
+</aside>
 
-Arel's chainability is fantastic: build one scope at a time, and only generate the full SQL query to enumerate the results. Half-assembled scope fragments and queryable result sets can all be passed around, one and the same.
+An arel query's starting point determines the result: you base each query on the model whose records you want in the results. Whether you're joining or including, or supplying nested conditions, you get a list of user records by starting your query on `User` (or one of its scopes).
 
-One arel rule-of-thumb is that you start on the model that you'd like to return: whether you're joining or including, or supplying nested conditions, you get a list of user records by starting your query on `User` (or one of its scopes).
+This is a good pattern, but I've long wondered how to introduce scopes from other models. If I wanted to start on `User` for a list of user records, but filter with a `Membership` scope, then up until yesterday I thought I was up the creek. But check this out.
 
-This is a good pattern, but it's not obvious how to employ scopes from other models. If I wanted to start on `User` for a list of user records, but filter with a `Membership` scope, then up until yesterday I thought I was up the creek. But check this out.
+---
 
-Here's a stylised part of our data model at [The Conversation](http://theconversation.edu.au). Say I have a User model:
+_To illustrate, here's a stylised portion of our data model at [The Conversation](http://theconversation.edu.au)._
 
     class User < ActiveRecord::Base
       has_many :collaborations
       has_many :articles, through: :collaborations
-      def self.active
-        where('users.locked_at IS NULL')
-      end
     end
 
-Users are joined to `Content` via `Collaboration`, which has a `role` field with a little scope on it.
+Our `User`s are joined to `Article` via `Collaboration`, which has a `role` field with a little scope on it.
 
     class Collaboration < ActiveRecord::Base
       belongs_to :user
@@ -34,16 +33,13 @@ Users are joined to `Content` via `Collaboration`, which has a `role` field with
       end
     end
 
-Our `Content` has a scope of its own, returning just the published pieces of content.
+Our `Article` has a scope of its own, returning the articles currently being drafted.
 
     class Article < ActiveRecord::Base
       has_many :collaborations
       has_many :users, through: :collaborations
       def self.drafting
-        where('articles.published_at IS NULL')
-      end
-      def self.published
-        where('articles.published_at IS NOT NULL')
+        where(published_at: nil)
       end
     end
 
@@ -57,7 +53,9 @@ This produces nice SQL, but we had to duplicate that `#where` logic from `Collab
 
 Yuck, `map` in this context is an `N+1`!, Hey, at least we got to use our `managerial` scope, right?
 
-Turns out, you _can_ compose the proper query by re-using the scope, even though it's not defined on the query's base model. Enter `#merge`!
+And here's the problem. To return user records, the query has to start on `User`, and I was under the impression that that meant I couldn't use the `Collaboration.editorial` scope.
+
+Turns out, you _can_ compose the proper query by re-using that scope, even though it's not defined on `User`. Enter `#merge`!
 
     article.users.merge(Collaboration.editorial)
 
@@ -72,13 +70,13 @@ The query is the one you'd hope for: it's the same JOIN you'd use if you were wr
 
 Even better, when you merge an association, you merge the condition that defines it as well as the attached scopes.
 
-Given a `Figure` model that represents figures within our articles:
+Given a `Figure` model, to represent the figures within articles:
 
     class Figure < ActiveRecord::Base
       belongs_to :article
     end
 
-Suppose we want to retrieve all the figures associated with the drafts a given user is editing, for review. Our query starts on `Figure` because figures are what we want, drawing on the logic in `Article` and `Collaboration` scopes. No problem for `merge`.
+Suppose we want to retrieve all the figures associated with the drafts that a given user is editing. Our constraints: we have to start on on `Figure` because figures are what we want, and we want to pull in logic from `Article` and `Collaboration` scopes. 
 
     class User < ActiveRecord::Base
       def draft_figures
@@ -89,6 +87,10 @@ Suppose we want to retrieve all the figures associated with the drafts a given u
       end
     end
 
+Note well: this isn't a class-level scope, it's a list of figures corresponding to a specific user. Even so, we started the query `Figure`-wide, and scoped it to the user by merging the `collaborations` association. That's what narrows this query to the user in question.
+
+It's clean and DRY, and it generates the SQL that you want too:
+
     SELECT "figures".* FROM "figures"
       INNER JOIN "articles"
         ON "articles"."id" = "figures"."article_id"
@@ -97,6 +99,8 @@ Suppose we want to retrieve all the figures associated with the drafts a given u
       WHERE "collaborations"."user_id" = 1
       AND "collaborations"."role" = 'editor'
       AND (articles.published_at IS NULL)
+
+
 
 <aside>
 As much as I love arel, its lack of documentation is a real problem. ([I'm one to talk.](http://babushka.me/sharing-deps)) Aside from stackoverflow, the only good resource I know of is [the AR quering guide](http://guides.rubyonrails.org/active_record_querying.html). It's well written, but it only covers the basics: it gets you started, but doesn't provide enough of a reference to really exploit arel's power.

@@ -1,6 +1,8 @@
 project.assume_content_negotiation = true
 project.assume_directory_index = true
 
+Tilt.prefer Tilt::KramdownTemplate
+
 project.helpers do
   def posts
     project.inputs.select {|input|

@@ -13,6 +13,22 @@ module HamlHelpers
   def highlight text, lang
     "<pre><code class='#{lang}'>#{CodeRay.scan(text.strip, lang).span(:css => :class)}</code></pre>"
   end
+
+  def captioned text, lang
+    code, caption = text.split("\n\n", 2)
+    formatted_caption = Kramdown::Document.new(caption).to_html.
+      sub(%r{^<p>},  '').
+      sub(%r{</p>$}, '')
+
+    %Q{
+      <figure class="code">
+      #{highlight(code, lang)}
+      <figcaption>
+        #{formatted_caption}
+      </figcaption>
+      </figure>
+    }
+  end
 end
 
 # This is required because kramdown isn't one of haml's default processors.
@@ -40,26 +56,11 @@ module Haml::Filters::Presql
   end
 end
 
-module Haml::Filters::Captioncode
+module Haml::Filters::Captionedruby
   include Haml::Filters::Base
 
   def render text
-    code, caption = text.split("\n\n", 2)
-
-    highlighted_code = CodeRay.scan(code, :ruby).span(:css => :class)
-
-    formatted_caption = Kramdown::Document.new(caption).to_html.
-      sub(%r{^<p>},  '').
-      sub(%r{</p>$}, '')
-
-    %Q{
-      <figure class="code">
-      <pre><code>#{highlighted_code}</code></pre>
-      <figcaption>
-        #{formatted_caption}
-      </figcaption>
-      </figure>
-    }
+    HamlHelpers.captioned(text, :ruby)
   end
 end
 

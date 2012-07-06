@@ -14,7 +14,7 @@ title: "Ermahgerd, Arel merge"
 
   To illustrate, here's a stylised portion of the data model that backs our publishing platform at [The Conversation](http://theconversation.edu.au).
 
-:captioncode
+:captionedruby
   class User < ActiveRecord::Base
     has_many :collaborations
     has_many :articles, :through => :collaborations
@@ -22,7 +22,7 @@ title: "Ermahgerd, Arel merge"
 
   `User` also joins to author profiles and so on, but for this example, it's standard fare.
 
-:captioncode
+:captionedruby
   class Collaboration < ActiveRecord::Base
     belongs_to :user
     belongs_to :article
@@ -34,7 +34,7 @@ title: "Ermahgerd, Arel merge"
 
   `Collaboration` represents a user's relationship to an article. It has a `role` field describing that relationship, and a scope for editorial relationships.
 
-:captioncode
+:captionedruby
   class Article < ActiveRecord::Base
     has_many :collaborations
     has_many :users, :through => :collaborations
@@ -71,7 +71,7 @@ title: "Ermahgerd, Arel merge"
 
   Even better, when you merge an association, you merge the condition that defines it as well as the attached scopes.
 
-:captioncode
+:captionedruby
   class Figure < ActiveRecord::Base
     belongs_to :article
   end
@@ -81,7 +81,7 @@ title: "Ermahgerd, Arel merge"
 :md
   Suppose we want to retrieve all the figures associated with the drafts that a given user is editing. Our constraints: we have to start on on `Figure` because figures are what we want, and we want to pull in logic from `Article` and `Collaboration` scopes.
 
-:captioncode
+:captionedruby
   class User < ActiveRecord::Base
     def draft_figures
       Figure.

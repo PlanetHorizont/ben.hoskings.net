@@ -151,13 +151,15 @@ article
       width: $article-width
     p, li, figure, aside
       color: $color
+    pre
+      code
+        @include syntax-highlighting
     figure
       @include top-border
       margin-bottom: $margin
       position: relative
       pre code
         padding: 0 0.2em
-        @include syntax-highlighting
       figcaption
         font-size: 14px
         line-height: 22px

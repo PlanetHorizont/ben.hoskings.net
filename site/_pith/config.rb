@@ -7,12 +7,36 @@ project.assume_directory_index = true
 
 Tilt.prefer Tilt::KramdownTemplate
 
+module HamlHelpers
+  module_function
+
+  def highlight text, lang
+    "<pre><code class='#{lang}'>#{CodeRay.scan(text.strip, lang).span(:css => :class)}</code></pre>"
+  end
+end
+
 # This is required because kramdown isn't one of haml's default processors.
 module Haml::Filters::Md
   include Haml::Filters::Base
 
   def render text
     Kramdown::Document.new(text).to_html
+  end
+end
+
+module Haml::Filters::Preruby
+  include Haml::Filters::Base
+
+  def render text
+    HamlHelpers.highlight(text, :ruby)
+  end
+end
+
+module Haml::Filters::Presql
+  include Haml::Filters::Base
+
+  def render text
+    HamlHelpers.highlight(text, :sql)
   end
 end
 

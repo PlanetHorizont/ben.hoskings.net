@@ -1,7 +1,19 @@
+require 'haml'
+require 'kramdown'
+
 project.assume_content_negotiation = true
 project.assume_directory_index = true
 
 Tilt.prefer Tilt::KramdownTemplate
+
+# This is required because kramdown isn't one of haml's default processors.
+module Haml::Filters::Md
+  include Haml::Filters::Base
+
+  def render_with_options text, options
+    Kramdown::Document.new(text, options).to_html
+  end
+end
 
 project.helpers do
   def posts

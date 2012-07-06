@@ -17,7 +17,7 @@ title: "Ermahgerd, Arel merge"
 :captioncode
   class User < ActiveRecord::Base
     has_many :collaborations
-    has_many :articles, through: :collaborations
+    has_many :articles, :through => :collaborations
   end
 
   `User` also joins to author profiles and so on, but for this example, it's standard fare.
@@ -26,9 +26,9 @@ title: "Ermahgerd, Arel merge"
   class Collaboration < ActiveRecord::Base
     belongs_to :user
     belongs_to :article
-    validates_inclusion_of :role, in: %w[editor author]
+    validates_inclusion_of :role, :in => %w[editor author]
     def self.editorial
-      where(role: "editor")
+      where(:role => "editor")
     end
   end
 
@@ -37,9 +37,9 @@ title: "Ermahgerd, Arel merge"
 :captioncode
   class Article < ActiveRecord::Base
     has_many :collaborations
-    has_many :users, through: :collaborations
+    has_many :users, :through => :collaborations
     def self.drafting
-      where(published_at: nil)
+      where(:published_at => nil)
     end
   end
 

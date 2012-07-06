@@ -15,6 +15,26 @@ module Haml::Filters::Md
   end
 end
 
+module Haml::Filters::Captioncode
+  include Haml::Filters::Base
+
+  def render_with_options text, options
+    code, caption = text.split("\n\n", 2)
+    formatted_caption = Kramdown::Document.new(caption, options).to_html.
+      sub(%r{^<p>},  '').
+      sub(%r{</p>$}, '')
+
+    %Q{
+      <figure class="code">
+      <pre><code>#{code}</code></pre>
+      <figcaption>
+        #{formatted_caption}
+      </figcaption>
+      </figure>
+    }
+  end
+end
+
 project.helpers do
   def posts
     project.inputs.select {|input|

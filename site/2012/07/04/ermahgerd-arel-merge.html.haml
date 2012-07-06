@@ -100,26 +100,25 @@ title: "Ermahgerd, Arel merge"
     end
   end
 
-  LOL
+  A user's draft figures are all the figures on unpublished articles, that the user is an editor of.
 
 :md
   Note well: this isn't a class-level scope, it's a list of figures corresponding to a specific user. Even so, we started the query `Figure`-wide, and scoped it to the user by merging the `collaborations` association. That's what narrows this query to the user in question.
 
-  It's clean and dry, and it generates the SQL that you want too:
+:captionedsql
+  SELECT "figures".* FROM "figures"
+    INNER JOIN "articles"
+      ON "articles"."id" = "figures"."article_id"
+    INNER JOIN "collaborations"
+      ON "collaborations"."article_id" = "articles"."id"
+    WHERE "collaborations"."user_id" = 1
+    AND "collaborations"."role" = 'editor'
+    AND (articles.published_at IS NULL)
 
-      SELECT "figures".* FROM "figures"
-        INNER JOIN "articles"
-          ON "articles"."id" = "figures"."article_id"
-        INNER JOIN "collaborations"
-          ON "collaborations"."article_id" = "articles"."id"
-        WHERE "collaborations"."user_id" = 1
-        AND "collaborations"."role" = 'editor'
-        AND (articles.published_at IS NULL)
+  It's clean and dry, and it generates the SQL that you want too.
 
-
-%aside
-  :md
-    As much as I love arel, its lack of documentation is a real problem. ([I'm one to talk.](http://babushka.me/sharing-deps)) Aside from stackoverflow, the only good resource I know of is [the AR quering guide](http://guides.rubyonrails.org/active_record_querying.html). It's well written, but it only covers the basics: it gets you started, but doesn't provide enough of a reference to really exploit arel's power.
+:md
+  As much as I love arel, its lack of documentation is a real problem. ([I'm one to talk.](http://babushka.me/sharing-deps)) Aside from stackoverflow, the only good resource I know of is [the AR quering guide](http://guides.rubyonrails.org/active_record_querying.html). It's well written, but it only covers the basics: it gets you started, but doesn't provide enough of a reference to really exploit arel's power.
 
 %aside
   :md

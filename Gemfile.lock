@@ -4,6 +4,7 @@ GEM
     adsf (1.0.1)
       rack (>= 1.0.0)
     clamp (0.3.0)
+    coderay (1.0.7)
     daemons (1.1.8)
     eventmachine (0.12.10)
     haml (3.1.6)
@@ -26,6 +27,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  coderay
   haml
   kramdown
   pith (= 0.2.2)

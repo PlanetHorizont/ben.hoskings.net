@@ -1,5 +1,6 @@
 require 'haml'
 require 'kramdown'
+require 'coderay'
 
 project.assume_content_negotiation = true
 project.assume_directory_index = true
@@ -20,13 +21,16 @@ module Haml::Filters::Captioncode
 
   def render_with_options text, options
     code, caption = text.split("\n\n", 2)
+
+    highlighted_code = CodeRay.scan(code, :ruby).span(:css => :class)
+
     formatted_caption = Kramdown::Document.new(caption, options).to_html.
       sub(%r{^<p>},  '').
       sub(%r{</p>$}, '')
 
     %Q{
       <figure class="code">
-      <pre><code>#{code}</code></pre>
+      <pre><code>#{highlighted_code}</code></pre>
       <figcaption>
         #{formatted_caption}
       </figcaption>

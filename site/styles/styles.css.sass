@@ -37,6 +37,27 @@ $background: #ccc
     border-top: none
     margin-top: 0
 
+@mixin syntax-highlighting
+  color: #405056
+  span.class
+    color: #A47826
+  span.constant
+    color: #A47826
+  span.function
+    color: #3483C5
+  span.keyword
+    color: #859926
+  span.predefined-constant
+    color: #3483C5
+  span.string
+    background-color: darken($background, 5%)
+    span.delimiter
+      color: #44A199
+    span.content
+      color: #485A62
+  span.symbol
+    color: #3B8B82
+
 *
   margin: 0
   padding: 0
@@ -136,6 +157,7 @@ article
       position: relative
       pre code
         padding: 0 0.2em
+        @include syntax-highlighting
       figcaption
         font-size: 14px
         line-height: 22px

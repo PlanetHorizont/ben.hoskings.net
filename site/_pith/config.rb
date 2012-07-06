@@ -11,20 +11,20 @@ Tilt.prefer Tilt::KramdownTemplate
 module Haml::Filters::Md
   include Haml::Filters::Base
 
-  def render_with_options text, options
-    Kramdown::Document.new(text, options).to_html
+  def render text
+    Kramdown::Document.new(text).to_html
   end
 end
 
 module Haml::Filters::Captioncode
   include Haml::Filters::Base
 
-  def render_with_options text, options
+  def render text
     code, caption = text.split("\n\n", 2)
 
     highlighted_code = CodeRay.scan(code, :ruby).span(:css => :class)
 
-    formatted_caption = Kramdown::Document.new(caption, options).to_html.
+    formatted_caption = Kramdown::Document.new(caption).to_html.
       sub(%r{^<p>},  '').
       sub(%r{</p>$}, '')
 

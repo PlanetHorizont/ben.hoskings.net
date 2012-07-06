@@ -48,27 +48,36 @@ title: "Ermahgerd, Arel merge"
 :md
   We're storing the role on the join table, as makes sense: role is a per-membership thing. To find all the admin users of a group, in the past, I would have written this query:
 
-      article.users.where(collaborations: {role: "editor"})
+:preruby
+  article.users.where(:collaborations => {:role => "editor"})
 
+:md
   This produces nice SQL, but we had to duplicate that `#where` logic from `Collaboration.editorial`. Surely it's better to keep things dry?
 
-      Collaboration.where(article_id: article.id).editorial.map(&:user)
+:preruby
+  Collaboration.where(:article_id => article.id).editorial.map(&:user)
 
+:md
   Yuck, `map` in this context is an `N+1`!, Hey, at least we got to use our `managerial` scope, right?
 
   Turns out, you _can_ compose the proper query by re-using that scope, even though we're quering it's not defined on `User`. Enter `#merge`!
 
-      article.users.merge(Collaboration.editorial)
+:preruby
+  article.users.merge(Collaboration.editorial)
 
-  Combining queries like this (I believe the technical term is _smooshing_&mdash;the queries have been _smooshed_ together) means you can re-use the scopes you have all over the place. Even better, `merge` lets you push much more query logic into scopes than you otherwise could.
+:md
+  Combining queries like this (I believe the technical term is _smooshing_&mdash;the queries have been _smooshed_ together) means you can re-use the scopes you have all over the place. Even better, `merge` lets you push much more query logic into scopes than you otherwise could. You win on two fronts: keeping your querying logic dry in this case means using your DB like a real DB, too.
 
-  The query is the one you'd hope for: it's the same JOIN you'd use if you were writing SQL by hand. You win on two fronts: keeping your querying logic dry in this case means using your DB like a real DB, too.
+:captionedsql
+  SELECT "users".* FROM "users"
+    INNER JOIN "collaborations"
+      ON "users"."id" = "collaborations"."user_id"
+    WHERE "collaborations"."article_id" = 1
+    AND "collaborations"."role" = 'editor';
 
-      SELECT "users".* FROM "users"
-        INNER JOIN "collaborations" ON "users"."id" = "collaborations"."user_id"
-        WHERE "collaborations"."article_id" = 1
-        AND "collaborations"."role" = 'editor';
+  The query is the one you'd hope for: it's the same JOIN you'd use if you were writing SQL by hand.
 
+:md
   Even better, when you merge an association, you merge the condition that defines it as well as the attached scopes.
 
 :captionedruby

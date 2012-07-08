@@ -10,15 +10,18 @@ Tilt.prefer Tilt::KramdownTemplate
 module HamlHelpers
   module_function
 
+  def markdown text
+    Kramdown::Document.new(text.strip).to_html
+  end
+
   def highlight text, lang
     "<pre><code class='#{lang}'>#{CodeRay.scan(text.strip, lang).span(:css => :class)}</code></pre>"
   end
 
   def captioned text, lang
     code, caption = text.split("\n\n", 2)
-    formatted_caption = Kramdown::Document.new(caption).to_html.
-      sub(%r{^<p>},  '').
-      sub(%r{</p>$}, '')
+
+    formatted_caption = markdown(caption).sub(%r{^<p>},  '').sub(%r{</p>$}, '')
 
     %Q{
       <figure class="code">
@@ -35,7 +38,7 @@ end
 module Haml::Filters::Md
   include Haml::Filters::Base
   def render text
-    Kramdown::Document.new(text).to_html
+    HamlHelpers.markdown(text)
   end
 end
 

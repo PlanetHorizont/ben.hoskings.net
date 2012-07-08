@@ -1,8 +1,13 @@
 ---
 layout: "/_post.haml"
-title: "Ermahgerd, Arel merge"
+title: "Arel merge &mdash; a hidden gem"
 css_class: "with-margin"
 ---
+
+:md
+  Recently, in a moment of well-timed stubbornness, I stumbled upon arel's ability to merge scopes. I do this sometimes: identify a gap in my knowledge, and decide to down tools to fill it. Obstinance maybe, but sometimes it pays off.
+
+  Merging scopes has been incredibly useful. It greatly expands the ways in which you can apply activerecord scopes, and so too the kinds of logic you can put in them. As far as I can see, though, they're not very widely used. Well, here's the sell.
 
 %aside
   :md
@@ -11,7 +16,7 @@ css_class: "with-margin"
 :md
   An arel query's starting point determines the result: you base each query on the model whose records you want in the results. Whether you're joining or including, or supplying nested conditions, you get a list of user records by starting your query on `User` (or one of its scopes).
 
-  This is a good pattern, but I've long wondered how to introduce scopes from other models. If I wanted to start on `User` for a list of user records, but filter with a `Membership` scope, then up until yesterday I thought I was up the creek. But check this out.
+  This is a good pattern, but I've long wondered how to also involve scopes from other models. If I wanted to employ a scope defined on model I was joining to, then up until last week I thought I was up the creek. But check this out.
 
   To illustrate, here's a stylised portion of the data model that backs our publishing platform at [The Conversation](http://theconversation.edu.au).
 
@@ -47,7 +52,7 @@ css_class: "with-margin"
   Our `Article` has a scope of its own, returning the articles currently being drafted.
 
 :md
-  We're storing the role on the join table, as makes sense: role is a per-membership thing. To find all the admin users of a group, in the past, I would have written this query:
+  We're storing the role on the join table, as makes sense: roles are per-collaboration. To find all the admin users of a group, in the past, I would have written this query:
 
 :preruby
   article.users.where(:collaborations => {:role => "editor"})
@@ -56,10 +61,10 @@ css_class: "with-margin"
   This produces nice SQL, but we had to duplicate that `#where` logic from `Collaboration.editorial`. Surely it's better to keep things dry?
 
 :preruby
-  Collaboration.where(:article_id => article.id).editorial.map(&:user)
+  Collaboration.editorial.where(:article_id => article.id).map(&:user)
 
 :md
-  Yuck, mapping in this context causes an n+1! Hey, at least we got to use our `managerial` scope, right?
+  Yuck, mapping in this context causes an n+1! Hey, at least we got to use our `editorial` scope, right?
 
   Turns out, you _can_ compose the proper query by re-using that scope, even though we're quering it's not defined on `User`. Enter `#merge`!
 
@@ -76,7 +81,7 @@ css_class: "with-margin"
     WHERE "collaborations"."article_id" = 1
     AND "collaborations"."role" = 'editor';
 
-  The query is the one you'd hope for: it's the same JOIN you'd use if you were writing SQL by hand.
+  The query is the one you'd hope for: it's similar to the SQL you'd use if you were writing it by hand.
 
 :md
   Even better, when you merge an association, you merge the condition that defines it as well as the attached scopes.

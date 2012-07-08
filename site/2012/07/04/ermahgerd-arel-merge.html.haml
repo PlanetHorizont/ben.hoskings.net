@@ -58,7 +58,7 @@ title: "Ermahgerd, Arel merge"
   Collaboration.where(:article_id => article.id).editorial.map(&:user)
 
 :md
-  Yuck, `map` in this context is an `N+1`!, Hey, at least we got to use our `managerial` scope, right?
+  Yuck, mapping in this context causes an n+1! Hey, at least we got to use our `managerial` scope, right?
 
   Turns out, you _can_ compose the proper query by re-using that scope, even though we're quering it's not defined on `User`. Enter `#merge`!
 

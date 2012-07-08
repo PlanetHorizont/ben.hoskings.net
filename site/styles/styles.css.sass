@@ -176,10 +176,11 @@ article
       width: $width
       body.with-margin &
         width: $article-width
-    >pre
-      clear: both
     p, li, figure, aside
       color: $color
+    >pre,
+    >figure
+      clear: both
     pre
       code
         @include syntax-highlighting

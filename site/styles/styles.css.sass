@@ -181,8 +181,15 @@ article
     >pre,
     >figure
       clear: both
+    code
+      display: inline-block
+      margin: 0 0.2em
+      background-color: darken($background, 4%)
     pre
       code
+        display: block
+        margin: 0
+        background-color: transparent
         @include syntax-highlighting
     figure
       @include top-border

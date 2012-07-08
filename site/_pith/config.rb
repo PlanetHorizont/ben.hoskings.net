@@ -94,7 +94,7 @@ project.helpers do
   end
 
   def slug_for page
-    page.title.gsub(/\W+/, '-')
+    page.title.gsub(/\W+/, '-').downcase
   end
 
   def formatted_headline_for text

@@ -25,10 +25,10 @@ module HamlHelpers
 
     %Q{
       <figure class="code">
-      #{highlight(code, lang)}
-      <figcaption>
-        #{formatted_caption}
-      </figcaption>
+        #{highlight(code, lang)}
+        <figcaption>
+          #{formatted_caption}
+        </figcaption>
       </figure>
     }
   end

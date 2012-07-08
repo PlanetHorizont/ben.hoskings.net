@@ -59,6 +59,20 @@ $background: #ccc
   span.symbol
     color: #3B8B82
 
+  span.line
+    display: inline-block
+    width: $width
+    body.with-margin &
+      width: $width-with-margin
+  span.line.change
+    background-color: darken($background, 10%)
+  span.line.delete
+    color: #C3C3C3
+    background-color: #D33648
+  span.line.insert
+    color: #E8E8E8
+    background-color: #3D8F7C
+
 *
   margin: 0
   padding: 0

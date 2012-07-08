@@ -68,6 +68,13 @@ module Haml::Filters::Presql
   end
 end
 
+module Haml::Filters::Prediff
+  include Haml::Filters::Base
+  def render text
+    HamlHelpers.highlight(text, :diff)
+  end
+end
+
 module Haml::Filters::Captionedruby
   include Haml::Filters::Base
   def render text

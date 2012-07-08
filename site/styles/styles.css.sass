@@ -1,6 +1,7 @@
-$width: 720px
-$article-width: $width * 0.67
-$aside-width: $width * 0.33
+$width: 640px
+$width-with-margin: 720px
+$article-width: $width-with-margin * 0.67
+$aside-width: $width-with-margin * 0.33
 $body_padding: 12px
 $leading: 28px
 $margin: 1.8em
@@ -98,6 +99,8 @@ img
   margin: -1px
   article &
     max-width: $width
+    body.with-margin &
+      max-width: $width-with-margin
     clear: both
     &.lightboxable:hover
       cursor: pointer
@@ -106,8 +109,10 @@ header,
 footer,
 article,
 #home
-  width: $width
   margin: 0 auto
+  width: $width
+  body.with-margin &
+    width: $width-with-margin
 
 ul,
 ol
@@ -149,7 +154,9 @@ article
     p, ul, ol, pre
       margin-bottom: $margin
     p, ul, ol
-      width: $article-width
+      width: $width
+      body.with-margin &
+        width: $article-width
     >pre
       clear: both
     p, li, figure, aside
@@ -166,26 +173,23 @@ article
       figcaption
         font-size: 14px
         line-height: 22px
-        position: absolute
-        top: 2px
-        left: $article-width
+        body.with-margin &
+          position: absolute
+          top: 2px
+          left: $article-width
     figure figcaption,
     aside
       margin-bottom: $margin
-      width: $aside-width
-      padding-left: $leading * 2
-      box-sizing: border-box
-    aside
-      font-size: 14px
-      float: right
-      clear: right
-      padding-left: $leading * 2
-      box-sizing: border-box
-      p
-        width: auto
-    aside
       font-style: italic
-
+      body.with-margin &
+        font-size: 14px
+        width: $aside-width
+        padding-left: $leading * 2
+        box-sizing: border-box
+        float: right
+        clear: right
+        p
+          width: auto
 
 ul.years
   li

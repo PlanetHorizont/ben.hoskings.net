@@ -177,8 +177,11 @@ article
       width: $width
       body.with-margin &
         width: $article-width
-    p, li, figure, aside
+    p, li, figure
       color: $color
+    aside,
+    aside p
+      color: lighten($color, 25%)
     >pre,
     >figure
       clear: both

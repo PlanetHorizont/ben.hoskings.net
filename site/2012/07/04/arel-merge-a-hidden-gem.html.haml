@@ -5,13 +5,11 @@ css_class: "with-margin"
 ---
 
 :md
-  Recently, in a moment of well-timed stubbornness, I stumbled upon arel's ability to merge scopes. I do this sometimes: identify a gap in my knowledge, and decide to down tools to fill it. Obstinance maybe&mdash;there are more rabbit holes out there than any one of us can ever leap into&mdash;but sometimes it pays off.
-
-  Anyway, merging scopes is super useful. It greatly expands the ways in which you can apply scopes, and so too the kinds of logic you can put in them. As far as I can see, though, they're not very widely used. In fact, the only place I've seen them referred to is in [this excellent railscast by Ryan Bates](http://asciicasts.com/episodes/215-advanced-queries-in-rails-3). Well, here's my sell.
+  Recently, in a moment of well-timed stubbornness, I came across arel's ability to merge scopes. Merging greatly expands the ways in which you can apply scopes, and so too the kinds of logic you can put in them. As far as I can see, though, they're not very widely used. In fact, the only place I've seen them referred to is in [this excellent railscast by Ryan Bates](http://asciicasts.com/episodes/215-advanced-queries-in-rails-3). Well, here's my sell.
 
 %aside
   :md
-    For those new to rails, arel is rails' SQL querying engine. Core to arel is per-query / per-clause chainability: "build at your leisure, one scope at a time", it says, "and I'll lazily generate the SQL later, to enumerate the results". Half-assembled scope fragments and queryable result sets can all be passed around, one and the same.
+    For those new to rails, arel is its SQL querying engine. Core to arel is per-query / per-clause chainability: "build at your leisure, one scope at a time", it says, "and I'll lazily generate the SQL later, to enumerate the results". Half-assembled scope fragments and queryable result sets can all be passed around, one and the same.
 
 :md
   An arel query's starting point determines the result: you base each query on the model whose records you want in the results. Whether you're joining or including, or supplying nested conditions, you get a list of user records by starting your query on `User` (or one of its scopes). This is a good pattern, but I've long wondered how to also involve scopes from other models.
@@ -61,7 +59,8 @@ css_class: "with-margin"
   This produces nice SQL, but we had to duplicate that `#where` logic from `Collaboration.editorial`. Surely it's better to keep things dry?
 
 :captionedruby
-  Collaboration.editorial.where(:article_id => article.id).map(&:user)
+  Collaboration.editorial.
+    where(:article_id => article.id).map(&:user)
 
   Yuck, n+1!
 

@@ -3,8 +3,9 @@ $width-with-margin: 760px
 $article-width: $width-with-margin * 0.67
 $aside-width: $width-with-margin * 0.33
 $body_padding: 12px
+$font-size: 16px
 $leading: 28px
-$margin: 1.8em
+$margin: 1.75em // $leading / $font-size
 $col: ($width / 10)
 $padding: 1px
 $border-color: #777
@@ -85,7 +86,7 @@ $background: #ccc
 body
   color: black
   background-color: $background
-  font: 16px/#{$leading} Vollkorn, serif
+  font: #{$font-size}/#{$leading} Vollkorn, serif
   padding: 0 $body_padding
 
 strong
@@ -185,7 +186,7 @@ article
       code
         @include syntax-highlighting
     figure
-      @include top-border
+      border-top: $border
       margin-bottom: $margin
       position: relative
       pre code

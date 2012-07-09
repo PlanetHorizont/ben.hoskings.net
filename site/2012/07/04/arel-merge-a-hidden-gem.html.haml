@@ -87,7 +87,7 @@ css_class: "with-margin"
   The query is the one you'd hope for: it's similar to the SQL you'd use if you were writing it by hand.
 
 :md
-  There's one thing to be aware of here: when you start re-using scopes in this way, particularly across models, you run the risk of coupling your models. My feeling about this is that it's not a problem as long as non-trivial scopes are specced, and that model-specific logic is wrapped up in a spec on _that_ model. As long as a scope's spec breaks when one of the scopes it depends on changes, I feel comfortable with this kind of declarative coupling.
+  There's one thing to be aware of here: when you start re-using scopes in this way, particularly across models, you run the risk of coupling your models. My feeling about this is that it's not a problem as long as non-trivial scopes are specced, and that model-specific logic is wrapped up in a scope on _that_ model. As long as a scope's spec breaks when one of the scopes it depends on changes, I feel comfortable with this kind of declarative coupling.
 
   Merging scopes works with associations, too: when you merge an association, you merge the condition that defines it, as well as the attached scopes.
 

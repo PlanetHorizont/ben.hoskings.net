@@ -61,7 +61,7 @@ css_class: "with-margin"
   This produces nice SQL, but we had to duplicate that `#where` logic from `Collaboration.editorial`. Surely it's better to keep things dry?
 
 :captionedruby
-  Collaboration.editorial.where(:article => article).map(&:user)
+  Collaboration.editorial.where(:article_id => article.id).map(&:user)
 
   Yuck, n+1!
 
@@ -122,9 +122,9 @@ css_class: "with-margin"
       ON "articles"."id" = "figures"."article_id"
     INNER JOIN "collaborations"
       ON "collaborations"."article_id" = "articles"."id"
-    WHERE "collaborations"."user_id" = 1
+    WHERE "articles"."published_at" IS NULL
+    AND "collaborations"."user_id" = 1
     AND "collaborations"."role" = 'editor'
-    AND (articles.published_at IS NULL)
 
   It's clean and dry, and it generates the SQL that you want too.
 

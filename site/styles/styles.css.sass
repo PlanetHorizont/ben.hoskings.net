@@ -191,16 +191,23 @@ article
     figure
       border-top: $border
       margin-bottom: $margin
-      position: relative
-      pre code
-        padding: 0 0.2em
+      overflow: hidden
+      body.with-margin &
+        pre,
+        figcaption
+          margin-bottom: 0
+      pre
+        code
+          padding: 0 0.2em
+        body.with-margin &
+          float: left
       figcaption
         font-size: 14px
         line-height: 22px
         body.with-margin &
-          position: absolute
-          top: 2px
-          left: $article-width
+          float: right
+          margin-top: 1px
+          clear: none
     figure figcaption,
     aside
       margin-bottom: $margin

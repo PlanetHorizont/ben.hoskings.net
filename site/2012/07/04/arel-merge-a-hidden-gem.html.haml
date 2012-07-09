@@ -5,20 +5,18 @@ css_class: "with-margin"
 ---
 
 :md
-  Recently, in a moment of well-timed stubbornness, I stumbled upon arel's ability to merge scopes. I do this sometimes: identify a gap in my knowledge, and decide to down tools to fill it. Obstinance maybe, but sometimes it pays off.
+  Recently, in a moment of well-timed stubbornness, I stumbled upon arel's ability to merge scopes. I do this sometimes: identify a gap in my knowledge, and decide to down tools to fill it. Obstinance maybe&mdash;there are more rabbit holes out there than any one of us can ever leap into&mdash;but sometimes it pays off.
 
-  Merging scopes has been incredibly useful. It greatly expands the ways in which you can apply activerecord scopes, and so too the kinds of logic you can put in them. As far as I can see, though, they're not very widely used. Well, here's the sell.
+  Anyway, merging scopes is super useful. It greatly expands the ways in which you can apply scopes, and so too the kinds of logic you can put in them. As far as I can see, though, they're not very widely used. In fact, the only place I've seen them referred to is in [this excellent railscast by Ryan Bates](http://asciicasts.com/episodes/215-advanced-queries-in-rails-3). Well, here's my sell.
 
 %aside
   :md
     For those new to rails, arel is rails' SQL querying engine. Core to arel is per-query / per-clause chainability: "build at your leisure, one scope at a time", it says, "and I'll lazily generate the SQL later, to enumerate the results". Half-assembled scope fragments and queryable result sets can all be passed around, one and the same.
 
 :md
-  An arel query's starting point determines the result: you base each query on the model whose records you want in the results. Whether you're joining or including, or supplying nested conditions, you get a list of user records by starting your query on `User` (or one of its scopes).
+  An arel query's starting point determines the result: you base each query on the model whose records you want in the results. Whether you're joining or including, or supplying nested conditions, you get a list of user records by starting your query on `User` (or one of its scopes). This is a good pattern, but I've long wondered how to also involve scopes from other models.
 
-  This is a good pattern, but I've long wondered how to also involve scopes from other models. If I wanted to employ a scope defined on model I was joining to, then up until last week I thought I was up the creek. But check this out.
-
-  To illustrate, here's a stylised portion of the data model that backs our publishing platform at [The Conversation](http://theconversation.edu.au).
+  If I wanted to employ a scope defined on a model I was joining to, then up until last week I thought I was up the creek, but this is what `merge` makes possible. To illustrate the solution, here's a stylised portion of the data model that backs our publishing platform at [The Conversation](http://theconversation.edu.au).
 
 :captionedruby
   class User < ActiveRecord::Base
@@ -26,7 +24,7 @@ css_class: "with-margin"
     has_many :articles, :through => :collaborations
   end
 
-  `User` also joins to author profiles and so on, but for this example, it's standard fare.
+  Standard fare. `User` joins to other things like author profiles too, but those aren't relevant here.
 
 :captionedruby
   class Collaboration < ActiveRecord::Base
@@ -38,7 +36,7 @@ css_class: "with-margin"
     end
   end
 
-  `Collaboration` represents a user's relationship to an article. It has a `role` field describing that relationship, and a scope for editorial relationships.
+  `Collaboration` represents a user's relationship to an article. It has a `role` field describing that relationship, along with scopes for each type (I've shown just one).
 
 :captionedruby
   class Article < ActiveRecord::Base
@@ -49,27 +47,33 @@ css_class: "with-margin"
     end
   end
 
-  Our `Article` has a scope of its own, returning the articles currently being drafted.
+  Our `Article` has a scope of its own, filtering to the articles currently being drafted.
 
 :md
-  We're storing the role on the join table, as makes sense: roles are per-collaboration. To find all the admin users of a group, in the past, I would have written this query:
+  To find all the admin users of a group, we want to start on the result model (`User`), even though the role information is stored on `Collaboration`. In the past, I would have written this query:
 
-:preruby
+:captionedruby
   article.users.where(:collaborations => {:role => "editor"})
+
+  Yuck, duplicated scope logic!
 
 :md
   This produces nice SQL, but we had to duplicate that `#where` logic from `Collaboration.editorial`. Surely it's better to keep things dry?
 
-:preruby
-  Collaboration.editorial.where(:article_id => article.id).map(&:user)
+:captionedruby
+  Collaboration.editorial.where(:article => article).map(&:user)
+
+  Yuck, n+1!
 
 :md
-  Yuck, mapping in this context causes an n+1! Hey, at least we got to use our `editorial` scope, right?
+  Hey, at least we got to use our `editorial` scope, right?
 
-  Turns out, you _can_ compose the proper query by re-using that scope, even though we're quering it's not defined on `User`. Enter `#merge`!
+  Turns out, you _can_ compose the proper query by re-using that scope, even though we're quering it's not defined on `User`.
 
-:preruby
+:captionedruby
   article.users.merge(Collaboration.editorial)
+
+  Enter `#merge`!
 
 :md
   Combining queries like this (I believe the technical term is _smooshing_&mdash;the queries have been _smooshed_ together) means you can re-use the scopes you have all over the place. Even better, `merge` lets you push much more query logic into scopes than you otherwise could. You win on two fronts: keeping your querying logic dry in this case means using your DB like a real DB, too.
@@ -84,7 +88,9 @@ css_class: "with-margin"
   The query is the one you'd hope for: it's similar to the SQL you'd use if you were writing it by hand.
 
 :md
-  Even better, when you merge an association, you merge the condition that defines it as well as the attached scopes.
+  There's one thing to be aware of here: when you start re-using scopes in this way, particularly across models, you run the risk of coupling your models. My feeling about this is that it's not a problem as long as non-trivial scopes are specced, and that model-specific logic is wrapped up in a spec on _that_ model. As long as a scope's spec breaks when one of the scopes it depends on changes, I feel comfortable with this kind of declarative coupling.
+
+  Merging scopes works with associations, too: when you merge an association, you merge the condition that defines it, as well as the attached scopes.
 
 :captionedruby
   class Figure < ActiveRecord::Base
@@ -94,19 +100,18 @@ css_class: "with-margin"
   Let's add a `Figure` model, to represent the figures within articles.
 
 :md
-  Suppose we want to retrieve all the figures associated with the drafts that a given user is editing. Our constraints: we have to start on on `Figure` because figures are what we want, and we want to pull in logic from `Article` and `Collaboration` scopes.
+  Suppose we want to retrieve all the figures associated with the drafts that a given user is editing. Our constraints: we have to start on `Figure` because figures are what we want, and we want to pull in logic from `Article` and `Collaboration` scopes.
 
 :captionedruby
   class User < ActiveRecord::Base
     def draft_figures
-      Figure.
-        joins(:article => :collaborations).
+      Figure.joins(:article => :collaborations).
         merge(Article.drafting).
         merge(collaborations.editorial)
     end
   end
 
-  A user's draft figures are all the figures on unpublished articles, that the user is an editor of.
+  A user's `draft_figures` are all the figures on unpublished articles, that the user is an editor of.
 
 :md
   Note well: this isn't a class-level scope, it's a list of figures corresponding to a specific user. Even so, we started the query `Figure`-wide, and scoped it to the user by merging the `collaborations` association. That's what narrows this query to the user in question.
@@ -124,14 +129,6 @@ css_class: "with-margin"
   It's clean and dry, and it generates the SQL that you want too.
 
 :md
+  We've just recently done some refactoring across our codebase to employ `merge`, and I've been really pleased with how a lot of complex logic has fallen away. When you can re-use scopes anywhere, you have a lot more freedom to define them cleanly and simply.
+
   As much as I love arel, its lack of documentation is a real problem. ([I'm one to talk.](http://babushka.me/sharing-deps)) Aside from stackoverflow, the only good resource I know of is [the AR quering guide](http://guides.rubyonrails.org/active_record_querying.html). It's well written, but it only covers the basics: it gets you started, but doesn't provide enough of a reference to really exploit arel's power.
-
-%aside
-  :md
-    Usually when I level up as a programmer, it's because of well-timed stubbornness.
-
-    On the one hand&mdash; _eyes on the prize_. There are more rabbit holes out there than any one of us can ever leap into.
-
-    But then, I've always had the desire to push on those "what if" challenges.  "no, there is a better way", and make finding that better way a blocker.
-
-    Of course, sometimes the process ends with a frustrating `git reset --hard`. Can't win 'em all.

@@ -5,6 +5,7 @@ $aside-width: $width-with-margin * 0.33
 $body_padding: 12px
 $font-size: 16px
 $leading: 28px
+$code_leading: 22px
 $margin: 1.75em // $leading / $font-size
 $col: ($width / 10)
 $padding: 1px
@@ -208,7 +209,7 @@ article
           float: left
       figcaption
         font-size: 14px
-        line-height: 22px
+        line-height: $code_leading
         body.with-margin &
           float: right
           margin-top: 1px
@@ -268,7 +269,7 @@ a
     background-color: darken($background, 5%)
 
 code
-  line-height: 22px
+  line-height: $code_leading
   @include radius
   p &, li &
     font-weight: bold

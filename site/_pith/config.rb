@@ -104,7 +104,8 @@ project.helpers do
   end
 
   def date_of post
-    Time.new *post.path.dirname.to_s.split('/')
+    date_str = (page.meta['custom_date'] || post.path.dirname).to_s.split('/')
+    Time.new(*date_str)
   end
 
   def slug_for page

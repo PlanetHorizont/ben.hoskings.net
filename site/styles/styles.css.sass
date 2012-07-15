@@ -100,7 +100,7 @@ strong
 header, nav, article, footer, figure, figcaption
   display: block
 
-input, textarea, pre, code
+input, textarea, pre, code, dt
   font: 14px Menlo, Monaco, Consolas, Courier, monospace
 input, textarea
   font-size: 14px
@@ -279,6 +279,12 @@ code
 
 code pre
   background-color: rgba(255,255,255,0.12)
+
+dt
+  float: left
+  padding-right: 1ex
+  line-height: $code_leading
+  font-weight: bold
 
 pre, input[type=text], textarea
   background-color: transparent

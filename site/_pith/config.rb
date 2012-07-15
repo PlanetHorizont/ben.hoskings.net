@@ -89,6 +89,13 @@ module Haml::Filters::Captionedsql
   end
 end
 
+module Haml::Filters::Captionedc
+  include Haml::Filters::Base
+  def render text
+    HamlHelpers.captioned(text, :c)
+  end
+end
+
 project.helpers do
   def posts
     project.inputs.select {|input|

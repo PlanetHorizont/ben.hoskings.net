@@ -31,7 +31,7 @@ module HamlHelpers
   end
 
   def captioned text, lang
-    code, caption = text.split("\n\n", 2)
+    code, _, caption = text.strip.rpartition("\n\n")
 
     formatted_caption = markdown(caption).sub(%r{^<p>},  '').sub(%r{</p>$}, '')
 

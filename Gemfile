@@ -1,6 +1,7 @@
 source :rubygems
 
-gem 'pith', '0.2.2'
+# v0.3.1 + the "require 'set'" bugfix.
+gem 'pith', git: "git://github.com/mdub/pith.git", ref: "98d46b8"
 
 gem 'coderay'
 gem 'haml'

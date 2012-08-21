@@ -1,0 +1,32 @@
+---
+layout: "/_post.haml"
+title: "babushka private sources"
+css_class: "with-margin"
+---
+
+:md
+  _**tl;dr** I've discovered and fixed a bug that meant babushka's community database included run stats from `https://` sources, some of which are private. The database stores quite limited information, though (by design), and having audited it, I'm confident there were no privacy or security implications._
+
+  Babushka can run deps from arbitrary sources, which are git repos containing ruby code. When a dep is namespaced like "benhoskings:LaunchBar.app", babushka identifies the source (in this case, `~/.babushka/sources/benhoskings`) as public or private based on its remote. A source with a publicly accessible remote is public, and anything else is private.
+
+  When deps from public sources are run, babushka submits success/failure details to a webservice at babushka.me, the community database that powers `babushka search`:
+
+      > babushka search coffee
+      The webservice knows about 4 deps that match 'coffee':
+
+      Name             | Source                                          | Runs    |  ✓
+      -----------------+-------------------------------------------------+---------+-----
+      coffeescript.src | git://github.com/dgoodlad/babushka-deps.git     | 14 ever | 21%
+      coffeescript.src | git://github.com/benhoskings/babushka-deps.git  | 28 ever | 21%
+      coffeescript.src | git://github.com/mtcmorris/babushka-deps.git    | 2 ever  | 0%
+      coffeescript.src | git://github.com/conversation/babushka-deps.git | 12 ever | 50%
+
+  The only information the webservice stores is the info you can see in that table: the source URI, and the name of the dep that was run.
+
+  The issue was that I incorrectly classed https URIs as public [late last year](http://github.com/benhoskings/babushka/commit/09f0419df70d3ed54c0d1b9c2e2c88f5090746fc). It seemed like the right choice, because at the time, https was the default public URI on github project pages. I didn't realise at the time that github serve private repos over https URIs too, after prompting for a username and password.
+
+  The result is that babushka's database included data on runs from private sources. Of 146 total sources in the database, 66 had https URIs, and 9 of those were possibly private.
+
+  _I can't distinguish between a private source and a public one that's since been deleted, since they both 404. As a point of comparison, 18 of the 137 public sources have since been deleted._
+
+  This means that the names of deps within some private sources were

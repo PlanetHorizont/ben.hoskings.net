@@ -5,9 +5,9 @@ css_class: "with-margin"
 ---
 
 :md
-  _**tl;dr** I've discovered and fixed a bug that meant babushka's community database included run stats from `https://` sources, some of which are private. The database stores quite limited information, though (by design), and having audited it, I'm confident there were no privacy or security implications._
+  _**tl;dr** I've discovered and fixed a bug that meant babushka's community database included run stats from `https://` sources, some of which are private. Babushka is designed to never transmit any private info, though, and the database doesn't store any, so I'm confident that there was no harm done (which I've confirmed by auditing the DB)._
 
-  Babushka can run deps from arbitrary sources, which are git repos containing ruby code. When a dep is namespaced like "benhoskings:LaunchBar.app", babushka identifies the source (in this case, `~/.babushka/sources/benhoskings`) as public or private based on its remote. A source with a publicly accessible remote is public, and anything else is private.
+  **A bit of context first.** Babushka can run deps from arbitrary sources, which are git repos containing ruby code. When a dep name is namespaced like "benhoskings:LaunchBar.app", babushka identifies the source (in this case, `~/.babushka/sources/benhoskings`) as public or private based on its remote. A source with a publicly accessible remote is public, and anything else is private.
 
   When deps from public sources are run, babushka submits success/failure details to a webservice at babushka.me, the community database that powers `babushka search`:
 
@@ -21,12 +21,25 @@ css_class: "with-margin"
       coffeescript.src | git://github.com/mtcmorris/babushka-deps.git    | 2 ever  | 0%
       coffeescript.src | git://github.com/conversation/babushka-deps.git | 12 ever | 50%
 
-  The only information the webservice stores is the info you can see in that table: the source URI, and the name of the dep that was run.
+  The only information the webservice stores is the info you can see in that table (the source URI and the dep name), and the OS it was run on (e.g. 'Ubuntu 12.04').
 
-  The issue was that I incorrectly classed https URIs as public [late last year](http://github.com/benhoskings/babushka/commit/09f0419df70d3ed54c0d1b9c2e2c88f5090746fc). It seemed like the right choice, because at the time, https was the default public URI on github project pages. I didn't realise at the time that github serve private repos over https URIs too, after prompting for a username and password.
+%aside
+  <img src="#{href '/images/picard-facepalm.jpg'}" />
 
-  The result is that babushka's database included data on runs from private sources. Of 146 total sources in the database, 66 had https URIs, and 9 of those were possibly private.
+:md
+  **Which brings us to the issue, a.k.a. my mistake:** I incorrectly classed `https://` URIs as public [late last year](http://github.com/benhoskings/babushka/commit/09f0419df70d3ed54c0d1b9c2e2c88f5090746fc). It seemed like a good idea at the time: back then, https was the default URI on public github project pages. I didn't realise at the time that github also serve private repos over https to authed users. The result is that babushka's database included dep and source names from some private sources.
 
-  _I can't distinguish between a private source and a public one that's since been deleted, since they both 404. As a point of comparison, 18 of the 137 public sources have since been deleted._
+  _In fact, `http://` and `file://` were also classed as public, and always had been, but were never used._
 
-  This means that the names of deps within some private sources were
+%aside
+  :md
+    _I say 'possibly private' because I can't distinguish between a private source and a public one that's since been deleted, since they both 404. As a point of comparison, 18 of the 137 public sources have since been deleted._
+
+:md
+  **The vital statistics:** Of 146 total sources in the database, 66 had https URIs, and most of those (59) show up as public. The remaining 9 were possibly private. There were 17 distinct dep names stored against those 9 sources, and I've confirmed none of them contained any sensitive information (which is to be expected).
+
+  All's well that ends well, but all the same, I'm sorry to have made this mistake. I've [reverted the offending commit](http://github.com/benhoskings/babushka/commit/9463f42) and [patched babushka](http://github.com/benhoskings/babushka/commit/d2d4879) to class only `git://` sources as public, [added a validation to the webservice](http://github.com/benhoskings/babushka.me/commit/57430ef) to only accept `git://` sources, and [added a check constraint to the DB](http://github.com/benhoskings/babushka.me/commit/466e917) to ensure only `git://` sources are stored.
+
+  Lastly, a point of design: it's important to me that there's no private component to this setup. Both [the reporting code in babushka](https://github.com/benhoskings/babushka/blob/master/lib/babushka/run_reporter.rb) and [the collecting code in the webservice](https://github.com/benhoskings/babushka.me/blob/master/app/controllers/runs_controller.rb) are available for all to see.
+
+  If you have any thoughts or concerns about all this, please do send them through.

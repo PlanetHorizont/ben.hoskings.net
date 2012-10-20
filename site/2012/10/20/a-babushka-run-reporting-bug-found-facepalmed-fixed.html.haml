@@ -1,11 +1,11 @@
 ---
 layout: "/_post.haml"
-title: "private babushka sources bug: found, facepalmed, fixed"
+title: "a babushka run reporting bug: found, facepalmed, fixed"
 css_class: "with-margin"
 ---
 
 :md
-  _**tl;dr** I've discovered and fixed a bug that meant babushka's community database included run stats from `https://` sources, some of which are private. Babushka is designed to never transmit any private info, though, and the database doesn't store any, so I'm confident that there was no harm done (which I've confirmed by auditing the DB)._
+  _**tl;dr** I've discovered and fixed a bug that meant babushka's community database included run stats from `https://` sources, some of which are private. Babushka's run reporter is designed to never transmit any sensitive info, though, and the database doesn't store any, so I'm confident that there was no harm done (which I've confirmed by auditing the DB)._
 
   **A bit of context first.** Babushka can run deps from arbitrary sources, which are git repos containing ruby code. When a dep name is namespaced like "benhoskings:LaunchBar.app", babushka identifies the source (in this case, `~/.babushka/sources/benhoskings`) as public or private based on its remote. A source with a publicly accessible remote is public, and anything else is private.
 
@@ -21,7 +21,7 @@ css_class: "with-margin"
       coffeescript.src | git://github.com/mtcmorris/babushka-deps.git    | 2 ever  | 0%
       coffeescript.src | git://github.com/conversation/babushka-deps.git | 12 ever | 50%
 
-  The only information the webservice stores is the info you can see in that table (the source URI and the dep name), and the OS it was run on (e.g. 'Ubuntu 12.04').
+  The only information the webservice stores is the info you can see in that table (the source URI and the dep name), and the OS it was run on (e.g. 'Ubuntu 12.04'). (Here's [the relevant code](https://github.com/benhoskings/babushka/blob/master/lib/babushka/task.rb#L63-72) within babushka.)
 
 %aside
   <img src="#{href '/images/picard-facepalm.jpg'}" />
@@ -30,6 +30,8 @@ css_class: "with-margin"
   **Which brings us to the issue, a.k.a. my mistake:** I incorrectly classed `https://` URIs as public [late last year](http://github.com/benhoskings/babushka/commit/09f0419df70d3ed54c0d1b9c2e2c88f5090746fc). It seemed like a good idea at the time: back then, https was the default URI on public github project pages. I didn't realise at the time that github also serve private repos over https to authed users. The result is that babushka's database included dep and source names from some private sources.
 
   _In fact, `http://` and `file://` were also classed as public, and always had been, but were never used._
+
+  Of course, the repos themselves remained private. Babushka never does anything unexpected with the dep source itself: it clones the repo locally and then loads from it, just as tools like bundler do. It's the distinct process of storing runs in the community database that needed fixing.
 
 %aside
   :md

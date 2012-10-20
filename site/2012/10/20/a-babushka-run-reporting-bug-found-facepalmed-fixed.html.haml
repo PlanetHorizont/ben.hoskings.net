@@ -5,7 +5,7 @@ css_class: "with-margin"
 ---
 
 :md
-  _**tl;dr** I've discovered and fixed a bug that meant babushka's community database included run stats from `https://` sources, some of which are private. Babushka's run reporter is designed to never transmit any sensitive info, though, and the database doesn't store any, so I'm confident that there was no harm done (which I've confirmed by auditing the DB)._
+  _**tl;dr** I've discovered and fixed a bug that meant babushka's community database included run stats from `https://` sources, some of which are private. Babushka's run reporter was designed to never transmit any sensitive info, though, and the database doesn't store any, so I'm confident that there was no harm done (which I've confirmed by auditing the DB). All the same, apologies all round._
 
   **A bit of context first.** Babushka can run deps from arbitrary sources, which are git repos containing ruby code. When a dep name is namespaced like "benhoskings:LaunchBar.app", babushka identifies the source (in this case, `~/.babushka/sources/benhoskings`) as public or private based on its remote. A source with a publicly accessible remote is public, and anything else is private.
 
@@ -31,7 +31,7 @@ css_class: "with-margin"
 
   _In fact, `http://` and `file://` were also classed as public, and always had been, but were never used._
 
-  Of course, the repos themselves remained private. Babushka never does anything unexpected with the dep source itself: it clones the repo locally and then loads from it, just as tools like bundler do. It's the distinct process of storing runs in the community database that needed fixing.
+  Of course, the repos themselves remained private. Babushka never does anything unexpected with the dep source itself: it clones the repo locally and then loads from it, just as tools like bundler do. The bug lay in the distinct process of storing runs in the community database.
 
 %aside
   :md

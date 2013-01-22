@@ -119,6 +119,12 @@ h1, h2, h3, h4, h5
   font-size: 1em
   margin-bottom: $leading
 
+blockquote
+  margin-left: $leading * 0.1
+  padding-left: $leading * 0.4
+  border-left: lighten($color, 55%) 3px solid
+
+
 img
   display: block
   border: solid 1px #777
@@ -185,6 +191,9 @@ article
         width: $article-width
     p, li, figure
       color: $color
+    blockquote
+      p
+        color: lighten($color, 25%)
     aside,
     aside p
       color: lighten($color, 25%)

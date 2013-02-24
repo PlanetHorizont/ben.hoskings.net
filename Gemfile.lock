@@ -1,26 +1,20 @@
-GIT
-  remote: git://github.com/mdub/pith.git
-  revision: 98d46b8478cf709bbb4fb4b804ef213fba18259a
-  ref: 98d46b8
+GEM
+  remote: https://rubygems.org/
   specs:
-    pith (0.3.1)
+    clamp (0.5.0)
+    coderay (1.0.7)
+    daemons (1.1.9)
+    eventmachine (1.0.0)
+    haml (3.1.7)
+    kramdown (0.13.7)
+    pith (0.3.2)
       clamp (>= 0.3.0)
       rack (>= 1.2.1)
       thin (>= 1.2.7)
       tilt (>= 1.3)
-
-GEM
-  remote: https://rubygems.org/
-  specs:
-    clamp (0.4.0)
-    coderay (1.0.7)
-    daemons (1.1.9)
-    eventmachine (0.12.10)
-    haml (3.1.7)
-    kramdown (0.13.7)
-    rack (1.4.1)
+    rack (1.5.2)
     sass (3.2.1)
-    thin (1.4.1)
+    thin (1.5.0)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
@@ -33,5 +27,5 @@ DEPENDENCIES
   coderay
   haml
   kramdown
-  pith!
+  pith
   sass

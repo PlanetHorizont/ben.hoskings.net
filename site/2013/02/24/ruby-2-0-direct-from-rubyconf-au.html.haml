@@ -22,6 +22,7 @@ css_class: "with-margin"
     r = Renderer.for(opts[:fmt])
     r.render(source)
   end
+
   render(template, fmt: 'json')
 
   This is the essence of the design we're used to: pass a hash as the final argument, merge it into the defaults, and then pull keys out of it as required.
@@ -34,6 +35,7 @@ css_class: "with-margin"
     r = Renderer.for(fmt)
     r.render(source)
   end
+
   render(template, fmt: 'json')
 
   Beautiful!

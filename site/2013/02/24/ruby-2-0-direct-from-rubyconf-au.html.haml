@@ -41,7 +41,7 @@ css_class: "with-margin"
 :md
   A couple of things to notice here. Firstly, no default handling is required, because it's part of the definition. Secondly, both the defining and calling syntax use the 1.9 hash syntax, so keyword args already feel familiar.
 
-  Here's a real-world example: the definition of `#accepts_nested_ from within actionpack.
+  Here's a real-world example from within actionpack.
 
 :captionedruby
   def accepts_nested_attributes_for(*attr_names)
@@ -74,7 +74,7 @@ css_class: "with-margin"
     # ...
   end
 
-  I'll still take the tea, if it's going.
+  Much better! But a tea would be great.
 
 :md
   This is about as condensed as that information can get, and all three jobs the manual version was doing---splat extraction, unexpected args, and defaults---are taken care of. (Defaults are mandatory, and unexpected keys raise an `ArgumentError`.) All in all a great feature that I think will clean up a lot of codebases.
@@ -84,36 +84,34 @@ css_class: "with-margin"
 :md
   ## Refinements
 
-  Matz announced a new feature for ruby 2.0 called classboxing, "non-global monkey patching" at RubyKaigi '10. Since then the idea has evolved and the result, refinements, are an experimental feature in 2.0. They're a way of patching a class only within a certain scope.
+  Matz announced a new feature for ruby 2.0 called classboxing, "non-global monkey patching", at RubyKaigi '10. Since then the idea has evolved and the result, refinements, are an experimental feature in 2.0. They're a way of patching a class only within a certain scope.
 
 :captionedruby
   module Patches
     refine Array do
       def collapse pattern
-        grep(pattern).
-          map {|i| i.sub(pattern, '') }
+        grep(pattern).map {|i| i.sub(pattern, '') }
       end
     end
   end
 
   using Patches
 
-  puts `git branch`.split("\n").collapse(/\* /)
+  `git branch`.split("\n").collapse(/\* /)
+    #=> ['master']
 
   This is a refinement. The patch is only active in a given lexical scope after the `using` call.
 
 :md
   At present, you can only call `using` at the top level of a file, but in future it will most likely be callable within a class or module too.
 
-  There's been [a lot of discussion](http://bugs.ruby-lang.org/issues/show/4085) about how refinements will work, most of it around the merits of _local rebinding_ vs. strict lexical scoping.
+  There's been [a lot of discussion](http://bugs.ruby-lang.org/issues/show/4085) about how refinements should work, most of it around the merits of _local rebinding_. (Local rebinding means that a binding's active refinements would also be active in a proc run against that binding, even if the refinements weren't active in the proc's defining scope.) Refinements were originally going to include local rebinding, but as it stands today, they don't---refinements are lexically (i.e. statically) scoped.
 
-  Local rebinding means that a binding's active refinements would also be active in procs `instance_eval`ed against that binding, even if the proc wasn't defined in a scope where those refinements were active. Ultimately, the question is whether refinements should be scoped statically or dynamically. Which refinements should count---those active in the current runtime scope, those from the lexical scope where the code was defined?
+  The local rebinding discussion is about the choice between lexical and dynamic scoping, and boils down to this: should the refinements in the current runtime scope, or those from the lexical scope where the code was defined, be the ones that count?
 
-  Dynamic scoping would mean code could be run against unexpected refinements after the fact, which is the exact problem with monkey patching that refinements aim to solve. Hence, I believe lexical scoping is the right choice.
+  [Charles Nutter](http://twitter.com/headius) [argued strongly](http://bugs.ruby-lang.org/issues/4085#note-70) that lexical scoping is the right choice. [Yehuda Katz](http://twitter.com/wycats) wrote [a great post](http://yehudakatz.com/2010/11/30/ruby-2-0-refinements-in-practice/) on the subject too, arguing that dynamic scoping would allow code to be run against unexpected refinements after the fact, which is the exact problem with monkey patching that refinements aim to solve.
 
-  [Charles Nutter](http://twitter.com/headius) [argued strongly](http://bugs.ruby-lang.org/issues/4085#note-70) that lexical scoping is the right choice, and I agree. [Yehuda Katz](http://twitter.com/wycats) wrote [a great post](http://yehudakatz.com/2010/11/30/ruby-2-0-refinements-in-practice/) on the subject too.
-
-  Lexical scoping does have a surprising implication, though, that it's important to be aware of.
+  I agree with Charles and Yehuda that lexical scoping is the right choice. It does have a surprising implication, though, that it's important to be aware of.
 
 :captionedruby
   class Dict
@@ -126,7 +124,8 @@ css_class: "with-margin"
     end
   end
 
-  puts Dict.new.long_words.take(10)
+  Dict.new.long_words.take(10)
+    #=> ['scientificophilosophical', ...]
 
   The simple case: `#long_words` calls `#word_list` to obtain the full list of words to operate on.
 
@@ -144,9 +143,10 @@ css_class: "with-margin"
 
   using NameDict
 
-  puts Dict.new.long_words.take(10)
+  Dict.new.long_words.take(10)
+    #=> ['scientificophilosophical', ...]
 
-  This will return the longest words from the original dictionary, not the refined one here. Huh?
+  This returns the longest words from the original dictionary, not the longest names as the refinement would. Huh?
 
 :md
   This is the implication of strict lexical scoping: only refinements that were active at the static callpoint count. In this case, we're not calling `#word_list` in a refined scope.
@@ -175,7 +175,8 @@ css_class: "with-margin"
     }
   end
 
-  puts primes.take(10).force
+  primes.take(10).force
+    #=> [1, 2, 3, 5, 7, 11, 13, 17, 19, 23]
 
   Here we're filtering the natural numbers (an infinite list) to just those that are prime (another infinite but less dense list). The `#force` method is just an alias to `#to_a`.
 
@@ -195,7 +196,8 @@ css_class: "with-margin"
     lazy_lines(File.open('/usr/share/dict/words'))
   end
 
-  puts words.select {|l| l.length > 12 }.take(10).to_a
+  words.select {|l| l.length > 12 }.take(10).force
+    #=> ['abalienation', 'abarticulation', ...]
 
   This is an example of enumerating a custom type (in this case an IO), by defining a new lazy enumerator. This would be an expensive operation, but laziness means we can stop reading as soon as we have 10 words that are long enough.
 
@@ -221,8 +223,11 @@ css_class: "with-margin"
 
   using Maths
 
-  puts natural_numbers.select {|i| i.prime? }.take(10).force # :)
-  puts natural_numbers.select(&:prime?).take(10).force       # &, you're breaking my heart.
+  natural_numbers.select {|i| i.prime? }.take(10).force
+    #=> [1, 2, 3, 5, 7, 11, 13, 17, 19, 23]
+
+  natural_numbers.select(&:prime?).take(10).force
+    #=> no superclass method 'prime?' for 1:Fixnum
 
   &nbsp;
 
@@ -274,7 +279,7 @@ css_class: "with-margin"
 
 :captionedruby
   String.ancestors
-    => [String, Comparable, Object, Kernel, BasicObject]
+    #=> [String, Comparable, Object, Kernel, BasicObject]
 
   The Comparable module is included in String, and so is behind String in its ancestry.
 
@@ -296,6 +301,9 @@ css_class: "with-margin"
   end
 
   Template.ancestors
-    => [RenderProfiler, Template, Object, Kernel, BasicObject]
+    #=> [RenderProfiler, Template, Object, Kernel, BasicObject]
 
   Much cleaner! We don't need any roundabout aliasing anymore, because calling `super` from the module calls up the ancestry to the corresponding method in the host (notice the module at the front of the ancestry, ahead of its host class).
+
+:md
+  Well there you have it. There's lots to like about 2.0. It'll be a while before frameworks and gems can take full advantage of it, since using these features will break backwards compatibility in those gems. But I'm looking forward to putting ruby 2.0 into production. What could possibly go wrong?

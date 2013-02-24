@@ -4,7 +4,7 @@ title: "getting to know ruby 2.0"
 ---
 
 
-Today is an auspicious day for ruby. Exactly 20 years ago, on the 24th of February 1993, [Rubyのパパ, Matz](https://twitter.com/yukihiro_matz) started work on what was to become ruby. It saw its first public release about three years later, at the end of 1995. Since then many rubies have been cut and polished. So happy 20th birthday to ruby, and a tip of the hat to Matz and all on ruby core who've worked hard on it since then.
+Today is an auspicious day for ruby. Exactly 20 years ago today, [Matz](https://twitter.com/yukihiro_matz) started work on what was to become ruby. It saw its first public release about three years later, at the end of 1995. Since then many rubies have been cut and polished. So happy 20th birthday to ruby, and a tip of the hat to Matz and all on ruby core who've worked hard on it since then.
 
 Hopefully well see another big event today---the release of ruby-2.0. This is a release that's been years in the making. Version 2.0 has a strong theme, and that's _convention_---2.0 formalises useful conventions that us rubyists have grown to use, and it judiciously adds language features to address bad conventions.
 

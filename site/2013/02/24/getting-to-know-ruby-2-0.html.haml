@@ -1,6 +1,7 @@
 ---
 layout: "/_post.haml"
 title: "getting to know ruby 2.0"
+css_class: "with-margin"
 ---
 
 :md
@@ -25,3 +26,74 @@ title: "getting to know ruby 2.0"
   - **`Zlib` supports streaming** when deflating and inflating now, which means large files can be processed without using up huge amounts of memory. This is a particularly nice change because MRI doesn't ever reduce its memory footprint while running -- growing the ruby process to allocate large objects is a one-way thing, even after those objects have been garbage collected.
 
   - **`IO#lines` and friends have been deprecated.** The list-of-string methods on `IO`, `StringIO`, `Zlib::GzipReader` and so on, like `#lines`, `#chars` and `#bytes`, have been deprecated in favour of `#each_line`, etc. This is a nice change, pushing the feel of the enumerating API in the direction of the `#each` / `#each_thing` convention.
+
+
+:md
+  ## Keyword arguments
+
+  Keyword args are the perfect example of convention in 2.0. They very neatly address the pattern of passing optional named args in a trailing hash.
+
+  Some have criticised the feature for not being a true named argument implementation, like python has. That's true, but I don't think it's a fair criticism because they're not intended as such: they're quite focused on solving just the optional trailing argument problem.
+
+:captionedruby
+  def render(source, opts = {})
+    opts = {fmt: 'html'}.merge(opts)
+    r = Renderer.for(opts[:fmt])
+    r.render(source)
+  end
+  render(template, fmt: 'json')
+
+  This is the essence of the design we're used to: pass a hash as the final argument, merge it into the defaults, and then pull keys out of it as required.
+
+:md
+  In ruby 2.0, this convention has a language-level version:
+
+:captionedruby
+  def render(source, fmt: 'html')
+    r = Renderer.for(fmt)
+    r.render(source)
+  end
+  render(template, fmt: 'json')
+
+  Beautiful!
+
+:md
+  A couple of things to notice here. Firstly, no default handling is required, because it's part of the definition. Secondly, both the defining and calling syntax use the 1.9 hash syntax, so keyword args already feel familiar.
+
+  Here's a real-world example: the definition of `#accepts_nested_ from within actionpack.
+
+:captionedruby
+  def accepts_nested_attributes_for(*attr_names)
+    options = {
+      :allow_destroy => false,
+      :update_only => false
+    }
+    options.update(attr_names.extract_options!)
+    options.assert_valid_keys(
+      :allow_destroy,
+      :reject_if,
+      :limit,
+      :update_only
+    )
+    # ...
+  end
+
+  As I said on Friday, I need a cup of tea and a lie down by the time I get to the method body.
+
+:md
+  Notice that there are three jobs being done by that code: extraction from the splatted args, rejection of invalid arguments, and default handling. Here's the 2.0 equivalent:
+
+:captionedruby
+  def accepts_nested_attributes_for(*attr_names,
+    allow_destroy: false,
+    update_only: false
+    reject_if: nil,
+    limit: nil
+  )
+    # ...
+  end
+
+  I'll still take the tea, if it's going.
+
+:md
+  This is about as condensed as that information can get, and all three jobs the manual version was doing---splat extraction, unexpected args, and defaults---are taken care of. (Defaults are mandatory, and unexpected keys raise an `ArgumentError`.) All in all a great feature that I think will clean up a lot of codebases.

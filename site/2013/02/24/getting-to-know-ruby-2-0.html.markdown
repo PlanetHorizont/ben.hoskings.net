@@ -5,9 +5,9 @@ title: "getting to know ruby 2.0"
 
 Today is an auspicious day for ruby. Exactly 20 years ago today, [Matz](https://twitter.com/yukihiro_matz) started work on what was to become ruby. It saw its first public release about three years later, at the end of 1995. Since then many rubies have been cut and polished. So happy 20th birthday to ruby, and a tip of the hat to Matz and all on ruby core who've worked hard on it since then.
 
-Hopefully well see another big event today---the release of ruby-2.0. This is a release that's been years in the making. Version 2.0 has a strong theme, and that's _convention_---2.0 formalises useful conventions that us rubyists have grown to use, and it judiciously adds language features to address bad conventions.
+Hopefully well see another big event today---the release of ruby-2.0. This is a release that's been years in the making, and it's looking really good.
 
-I spoke at [RubyConf AU](http://www.rubyconf.org.au) on Friday about these changes. Firstly, here's a run-down of some more specific changes. There's a full list [in the NEWS file](https://github.com/ruby/ruby/blob/trunk/NEWS), but these are my favourites:
+I've [covered the headline features](/2013/02/24/ruby-2-0-direct-from-rubyconf-au) separately, including lots of examples. This post details some of the lesser-known updates in 2.0 that I think will prove to be great changes. There's a full list [in the NEWS file](https://github.com/ruby/ruby/blob/trunk/NEWS), but these are my favourites:
 
 - **The GC is copy-on-write friendly**, thanks to [Narihiro Nakamura](https://twitter.com/nari_en). In the past, forked ruby processes would quickly duplicate their shared memory, because the GC used to modify every object during the mark phase of its mark-and-sweep run. As of 2.0, objects are marked in a separate data structure instead of on the objects themselves, leaving them unchanged and allowing the kernel to share lots of memory. In practice, this means your unicorns will consume less resident memory (although they'll still appear to have the same resident size [because of how RSIZE is reported](http://unix.stackexchange.com/a/34867)). Pat Shaughnessy wrote [an excellent post](http://patshaughnessy.net/2012/3/23/why-you-should-be-excited-about-garbage-collection-in-ruby-2-0) detailing how Narihiro's new GC design works.
 

@@ -173,3 +173,81 @@ css_class: "with-margin"
   To see why, trace where the call to `Dict.new.long_words` goes. At the callpoint, the `NameDict` refinement is active. But the refined method, `#word_list`, isn't called in that scope: it's called by the `#long_words` method up there in the original class, and in that scope the refinement isn't active.
 
   This seems surprising and a bit limiting at first, but it actually makes a lot of sense, because what looks like a limitation here is actually the exact constraint we need in order to make monkey patching safe. Along with this constraint comes a powerful guarantee: code will always call the version of the method it was written to call. This is good isolation, and means that refinements won't cause collateral damage.
+
+
+
+:md
+  ## Lazy enumerations
+
+  Declarative list programming is even nicer in 2.0 thanks to lazy lists. Expensive and even infinite lists are cheaply useable now, because their elements are only evaluated as they're requested.
+
+:captionedruby
+  def natural_numbers
+    (1..Float::INFINITY).lazy
+  end
+
+  def primes
+    natural_numbers.select {|n|
+      (2..(n**0.5)).all? {|f|
+        n % f > 0
+      }
+    }
+  end
+
+  puts primes.take(10).force
+
+  Here we're filtering the natural numbers (an infinite list) to just those that are prime (another infinite but less dense list). The `#force` method is just an alias to `#to_a`.
+
+:md
+  This is great. Suddenly we can deal with unweildy lists the way ruby does best: by giving them clear names and chaining them meaningfully.
+
+  Custom enumerators can be defined for other types of data, too. It's already possible to read a file line-by-line using `#gets`, but still, here's an example:
+
+:captionedruby
+  def lazy_lines(io)
+    Enumerator::Lazy.new(io) do |enum, i|
+      enum << i
+    end
+  end
+
+  def words
+    lazy_lines(File.open('/usr/share/dict/words'))
+  end
+
+  puts words.select {|l| l.length > 12 }.take(10).to_a
+
+  This is an example of enumerating a custom type (in this case an IO), by defining a new lazy enumerator. This would be an expensive operation, but laziness means we can stop reading as soon as we have 10 words that are long enough.
+
+:md
+  ## And now, a bit more on refinements
+
+  Here's a rewrite of our infinite list example, this time pushing the prime number logic into a refinement on Fixnum. Check the two select styles at the bottom for another lexical scoping surprise.
+
+:captionedruby
+  module Maths
+    refine Fixnum do
+      def prime?
+        (2..(self**0.5)).all? {|f|
+          self % f > 0
+        }
+      end
+    end
+  end
+
+  def natural_numbers
+    (1..Float::INFINITY).lazy
+  end
+
+  using Maths
+
+  puts natural_numbers.select {|i| i.prime? }.take(10).force # :)
+  puts natural_numbers.select(&:prime?).take(10).force       # &, you're breaking my heart.
+
+  &nbsp;
+
+:md
+  In the second example, the `&` in `&:prime?` invokes `Symbol#to_proc` to define a block equivalent to the literal one in the first example. But that process happens away inside the Symbol class, where no refinement is active. That is, at the point those values actually receive the `#prime?` method, there's no refinement active.
+
+  My guess is that this will be added as a special case, because at this point `&:method` is a language feature in its own right.
+
+  Either way, the integration of refinements and the way they feel are definitely unfinished, but I think they're looking very promising.

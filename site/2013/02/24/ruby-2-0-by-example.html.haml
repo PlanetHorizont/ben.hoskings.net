@@ -9,6 +9,7 @@ css_class: "with-margin"
 
   There are four big front-facing changes in 2.0---keyword arguments, refinements, lazy enumerables, and prependable modules. Here's my take on all four, using lots of code samples from my [RubyConf AU](http://www.rubyconf.org.au) talk. I've also [written up some of the lesser-known changes](/2013/02/24/getting-to-know-ruby-2-0), which together with these make for a very promising release.
 
+  ---
 
   ## Keyword arguments
 
@@ -84,6 +85,8 @@ css_class: "with-margin"
 
 
 :md
+  ---
+
   ## Refinements
 
   Matz announced a new feature for ruby 2.0 called classboxing, "non-global monkey patching", at RubyKaigi '10. Since then the idea has evolved and the result, refinements, are an experimental feature in 2.0. They're a way of patching a class only within a certain scope.
@@ -178,6 +181,8 @@ css_class: "with-margin"
 
 
 :md
+  ---
+
   ## Lazy enumerables
 
   Declarative list programming is even nicer in 2.0 thanks to lazy lists. Expensive and even infinite lists are cheaply useable now, because their elements are only evaluated as they're requested.
@@ -222,6 +227,8 @@ css_class: "with-margin"
   This is an example of enumerating a custom type (in this case an IO), by defining a new lazy enumerator. This would be an expensive operation, but laziness means we can stop reading as soon as we have 10 words that are long enough.
 
 :md
+  ---
+
   ## And now, a bit more on refinements
 
   Here's a rewrite of our infinite list example, this time pushing the prime number logic into a refinement on Fixnum. Check the two select styles at the bottom for another lexical scoping surprise.
@@ -261,6 +268,8 @@ css_class: "with-margin"
 
 
 :md
+  ---
+
   ## Module prepending
 
   Like keyword arguments, module prepending addresses a convention that's evolved by solving it at the language level. In this case, the convention is around modules that wrap method calls in their host classes.
@@ -326,4 +335,6 @@ css_class: "with-margin"
   Much cleaner! We don't need any roundabout aliasing anymore, because calling `super` from the module calls up the ancestry to the corresponding method in the host (notice the module at the front of the ancestry, ahead of its host class).
 
 :md
+  ---
+
   Well there you have it. There's lots to like about 2.0. It'll be a while before frameworks and gems can take full advantage of it, since using these features will break backwards compatibility in those gems. But I'm looking forward to putting ruby 2.0 into production. What could possibly go wrong?

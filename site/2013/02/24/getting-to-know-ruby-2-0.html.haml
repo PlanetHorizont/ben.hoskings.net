@@ -251,3 +251,70 @@ css_class: "with-margin"
   My guess is that this will be added as a special case, because at this point `&:method` is a language feature in its own right.
 
   Either way, the integration of refinements and the way they feel are definitely unfinished, but I think they're looking very promising.
+
+
+
+:md
+  ## Module prepending
+
+  Like keyword arguments, module prepending addresses a convention that's evolved by solving it at the language level. In this case, the convention is around modules that wrap method calls in their host classes.
+
+:captionedruby
+  class Template
+    def initialize(erb)
+      @erb = erb
+    end
+    def render values
+      ERB.new(@erb).result(binding)
+    end
+  end
+
+  module RenderProfiler
+    def self.included base
+      base.send :alias_method, :render_without_profiling, :render
+      base.send :alias_method, :render, :render_with_profiling
+    end
+    def render_with_profiling values
+      start = Time.now
+      render_without_profiling(values).tap {
+        $stderr.puts "Rendered in \#{Time.now - start}s."
+      }
+    end
+  end
+
+  class Template
+    include RenderProfiler
+  end
+
+  To wrap a method call from an included module, you have to alias the original out of the way, then call it from your module method, which you alias into the original's place. It works, but it's not great.
+
+:md
+  Ideally, you'd wrap calls at the language level, by calling super, but this isn't possible from an included module. Super punts the method call to the next class in the ancestry, and an included module is already behind its host class.
+
+:captionedruby
+  String.ancestors
+    => [String, Comparable, Object, Kernel, BasicObject]
+
+  The Comparable module is included in String, and so is behind String in its ancestry.
+
+:md
+  And that's the key to how `Module#prepend` works. Prepending a module is no different to including it, with one exception: the prepended module comes _before_ its host in the resulting ancestry. This means that modules in 2.0 can cleanly wrap methods in their hosts.
+
+:captionedruby
+  module RenderProfiler
+    def render values
+      start = Time.now
+      super(values).tap {
+        $stderr.puts "Rendered in \#{Time.now - start}s."
+      }
+    end
+  end
+
+  class Template
+    prepend RenderProfiler
+  end
+
+  Template.ancestors
+    => [RenderProfiler, Template, Object, Kernel, BasicObject]
+
+  Much cleaner! We don't need any roundabout aliasing anymore, because calling `super` from the module calls up the ancestry to the corresponding method in the host (notice the module at the front of the ancestry, ahead of its host class).

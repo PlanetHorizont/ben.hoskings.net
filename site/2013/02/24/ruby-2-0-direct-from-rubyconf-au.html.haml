@@ -278,10 +278,10 @@ css_class: "with-margin"
   Ideally, you'd wrap calls at the language level, by calling super, but this isn't possible from an included module. Super punts the method call to the next class in the ancestry, and an included module is already behind its host class.
 
 :captionedruby
-  String.ancestors
-    #=> [String, Comparable, Object, Kernel, BasicObject]
+  Template.ancestors
+    #=> [Template, RenderProfiler, Object, Kernel, BasicObject]
 
-  The Comparable module is included in String, and so is behind String in its ancestry.
+  The RenderProfiler module was included in Template, and so is behind Template in its ancestry.
 
 :md
   And that's the key to how `Module#prepend` works. Prepending a module is no different to including it, with one exception: the prepended module comes _before_ its host in the resulting ancestry. This means that modules in 2.0 can cleanly wrap methods in their hosts.

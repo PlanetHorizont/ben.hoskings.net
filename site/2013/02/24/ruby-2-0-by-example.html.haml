@@ -107,7 +107,25 @@ css_class: "with-margin"
 :md
   At present, you can only call `using` at the top level of a file, but in future it will most likely be callable within a class or module too.
 
-  There's been [a lot of discussion](http://bugs.ruby-lang.org/issues/show/4085) about how refinements should work, most of it around the merits of _local rebinding_. (Local rebinding means that a binding's active refinements would also be active in a proc run against that binding, even if the refinements weren't active in the proc's defining scope.) Refinements were originally going to include local rebinding, but as it stands today, they don't---refinements are lexically (i.e. statically) scoped.
+  Note also that refinements don't involve any syntax changes: both `refine` and `using` are new methods in the standard library, not new keywords. Because no syntax has changed, we could build a fallback mechanism for 1.9 that instead applied the refinement as a traditional monkey patch:
+
+:captionedruby
+  class Module
+    def refine(klass, &block)
+      klass.module_eval(&block)
+    end
+  end
+
+  class Object
+    def using(refinement)
+      # Nothing to do!
+    end
+  end
+
+  The golden rule of monkey patching applies: just because you could, doesn't mean you should.
+
+:md
+  Anyhow, there's been [a lot of discussion](http://bugs.ruby-lang.org/issues/show/4085) about how refinements should work, most of it around the merits of _local rebinding_. (Local rebinding means that a binding's active refinements would also be active in a proc run against that binding, even if the refinements weren't active in the proc's defining scope.) Refinements were originally going to include local rebinding, but as it stands today, they don't---refinements are lexically (i.e. statically) scoped.
 
   The local rebinding discussion is about the choice between lexical and dynamic scoping, and boils down to this: should the refinements in the current runtime scope, or those from the lexical scope where the code was defined, be the ones that count?
 

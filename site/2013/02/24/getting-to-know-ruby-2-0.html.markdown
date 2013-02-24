@@ -1,6 +1,6 @@
 ---
 layout: "/_post.haml"
-title: "ruby 2.0"
+title: "getting to know ruby 2.0"
 ---
 
 

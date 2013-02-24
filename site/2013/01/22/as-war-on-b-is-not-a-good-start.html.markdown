@@ -4,11 +4,11 @@ title: "\"A's war on B\" is not a good start."
 ---
 
 
-It's certainly an eye-grabbing title: "The Liberals' War on Science". Heady stuff. Not only the right are putting the boot in, [claims Michael Shermer for Scientific American](http://www.scientificamerican.com/article.cfm?id=the-liberals-war-on-science)---science is distorted by both ends of the political spectrum.
+It's certainly an eye-grabbing title: "The Liberals' War on Science". It's not just the right putting the boot in, [claims Michael Shermer for Scientific American](http://www.scientificamerican.com/article.cfm?id=the-liberals-war-on-science)---apparently science is distorted by both ends of the political spectrum.
 
 > Believe it or not—and I suspect most readers will not—there's a liberal war on science. Say what?
 
-Well, extraordinary claims require extraordinary evidence. There may well be some on the left in the US who misappropriate science to further their agenda. Equating their scientific interference with that of movement conservatism, though, is an extremely long bow to draw.
+Well, extraordinary claims require extraordinary evidence. There may well be some on the left in the US who misappropriate science to further their agenda. Equating their scientific interference with that of movement conservatism, though, is quite a bow to draw.
 
 > The left's war on science begins with the stats [from a 2011 survey by the Public Religion Research Institute]: 41 percent of Democrats are young Earth creationists, and 19 percent doubt that Earth is getting warmer.
 

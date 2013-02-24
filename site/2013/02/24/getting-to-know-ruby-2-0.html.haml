@@ -97,3 +97,79 @@ css_class: "with-margin"
 
 :md
   This is about as condensed as that information can get, and all three jobs the manual version was doing---splat extraction, unexpected args, and defaults---are taken care of. (Defaults are mandatory, and unexpected keys raise an `ArgumentError`.) All in all a great feature that I think will clean up a lot of codebases.
+
+
+
+:md
+  ## Refinements
+
+  Matz announced a new feature for ruby 2.0 called classboxing, "non-global monkey patching" at RubyKaigi '10. Since then the idea has evolved and the result, refinements, are an experimental feature in 2.0. They're a way of patching a class only within a certain scope.
+
+:captionedruby
+  module Patches
+    refine Array do
+      def collapse pattern
+        grep(pattern).
+          map {|i| i.sub(pattern, '') }
+      end
+    end
+  end
+
+  using Patches
+
+  puts `git branch`.split("\n").collapse(/\* /)
+
+  This is a refinement. The patch is only active in a given lexical scope after the `using` call.
+
+:md
+  At present, you can only call `using` at the top level of a file, but in future it will most likely be callable within a class or module too.
+
+  There's been [a lot of discussion](http://bugs.ruby-lang.org/issues/show/4085) about how refinements will work, most of it around the merits of _local rebinding_ vs. strict lexical scoping.
+
+  Local rebinding means that a binding's active refinements would also be active in procs `instance_eval`ed against that binding, even if the proc wasn't defined in a scope where those refinements were active. Ultimately, the question is whether refinements should be scoped statically or dynamically. Which refinements should count---those active in the current runtime scope, those from the lexical scope where the code was defined?
+
+  Dynamic scoping would mean code could be run against unexpected refinements after the fact, which is the exact problem with monkey patching that refinements aim to solve. Hence, I believe lexical scoping is the right choice.
+
+  [Charles Nutter](http://twitter.com/headius) [argued strongly](http://bugs.ruby-lang.org/issues/4085#note-70) that lexical scoping is the right choice, and I agree. [Yehuda Katz](http://twitter.com/wycats) wrote [a great post](http://yehudakatz.com/2010/11/30/ruby-2-0-refinements-in-practice/) on the subject too.
+
+  Lexical scoping does have a surprising implication, though, that it's important to be aware of.
+
+:captionedruby
+  class Dict
+    def word_list
+      File.open('/usr/share/dict/words')
+    end
+
+    def long_words
+      word_list.sort_by(&:length).reverse
+    end
+  end
+
+  puts Dict.new.long_words.take(10)
+
+  The simple case: `#long_words` calls `#word_list` to obtain the full list of words to operate on.
+
+:md
+  Suppose that we refine this class to reimplement `#word_list`.
+
+:captionedruby
+  module NameDict
+    refine Dict do
+      def word_list
+        File.open('/usr/share/dict/propernames')
+      end
+    end
+  end
+
+  using NameDict
+
+  puts Dict.new.long_words.take(10)
+
+  This will return the longest words from the original dictionary, not the refined one here. Huh?
+
+:md
+  This is the implication of strict lexical scoping: only refinements that were active at the static callpoint count. In this case, we're not calling `#word_list` in a refined scope.
+
+  To see why, trace where the call to `Dict.new.long_words` goes. At the callpoint, the `NameDict` refinement is active. But the refined method, `#word_list`, isn't called in that scope: it's called by the `#long_words` method up there in the original class, and in that scope the refinement isn't active.
+
+  This seems surprising and a bit limiting at first, but it actually makes a lot of sense, because what looks like a limitation here is actually the exact constraint we need in order to make monkey patching safe. Along with this constraint comes a powerful guarantee: code will always call the version of the method it was written to call. This is good isolation, and means that refinements won't cause collateral damage.

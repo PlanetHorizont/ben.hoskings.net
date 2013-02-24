@@ -7,7 +7,7 @@ Today is an auspicious day for ruby. Exactly 20 years ago today, [Matz](https://
 
 Hopefully well see another big event today---the release of ruby-2.0. This is a release that's been years in the making, and it's looking really good.
 
-I've [covered the headline features](/2013/02/24/ruby-2-0-as-seen-at-rubyconf-au) separately, including lots of examples. This post details some of the lesser-known updates in 2.0 that I think will prove to be great changes. There's a full list [in the NEWS file](https://github.com/ruby/ruby/blob/trunk/NEWS), but these are my favourites:
+I've [covered the headline features](/2013/02/24/ruby-2-0-by-example) separately, including lots of examples. This post details some of the lesser-known updates in 2.0 that I think will prove to be great changes. There's a full list [in the NEWS file](https://github.com/ruby/ruby/blob/trunk/NEWS), but these are my favourites:
 
 - **The GC is copy-on-write friendly**, thanks to [Narihiro Nakamura](https://twitter.com/nari_en). In the past, forked ruby processes would quickly duplicate their shared memory, because the GC used to modify every object during the mark phase of its mark-and-sweep run. As of 2.0, objects are marked in a separate data structure instead of on the objects themselves, leaving them unchanged and allowing the kernel to share lots of memory. In practice, this means your unicorns will consume less resident memory (although they'll still appear to have the same resident size [because of how RSIZE is reported](http://unix.stackexchange.com/a/34867)). Pat Shaughnessy wrote [an excellent post](http://patshaughnessy.net/2012/3/23/why-you-should-be-excited-about-garbage-collection-in-ruby-2-0) detailing how Narihiro's new GC design works.
 

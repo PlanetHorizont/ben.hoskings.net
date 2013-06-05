@@ -1,6 +1,13 @@
 ---
 layout: "/_default.haml"
 ---
+
+%header
+  %h1= link('index.html', 'ben hoskings')
+  %nav
+    %a{rel: 'me', href: 'http://twitter.com/ben_h'} twitter
+    %a{rel: 'me', href: 'http://github.com/benhoskings'} github
+
 %article
   %header
     %h1= link(page, formatted_headline_for(page.title))

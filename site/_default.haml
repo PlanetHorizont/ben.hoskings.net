@@ -23,11 +23,6 @@
         (function(){if(!/*@cc_on!@*/0)return;var e = "abbr,article,aside,audio,bb,canvas,datagrid,datalist,details,dialog,eventsource,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');for(var i=0;i<e.length;i++){document.createElement(e[i])}})();
 
   %body{{class: page.meta["css_class"]},{class: slug_for(page)}}
-    %header
-      %h1= link('index.html', 'ben hoskings')
-      %nav
-        %a{rel: 'me', href: 'http://twitter.com/ben_h'} twitter
-        %a{rel: 'me', href: 'http://github.com/benhoskings'} github
 
     = yield
 
@@ -42,7 +37,7 @@
     :javascript
       head.js("/scripts/jquery.js");
       head.js("/scripts/images.js");
-    
+
     :javascript
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-9740324-2']);

@@ -5,6 +5,7 @@ $aside-width: $width-with-margin * 0.33
 $body_padding: 12px
 $font-size: 16px
 $leading: 28px
+$intro-scale: 1.3
 $code_leading: 22px
 $margin: 1.75em // $leading / $font-size
 $col: ($width / 10)
@@ -15,8 +16,10 @@ $color: #333
 $link-color: #e13d87
 $title-color: #197a9f
 $date-color: #777
+$intro-color: $date-color
 $meta-color: #999
 $background: #d2d2d2
+$main-face: Vollkorn
 
 @font-face
   font-family: 'PixChicago'
@@ -91,8 +94,8 @@ $background: #d2d2d2
 body
   color: black
   background-color: $background
-  font: #{$font-size}/#{$leading} Vollkorn, serif
-  padding: 0 $body_padding
+  font: #{$font-size}/#{$leading} $main-face, serif
+  padding: $margin $body_padding
 
 strong
   font-weight: bold
@@ -316,7 +319,8 @@ hr
   border: none
   clear: both
 
-body > header,
+body >header h2,
+body >header h1,
 article,
 article .body,
 footer,
@@ -324,10 +328,7 @@ footer,
 hr
   @include top-border
 
-body
-  padding-top: $margin
-
-body > header,
+body >header,
 article >header,
 article
   margin-bottom: $margin * 2
@@ -338,16 +339,20 @@ footer,
 
 body
   >header
-    h1, nav
-      display: inline
-    a
+    h1, h2
+      margin-bottom: $margin
+    h1
       font: normal 14px/2 PixChicago
+    h2, nav
+      font: italic #{$font-size * $intro-scale}/#{$leading * $intro-scale} $main-face, serif
+    h2
+      color: $intro-color
+      width: $width - 240px
+      padding-right: 240px
   &.ben-hoskings >header
-    margin-top: $margin
     margin-bottom: $margin * 3
-    h1 a
-      line-height: 1.9
-      font-size: 36px
+    h1
+      font: normal 36px/2 PixChicago
 
 body > footer
   clear: both
@@ -371,9 +376,9 @@ article
     padding-right: $padding
 
 nav
+  float: right
   a
-    margin-left: $padding * 12
-    font-weight: bold
+    margin-left: 12px
     color: $meta-color
     &:hover
       color: darken($meta-color, 5%)

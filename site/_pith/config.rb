@@ -103,6 +103,10 @@ project.helpers do
     }
   end
 
+  def published_posts
+    posts.sort_by {|p| date_of(p) }.reverse
+  end
+
   def date_of post
     date_str = (page.meta['custom_date'] || post.path.dirname).to_s.split('/')
     Time.new(*date_str)

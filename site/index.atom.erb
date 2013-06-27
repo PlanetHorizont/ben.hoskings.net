@@ -12,7 +12,7 @@
   </author>
 <% published_posts[0...30].each do |post| %>
   <entry>
-    <title><%= post.title.encode(:xml => :text) %></title>
+    <title><%= post.title %></title>
     <link href="http://benhoskin.gs/<%= href(post) %>" />
     <updated><%= date_of(post).xmlschema %></updated>
     <id>http://benhoskin.gs/<%= href(post) %></id>

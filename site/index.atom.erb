@@ -15,7 +15,7 @@
     <title><%= post.title.encode(:xml => :text) %></title>
     <link href="http://benhoskin.gs/<%= href(post) %>" />
     <updated><%= date_of(post).xmlschema %></updated>
-    <id>/<%= href(post) %></id>
+    <id>http://benhoskin.gs/<%= href(post) %></id>
   </entry>
 <% end %>
 </feed>

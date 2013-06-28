@@ -20,6 +20,7 @@ xml.feed xmlns: 'http://www.w3.org/2005/Atom' do
       xml.title post.title
       xml.link rel: "alternate", type: "text/html", href: post_uri
       xml.updated date_of(post).xmlschema
+      xml.content post.render(self), type: "html", "xml:base" => post_uri
     end
   end
 end

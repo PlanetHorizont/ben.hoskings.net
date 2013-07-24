@@ -1,0 +1,131 @@
+---
+layout: "/_post.haml"
+title: "Arel merge &mdash; a hidden gem"
+css_class: "with-margin"
+---
+
+:md
+  Recently, in a moment of well-timed stubbornness, I came across arel's ability to merge scopes. Merging greatly expands the ways in which you can apply scopes, and so too the kinds of logic you can put in them. As far as I can see, though, they're not very widely used. In fact, the only place I've seen them referred to is in [this excellent railscast by Ryan Bates](http://asciicasts.com/episodes/215-advanced-queries-in-rails-3). Well, here's my sell.
+
+%aside
+  :md
+    For those new to rails, arel is its SQL querying engine. Core to arel is per-query / per-clause chainability: "build at your leisure, one scope at a time", it says, "and I'll lazily generate the SQL later, to enumerate the results". Half-assembled scope fragments and queryable result sets can all be passed around, one and the same.
+
+:md
+  An arel query's starting point determines the result: you base each query on the model whose records you want in the results. Whether you're joining or including, or supplying nested conditions, you get a list of user records by starting your query on `User` (or one of its scopes). This is a good pattern, but I've long wondered how to also involve scopes from other models.
+
+  If I wanted to employ a scope defined on a model I was joining to, then up until last week I thought I was up the creek, but this is what `merge` makes possible. To illustrate the solution, here's a stylised portion of the data model that backs our publishing platform at [The Conversation](http://theconversation.edu.au).
+
+:captionedruby
+  class User < ActiveRecord::Base
+    has_many :collaborations
+    has_many :articles, :through => :collaborations
+  end
+
+  Standard fare. `User` joins to other things like author profiles too, but those aren't relevant here.
+
+:captionedruby
+  class Collaboration < ActiveRecord::Base
+    belongs_to :user
+    belongs_to :article
+    validates_inclusion_of :role, :in => %w[editor author]
+    def self.editorial
+      where(:role => "editor")
+    end
+  end
+
+  `Collaboration` represents a user's relationship to an article. It has a `role` field describing that relationship, along with scopes for each type (I've shown just one).
+
+:captionedruby
+  class Article < ActiveRecord::Base
+    has_many :collaborations
+    has_many :users, :through => :collaborations
+    def self.drafting
+      where(:published_at => nil)
+    end
+  end
+
+  Our `Article` has a scope of its own, filtering to the articles currently being drafted.
+
+:md
+  To find all the admin users of a group, we want to start on the result model (`User`), even though the role information is stored on `Collaboration`. In the past, I would have written this query:
+
+:captionedruby
+  article.users.where(:collaborations => {:role => "editor"})
+
+  Yuck, duplicated scope logic!
+
+:md
+  This produces nice SQL, but we had to duplicate that `#where` logic from `Collaboration.editorial`. Surely it's better to keep things dry?
+
+:captionedruby
+  Collaboration.editorial.
+    where(:article_id => article.id).map(&:user)
+
+  Yuck, n+1!
+
+:md
+  Hey, at least we got to use our `editorial` scope, right?
+
+  Turns out, you _can_ compose the proper query by re-using that scope, even though we're quering it's not defined on `User`.
+
+:captionedruby
+  article.users.merge(Collaboration.editorial)
+
+  Enter `#merge`!
+
+:md
+  Combining queries like this (I believe the technical term is _smooshing_&mdash;the queries have been _smooshed_ together) means you can re-use the scopes you have all over the place. Even better, `merge` lets you push much more query logic into scopes than you otherwise could. You win on two fronts: keeping your querying logic dry in this case means using your DB like a real DB, too.
+
+:captionedsql
+  SELECT "users".* FROM "users"
+    INNER JOIN "collaborations"
+      ON "users"."id" = "collaborations"."user_id"
+    WHERE "collaborations"."article_id" = 1
+    AND "collaborations"."role" = 'editor';
+
+  The query is the one you'd hope for: it's similar to the SQL you'd use if you were writing it by hand.
+
+:md
+  There's one thing to be aware of here: when you start re-using scopes in this way, particularly across models, you run the risk of coupling your models. My feeling about this is that it's not a problem as long as non-trivial scopes are specced, and that model-specific logic is wrapped up in a scope on _that_ model. As long as a scope's spec breaks when one of the scopes it depends on changes, I feel comfortable with this kind of declarative coupling.
+
+  Merging scopes works with associations, too: when you merge an association, you merge the condition that defines it, as well as the attached scopes.
+
+:captionedruby
+  class Figure < ActiveRecord::Base
+    belongs_to :article
+  end
+
+  Let's add a `Figure` model, to represent the figures within articles.
+
+:md
+  Suppose we want to retrieve all the figures associated with the drafts that a given user is editing. Our constraints: we have to start on `Figure` because figures are what we want, and we want to pull in logic from `Article` and `Collaboration` scopes.
+
+:captionedruby
+  class User < ActiveRecord::Base
+    def draft_figures
+      Figure.joins(:article => :collaborations).
+        merge(Article.drafting).
+        merge(collaborations.editorial)
+    end
+  end
+
+  A user's `draft_figures` are all the figures on unpublished articles, that the user is an editor of.
+
+:md
+  Note well: this isn't a class-level scope, it's a list of figures corresponding to a specific user. Even so, we started the query `Figure`-wide, and scoped it to the user by merging the `collaborations` association. That's what narrows this query to the user in question.
+
+:captionedsql
+  SELECT "figures".* FROM "figures"
+    INNER JOIN "articles"
+      ON "articles"."id" = "figures"."article_id"
+    INNER JOIN "collaborations"
+      ON "collaborations"."article_id" = "articles"."id"
+    WHERE "articles"."published_at" IS NULL
+    AND "collaborations"."user_id" = 1
+    AND "collaborations"."role" = 'editor'
+
+  It's clean and dry, and it generates the SQL that you want too.
+
+:md
+  We've just recently done some refactoring across our codebase to employ `merge`, and I've been really pleased with how a lot of complex logic has fallen away. When you can re-use scopes anywhere, you have a lot more freedom to define them cleanly and simply.

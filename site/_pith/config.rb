@@ -97,12 +97,9 @@ module Haml::Filters::Captionedc
 end
 
 project.helpers do
-
-  DATE_REGEXP = %r{^(\d{4})\-(\d{2})\-(\d{2})}
-
   def posts
     project.inputs.select {|input|
-      input.path.basename.to_s[DATE_REGEXP]
+      input.path.dirname.to_s[%r{^\d{4}/\d{2}/\d{2}}]
     }
   end
 
@@ -111,7 +108,7 @@ project.helpers do
   end
 
   def date_of post
-    date_str = (page.meta['custom_date'] || post.path.basename).to_s.scan(DATE_REGEXP).first
+    date_str = (page.meta['custom_date'] || post.path.dirname).to_s.split('/')
     Time.new(*date_str)
   end
 

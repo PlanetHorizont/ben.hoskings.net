@@ -1,0 +1,47 @@
+---
+layout: "/_post.haml"
+title: "a babushka run reporting bug: found, facepalmed, fixed"
+css_class: "with-margin"
+---
+
+:md
+  _**tl;dr** I've discovered and fixed a bug that meant babushka's community database included run stats from `https://` sources, some of which are private. Babushka's run reporter was designed to never transmit any sensitive info, though, and the database doesn't store any, so I'm confident that there was no harm done (which I've confirmed by auditing the DB). All the same, apologies all round._
+
+  **A bit of context first.** Babushka can run deps from arbitrary sources, which are git repos containing ruby code. When a dep name is namespaced like "benhoskings:LaunchBar.app", babushka identifies the source (in this case, `~/.babushka/sources/benhoskings`) as public or private based on its remote. A source with a publicly accessible remote is public, and anything else is private.
+
+  When deps from public sources are run, babushka submits success/failure details to a webservice at babushka.me, the community database that powers `babushka search`:
+
+      > babushka search coffee
+      The webservice knows about 4 deps that match 'coffee':
+
+      Name             | Source                                          | Runs    |  ✓
+      -----------------+-------------------------------------------------+---------+-----
+      coffeescript.src | git://github.com/dgoodlad/babushka-deps.git     | 14 ever | 21%
+      coffeescript.src | git://github.com/benhoskings/babushka-deps.git  | 28 ever | 21%
+      coffeescript.src | git://github.com/mtcmorris/babushka-deps.git    | 2 ever  | 0%
+      coffeescript.src | git://github.com/conversation/babushka-deps.git | 12 ever | 50%
+
+  The only information the webservice stores is the info you can see in that table (the source URI and the dep name), and the OS it was run on (e.g. 'Ubuntu 12.04'). (Here's [the relevant code](https://github.com/benhoskings/babushka/blob/master/lib/babushka/task.rb#L63-72) within babushka.)
+
+%aside
+  <img src="#{href '/images/picard-facepalm.jpg'}" />
+
+:md
+  **Which brings us to the issue, a.k.a. my mistake:** I incorrectly classed `https://` URIs as public [late last year](http://github.com/benhoskings/babushka/commit/09f0419df70d3ed54c0d1b9c2e2c88f5090746fc). It seemed like a good idea at the time: back then, https was the default URI on public github project pages. I didn't realise at the time that github also serve private repos over https to authed users. The result is that babushka's database included dep and source names from some private sources.
+
+  _In fact, `http://` and `file://` were also classed as public, and always had been, but were never used._
+
+  Of course, the repos themselves remained private. Babushka never does anything unexpected with the dep source itself: it clones the repo locally and then loads from it, just as tools like bundler do. The bug lay in the distinct process of storing runs in the community database.
+
+%aside
+  :md
+    _I say 'possibly private' because I can't distinguish between a private source and a public one that's since been deleted, since they both 404. As a point of comparison, 18 of the 137 public sources have since been deleted._
+
+:md
+  **The vital statistics:** Of 146 total sources in the database, 66 had https URIs, and most of those (59) show up as public. The remaining 9 were possibly private. There were 17 distinct dep names stored against those 9 sources, and I've confirmed none of them contained any sensitive information (which is to be expected).
+
+  All's well that ends well, but all the same, I'm sorry to have made this mistake. I've [reverted the offending commit](http://github.com/benhoskings/babushka/commit/9463f42) and [patched babushka](http://github.com/benhoskings/babushka/commit/d2d4879) to class only `git://` sources as public, [added a validation to the webservice](http://github.com/benhoskings/babushka.me/commit/57430ef) to only accept `git://` sources, and [added a check constraint to the DB](http://github.com/benhoskings/babushka.me/commit/466e917) to ensure only `git://` sources are stored.
+
+  Lastly, a point of design: it's important to me that there's no private component to this setup. Both [the reporting code in babushka](https://github.com/benhoskings/babushka/blob/master/lib/babushka/run_reporter.rb) and [the collecting code in the webservice](https://github.com/benhoskings/babushka.me/blob/master/app/controllers/runs_controller.rb) are available for all to see.
+
+  If you have any thoughts or concerns about all this, please do send them through.

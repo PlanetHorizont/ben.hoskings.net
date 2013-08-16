@@ -1,7 +1,6 @@
-$width: 640px
-$width-with-margin: 760px
-$article-width: $width-with-margin * 0.67
-$aside-width: $width-with-margin * 0.33
+$width: 510px
+$aside-width: 250px
+$width-with-margin: $width + $aside-width
 $body_padding: 12px
 $font-size: 16px
 $leading: 28px
@@ -191,7 +190,7 @@ article
     p, ul, ol
       width: $width
       body.with-margin &
-        width: $article-width
+        width: $width
     p, li, figure
       color: $color
     blockquote

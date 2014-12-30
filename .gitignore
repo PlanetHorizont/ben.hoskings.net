@@ -1,2 +1,5 @@
+.bundle/
+bin/
 public/
+vendor/
 .sass-cache/
